@@ -24,10 +24,8 @@
 </p>
 
 <p align="center">
-  <sub>実際のノートと、そのリンクに基づく会話です。スクリーンショットは開発中の 2.0 を示しています。</sub>
+  <sub>実際のノートと、そのリンクに基づく会話です。</sub>
 </p>
-
-> **お知らせ: 2.0 を開発中です。** 次のメジャーリリースでは、Grimoire はプロバイダー基盤の実行アーキテクチャに移行します。単一のカーネルが各 CLI を駆動し、ターンごとにちょうど一つの結果を記録します。あわせて、保管庫のテーマとアクセントカラーに従う新しいデザインになります。作業は `main` にマージ済みですが、公開リリースにはまだ含まれていません。現在の公開リリースは 1.3.2 のままです。会話、設定、プロバイダーのファイルはそのまま引き継がれます。
 
 Grimoire は agentic CLI アシスタントを Obsidian に組み込みます。Codex、Claude Code、Antigravity CLI、Gemini CLI (Legacy)、OpenCode、MiMoCode、Kimi Code、Grok Build、Qwen Code、Devin、Reasonix、Command Code がひとつのサイドパネルに入り、ノートを読み、ファイルを編集し、コマンドを実行し、ツールを呼び出し、実際の vault に紐づいた session history を保持します。Grimoire のサーバーは介在しません。Telemetry も hosted backend も、あなたと provider の間に入る proxy もありません。
 

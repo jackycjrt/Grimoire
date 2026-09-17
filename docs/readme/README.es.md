@@ -24,10 +24,8 @@
 </p>
 
 <p align="center">
-  <sub>Una nota real y una conversación basada en sus enlaces. Las capturas muestran la versión 2.0 en desarrollo.</sub>
+  <sub>Una nota real y una conversación basada en sus enlaces.</sub>
 </p>
-
-> **Aviso: la 2.0 está en marcha.** La próxima versión mayor lleva Grimoire a una arquitectura de ejecución basada en proveedores, donde un único núcleo dirige cada CLI y registra exactamente un resultado por turno, y trae un rediseño que sigue el tema y el color de acento de tu bóveda. Ya está fusionada en `main` y todavía no forma parte de ninguna versión publicada. La versión actual sigue siendo la 1.3.2. Las conversaciones, los ajustes y los archivos de los proveedores se conservan sin cambios.
 
 Grimoire lleva asistentes CLI agentic a Obsidian. Codex, Claude Code, Antigravity CLI, Gemini CLI (Legacy), OpenCode, MiMoCode, Kimi Code, Grok Build, Qwen Code, Devin, Reasonix y Command Code viven en un solo panel lateral: leen tus notas, editan archivos, ejecutan comandos, llaman tools y conservan session history contra tu vault real. Nada pasa por un servidor de Grimoire. No hay telemetry, hosted backend ni proxy entre tú y tu provider.
 

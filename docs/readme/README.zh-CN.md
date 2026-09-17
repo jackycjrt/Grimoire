@@ -24,10 +24,8 @@
 </p>
 
 <p align="center">
-  <sub>真实笔记与基于笔记链接的对话。截图展示的是开发中的 2.0 版本。</sub>
+  <sub>真实笔记与基于笔记链接的对话。</sub>
 </p>
-
-> **提示：2.0 正在开发中。** 下一个大版本将把 Grimoire 迁移到以提供商为基础的执行架构：由一个内核驱动每个 CLI，并为每一轮精确记录一个结果；同时带来跟随仓库主题与强调色的全新设计。相关工作已合并到 `main` 分支，但尚未进入任何已发布版本。当前发布版本仍是 1.3.2。对话、设置和提供商文件将原样保留。
 
 Grimoire 将智能体 CLI 助手带入 Obsidian。Codex、Claude Code、Antigravity CLI、Gemini CLI（旧版）、OpenCode、MiMoCode、Kimi Code、Grok Build、Qwen Code、Devin、Reasonix 和 Command Code 都位于同一个侧边栏中；它们可以读取笔记、编辑文件、执行命令、调用工具，并将会话历史保存在你的真实仓库中。任何内容都不会经由 Grimoire 服务器传输：没有遥测、没有托管后端，也没有处在中间的代理服务器。
 

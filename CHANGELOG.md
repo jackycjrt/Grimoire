@@ -1,8 +1,8 @@
 # Changelog
 
-User-facing changes by release. Version 2.0 is in development; **1.3.2 is the current published release**.
+User-facing changes by release.
 
-## 2.0.0 - Unreleased
+## 2.0.0 - 2026-09-17
 
 A redesigned workspace that follows your Obsidian theme, with more reliable agent runs and easier context management. Existing conversations, settings, and provider files carry over without migration.
 

@@ -24,10 +24,8 @@
 </p>
 
 <p align="center">
-  <sub>真實筆記與根據筆記連結展開的對話。截圖顯示開發中的 2.0 版本。</sub>
+  <sub>真實筆記與根據筆記連結展開的對話。</sub>
 </p>
-
-> **提示：2.0 正在開發中。** 下一個主要版本會把 Grimoire 遷移到以提供者為基礎的執行架構：由一個核心驅動每個 CLI，並為每一輪精確記錄一個結果；同時帶來跟隨儲存庫主題與強調色的全新設計。相關工作已合併到 `main` 分支，但尚未納入任何已發布版本。目前發布版本仍是 1.3.2。對話、設定與提供者檔案將原樣保留。
 
 Grimoire 將 agentic CLI 助手帶入 Obsidian。Codex、Claude Code、Antigravity CLI、Gemini CLI (Legacy)、OpenCode、MiMoCode、Kimi Code、Grok Build、Qwen Code、Devin、Reasonix 和 Command Code 都在同一個側邊欄中執行：讀取筆記、編輯檔案、執行命令、呼叫工具，並把 session history 保存在真實的 vault context 中。Grimoire 不經過自家伺服器：沒有 telemetry、沒有 hosted backend，也沒有夾在你和 provider 之間的 proxy。
 
