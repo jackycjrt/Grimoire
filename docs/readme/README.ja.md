@@ -20,16 +20,16 @@
 </p>
 
 <p align="center">
-  <img src="../../assets/readme/chat-workspace.png" alt="Obsidian のノート横で動作する Grimoire サイドパネル" width="100%">
+  <img src="../../assets/readme/chat-workspace.png" alt="Obsidian の Ocean Atlas と、海の層・海流・海洋生物を結び付ける Codex Astra High のチャット" width="100%">
 </p>
 
 <p align="center">
-  <sub>ノートがある同じ Obsidian workspace で、ローカル CLI エージェントと会話できます。</sub>
+  <sub>実際のノートと、そのリンクに基づく会話です。スクリーンショットは開発中の 2.0 を示しています。</sub>
 </p>
 
 > **お知らせ: 2.0 を開発中です。** 次のメジャーリリースでは、Grimoire はプロバイダー基盤の実行アーキテクチャに移行します。単一のカーネルが各 CLI を駆動し、ターンごとにちょうど一つの結果を記録します。あわせて、保管庫のテーマとアクセントカラーに従う新しいデザインになります。作業は `main` にマージ済みですが、公開リリースにはまだ含まれていません。現在の公開リリースは 1.3.2 のままです。会話、設定、プロバイダーのファイルはそのまま引き継がれます。
 
-Grimoire は agentic CLI アシスタントを Obsidian に組み込みます。Codex、Claude Code、Antigravity CLI、Gemini CLI (Legacy)、OpenCode、MiMoCode、Kimi Code、Grok Build、Qwen Code、Devin、Reasonix がひとつのサイドパネルに入り、ノートを読み、ファイルを編集し、コマンドを実行し、ツールを呼び出し、実際の vault に紐づいた session history を保持します。Grimoire のサーバーは介在しません。Telemetry も hosted backend も、あなたと provider の間に入る proxy もありません。
+Grimoire は agentic CLI アシスタントを Obsidian に組み込みます。Codex、Claude Code、Antigravity CLI、Gemini CLI (Legacy)、OpenCode、MiMoCode、Kimi Code、Grok Build、Qwen Code、Devin、Reasonix、Command Code がひとつのサイドパネルに入り、ノートを読み、ファイルを編集し、コマンドを実行し、ツールを呼び出し、実際の vault に紐づいた session history を保持します。Grimoire のサーバーは介在しません。Telemetry も hosted backend も、あなたと provider の間に入る proxy もありません。
 
 Grimoire は、すでに Obsidian で作業している人のために作られています。ローカル context、ローカル files、意図して選ぶ provider、そして UI 上で確認できる usage と cost を重視しています。
 
@@ -38,25 +38,25 @@ Grimoire は、すでに Obsidian で作業している人のために作られ�
 ## Grimoire を使う理由
 
 - すでに信頼している CLI エージェントを、ノートの中で直接使えます。
-- Composer から provider を切り替えられます。Codex、Claude Code、Antigravity CLI、Gemini CLI (Legacy)、OpenCode、MiMoCode、Kimi Code、Grok Build、Qwen Code、Devin、Reasonix は同じ model picker を共有します。
+- Composer から provider を切り替えられます。Codex、Claude Code、Antigravity CLI、Gemini CLI (Legacy)、OpenCode、MiMoCode、Kimi Code、Grok Build、Qwen Code、Devin、Reasonix、Command Code は同じ model picker を共有します。
 - すべての turn を vault context に grounded できます。ノート、フォルダ、MCP tools を mention でき、手で path を貼る必要がありません。
 - Model selector のすぐ横で cost と limits を確認できます。
 - Local-first のまま使えます。Grimoire は telemetry を集めず、prompts を proxy せず、backend を実行しません。
 
 ## 各 provider ができること
 
-| Capability | Codex | Claude Code | OpenCode | Grok Build | MiMoCode | Kimi Code | Antigravity CLI | Gemini CLI (Legacy) | Qwen Code | Devin | Reasonix | Command Code |
+| 機能 | Codex | Claude Code | OpenCode | Grok Build | MiMoCode | Kimi Code | Antigravity CLI | Gemini CLI (Legacy) | Qwen Code | Devin | Reasonix | Command Code |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Local persistent runtime | Yes | Yes | Yes | Yes | Yes | Yes | No | Yes | Yes | Yes | Yes | No |
-| Native history hydration | Yes | Yes | Yes | Yes | Yes | Yes | No | Yes | No | No | No | No |
-| Plan mode | Yes | Yes | Yes | Yes | Yes | Yes | No | Yes | Yes | Yes | Yes | No |
-| Image attachments | Yes | Yes | Yes | Yes | Yes | Yes | No | Yes | Yes | Yes | No | No |
-| Instruction mode | Yes | Yes | Yes | Yes | Yes | Yes | No | Yes | Yes | Yes | Yes | No |
-| Reasoning effort controls | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Yes | No | Yes | Yes (model-specific) |
-| Rewind | No | Yes | No | Yes | No | No | No | No | No | No | No | No |
-| Fork | Yes | Yes | No | Yes | No | No | No | No | No | No | No | No |
-| Provider slash commands | No | Yes | Yes | Yes | Yes | Yes | No | Yes | Yes | Yes | Yes | No |
-| Grimoire-managed MCP UI | No | Yes | Yes | Yes | Yes | Yes | No | Yes | Yes | Yes | Yes | No |
+| ローカルの永続実行環境 | 対応 | 対応 | 対応 | 対応 | 対応 | 対応 | 非対応 | 対応 | 対応 | 対応 | 対応 | 非対応 |
+| ネイティブ履歴の復元 | 対応 | 対応 | 対応 | 対応 | 対応 | 対応 | 非対応 | 対応 | 非対応 | 非対応 | 非対応 | 非対応 |
+| 計画モード | 対応 | 対応 | 対応 | 対応 | 対応 | 対応 | 非対応 | 対応 | 対応 | 対応 | 対応 | 非対応 |
+| 画像添付 | 対応 | 対応 | 対応 | 対応 | 対応 | 対応 | 非対応 | 対応 | 対応 | 対応 | 非対応 | 非対応 |
+| 指示モード | 対応 | 対応 | 対応 | 対応 | 対応 | 対応 | 非対応 | 対応 | 対応 | 対応 | 対応 | 非対応 |
+| 推論の強度設定 | 対応 | 対応 | 対応 | 対応 | 対応 | 対応 | 対応 | 対応 | 対応 | 非対応 | 対応 | 対応（モデルによる） |
+| 巻き戻し | 非対応 | 対応 | 非対応 | 対応 | 非対応 | 非対応 | 非対応 | 非対応 | 非対応 | 非対応 | 非対応 | 非対応 |
+| 分岐 | 対応 | 対応 | 非対応 | 対応 | 非対応 | 非対応 | 非対応 | 非対応 | 非対応 | 非対応 | 非対応 | 非対応 |
+| プロバイダーのスラッシュコマンド | 非対応 | 対応 | 対応 | 対応 | 対応 | 対応 | 非対応 | 対応 | 対応 | 対応 | 対応 | 非対応 |
+| Grimoire による MCP 管理 | 非対応 | 対応 | 対応 | 対応 | 対応 | 対応 | 非対応 | 対応 | 対応 | 対応 | 対応 | 非対応 |
 
 ## インストール
 
@@ -145,7 +145,7 @@ Claude Code で認証してから、Grimoire で有効化します。古い npm 
 
 Grimoire 内では、Claude Code は `.claude/` files を読み取り、保持し、Claude Code SDK 上で動作します。Slash commands、MCP settings、agents、skills、plans、rewind、fork をサポートします。Claude が quota と cost の両方を報告する場合、quota windows と API spend が並んで表示されます。
 
-**Respect Claude Code settings** is enabled by default. Grimoire reads Claude Code user settings (`~/.claude/settings.json`) and vault settings (`.claude/settings.json`) for `model` and `env`, then uses those values in the Claude model selector and runtime environment. This lets Claude Code custom models work in Grimoire too, including Anthropic-compatible gateways such as MiniMax, Z.ai, and others. Project settings override user settings, and explicit Grimoire environment settings override both.
+**Claude Code の設定を尊重**は既定で有効です。Grimoire はユーザー設定（`~/.claude/settings.json`）と保管庫設定（`.claude/settings.json`）から `model` と `env` を読み込み、Claude のモデル選択と実行環境に適用します。これにより MiniMax、Z.ai などの Anthropic 互換ゲートウェイを含む Claude Code のカスタムモデルも使えます。プロジェクト設定はユーザー設定より優先され、Grimoire に明示した環境設定は両方より優先されます。
 
 ```json
 {
@@ -209,8 +209,8 @@ Safe、Auto-approve、Plan は Qwen の `default`、`yolo`、`plan` に対応し
 
 Qwen の credentials と native configuration は引き続き `~/.qwen/settings.json` で Qwen が管理します。Grimoire は `.grimoire/mcp/qwen.json` に分離された project MCP list を管理し、Qwen の native configuration を書き換えずに ACP sessions へ渡します。Usage は Qwen が ACP の token または cost metadata を報告した場合だけ表示されます。Rewind と fork はサポートしません。
 
-- [Qwen Code documentation](https://qwenlm.github.io/qwen-code-docs/en/)
-- [Qwen Code authentication](https://qwenlm.github.io/qwen-code-docs/en/users/configuration/auth/)
+- [Qwen Code ドキュメント](https://qwenlm.github.io/qwen-code-docs/en/)
+- [Qwen Code の認証](https://qwenlm.github.io/qwen-code-docs/en/users/configuration/auth/)
 - [Qwen Code repository](https://github.com/QwenLM/qwen-code)
 
 Qwen が起動しない、または model が表示されない場合は、Qwen Code 内で `/doctor` を実行し、`/auth` を完了して `qwen --version` を確認し、Grimoire settings の Qwen CLI path を確認してください。
@@ -266,24 +266,24 @@ reasoning effort は固定リストではなく、session から供給される 
 
 Safe モードについて 1 つ。`ask` が守るのは Reasonix が permission 対象と判断した tool であって、すべての tool ではありません。read-only と判断された shell command は確認なしで走ります。Grimoire は Reasonix がプロトコル経由で行うファイル書き込みをすべて承認対象にします。それが vault を確認の後ろに置いている仕組みです。まったく書き込ませたくない session には Plan を使ってください。
 
-Reasonix は設定を `~/.reasonix/config.toml` に持ち、API キーはそのファイルが指定する名前で環境から読み取ります。Vault の skills は `.reasonix/skills` と `.agents/skills` から読まれます。Grimoire は `.grimoire/mcp/reasonix.json` に独立した project MCP リストを管理し、ACP session に注入します。使用量は Reasonix 自身の status notification から得られ、cost は model provider に価格がある場合のみ表示されます。画像添付、reasoning effort の制御、fork、rewind には対応していません。
+Reasonix は設定を `~/.reasonix/config.toml` に持ち、API キーはそのファイルが指定する名前で環境から読み取ります。Vault の skills は `.reasonix/skills` と `.agents/skills` から読まれます。Grimoire は `.grimoire/mcp/reasonix.json` に独立した project MCP リストを管理し、ACP session に注入します。使用量は Reasonix 自身の status notification から得られ、cost は model provider に価格がある場合のみ表示されます。画像添付、fork、rewind には対応していません。
 
 ### Command Code
 
-Command Code is opt-in in the unreleased 2.0 build. Install and authenticate in a terminal, then enable it under Settings → Grimoire → Providers:
+Command Code は未公開の 2.0 ビルドで任意に有効化できます。ターミナルでインストールと認証を行い、設定 → Grimoire → プロバイダーで有効にしてください。
 
 ```bash
 npm i -g command-code
 command-code login
 ```
 
-Reasoning effort is discovered for the selected model from the installed CLI. The picker offers only that model's supported levels and a CLI default option; models without adjustable effort have no picker. Explicit selections apply to the current run through the native session mod API without changing global CLI settings. CLI default preserves native behavior, including an effort already stored in a resumed session.
+推論の強度は、インストール済み CLI から選択モデルに応じて取得します。選択肢はモデルが対応する段階と CLI の既定値のみで、強度を調整できないモデルには選択欄を表示しません。明示的な選択はネイティブのセッション変更 API を通じて現在の実行に適用され、CLI の全体設定は変更しません。CLI の既定値を選ぶと、再開するセッションに保存された強度も含め、ネイティブの動作を維持します。
 
-Grimoire streams answers and tool activity from the CLI's headless JSON output, discovers models with `--list-models`, and saves the native session ID for explicit resume after reload. Authentication, native configuration, skills, MCP and transcripts stay with Command Code. Context usage uses reported input tokens against an estimated or user-supplied context limit; account quotas and prices are not inferred.
+Grimoire は CLI のヘッドレス JSON 出力から回答とツールの動作を逐次表示し、`--list-models` でモデルを取得します。ネイティブのセッション ID を保存し、再読み込み後に明示的に再開します。認証、設定、スキル、MCP、会話記録は Command Code が管理します。コンテキスト使用量は報告された入力トークン数を推定またはユーザー指定の上限と比較した値で、アカウントの利用枠や料金は推測しません。
 
-**Safe** pauses edits, commands and other non-read tools for a one-time approval in Grimoire. Denying, cancelling or losing the approval connection prevents execution. Safe currently requires the verified Command Code 1.53.0 npm installation and disables native subagents, whose separate loops cannot use this approval bridge. **Auto-approve** runs without Grimoire prompts; native deny and ask rules still apply in both modes. This integration does not expose interactive questions, image attachments, plan controls, slash commands, managed MCP/skills/agents, auxiliary tasks, fork, rewind, or native history import.
+**Safe** は編集、コマンド、その他の読み取り専用ではないツールを一時停止し、Grimoire で1回限りの承認を求めます。拒否、キャンセル、承認接続の切断時には実行しません。現在の Safe は検証済みの Command Code 1.53.0 の npm インストールを必要とし、独立した処理ループがこの承認機構を使えないため、ネイティブのサブエージェントを無効にします。**Auto-approve** は Grimoire の確認なしで動作しますが、ネイティブの拒否・確認ルールは両モードで有効です。この連携では対話式質問、画像添付、計画操作、スラッシュコマンド、管理対象の MCP・スキル・エージェント、補助タスク、分岐、巻き戻し、ネイティブ履歴の取り込みは提供しません。
 
-- [Command Code headless documentation](https://commandcode.ai/docs/headless)
+- [Command Code のヘッドレス実行ドキュメント](https://commandcode.ai/docs/headless)
 
 ### OpenCode
 
@@ -296,8 +296,8 @@ opencode
 
 Homebrew、npm、bun、package-manager installs も使えます。OpenCode 側で provider credentials を設定し、その後 Grimoire で有効化します。
 
-- [OpenCode download](https://opencode.ai/download)
-- [OpenCode provider docs](https://opencode.ai/docs/providers)
+- [OpenCode のダウンロード](https://opencode.ai/download)
+- [OpenCode のプロバイダードキュメント](https://opencode.ai/docs/providers)
 - [OpenCode config docs](https://opencode.ai/docs/config)
 
 Grimoire 内では、OpenCode は ACP で動作し、Grimoire-managed launch artifacts、persistent runtime、native history、plan mode、image input、provider commands、reasoning effort をサポートします。Cost metadata が利用できる場合は monthly spend を表示します。
@@ -360,19 +360,19 @@ Grimoire 内では、Grok Build は `grok agent stdio` 経由の ACP で動作�
 
 ## 機能
 
-### Chat workspace
+### チャットの作業領域
 
 複数 tabs を持つ集中型サイドパネルです。各 tab は独自の draft、provider、model、context、runtime を保持します。Obsidian を閉じて再度開いても sessions は復元され、各 response に provider、model、reasoning effort が保持されます。Rewind と fork は、active provider がサポートする場合に表示されます。履歴を読むために手動で scroll すると、auto-scroll は自動的に控えます。表示出力が 10 秒ないと、shared wait indicator が active provider と経過時間を表示し、質問や permission を待つ間は停止します。
 
-### Tab、履歴、ナビゲーションの操作
+### タブ、履歴、ナビゲーション
 
-Tab を右クリックすると、名前変更、複製、閉じる、他の tabs を閉じる、右側の tabs を閉じる操作ができます。Middle-click で tab を閉じ、時間制限付きの Undo で draft と位置を復元できます。保存済みの会話は chat history の action、modifier-click、middle-click で新しい tab に開けます。長い会話には、先頭、前の prompt、会話ディレクトリ、次の prompt、末尾へ移動する 5 方向 navigator があります。完了した message には copy action の横に localized completion timestamp が表示されます。
+タブの操作メニューまたは右クリックから、名前変更、複製、タブを閉じる操作ができます。中クリックでタブを閉じ、元に戻す操作で下書きと位置を復元できます。履歴ポップオーバーで過去のチャットを検索し、新しいタブで開けます。手動で付けたタイトルと自動生成されたタイトルは区別して表示されます。会話ツールバーには移動ボタンと目次があり、完了した回答には完了時刻が表示されます。
 
 <p align="center">
-  <img src="../../assets/readme/conversation-history.png" alt="Grimoire の会話履歴とタブナビゲーション" width="100%">
+  <img src="../../assets/readme/conversation-history.png" alt="Ocean Atlas の会話を3件表示した履歴検索。モデルとタイトルの生成元も表示" width="100%">
 </p>
 
-### Parallel workers、settings、composer
+### 並列エージェント、設定、入力欄
 
 **Parallel workers** approval card は inherited model を表示し、起動する提案タスクだけを選択できます。Settings は Obsidian の native search を使い、永続的な What's New を保持します。Provider settings と composer は provider 間で一貫した surface を使いつつ、provider-owned controls と設定はそのまま保持します。
 
@@ -383,13 +383,13 @@ Tab を右クリックすると、名前変更、複製、閉じる、他の tab
 | `Enter` | 現在の turn を送信します。**Send only with button** が有効な場合は無効です。 |
 | `Shift+Enter` | Composer に改行を挿入します。 |
 | `Shift+Tab` | Permission mode を `Safe -> Auto-approve -> Plan -> Safe` の順に切り替えます。Plan mode 非対応の provider では Safe と Auto-approve を切り替えます。 |
-| `Escape` | Active response を停止するか、開いている chat history パネルを閉じます。 |
+| `Escape` | 実行中の回答を停止するか、履歴ポップオーバーを閉じます。 |
 
-### Model selector
+### モデル選択
 
-ひとつの picker が provider ごとに grouped され、label 順に並びます：Antigravity、Claude Code、Codex、Devin、Gemini CLI (Legacy)、Grok Build、Kimi Code、MiMoCode、OpenCode、Qwen Code、Reasonix。Search は labels、descriptions、groups、model IDs を横断します。Catalogs は lazily に load され、collapse した groups を記憶します。Settings で custom aliases と context-window overrides を追加できます。Claude の 1M variants は base models の置き換えではなく、追加 options です。
+ひとつの picker が provider ごとに grouped され、label 順に並びます：Antigravity、Claude Code、Codex、Command Code、Devin、Gemini CLI (Legacy)、Grok Build、Kimi Code、MiMoCode、OpenCode、Qwen Code、Reasonix。Search は labels、descriptions、groups、model IDs を横断します。Catalogs は lazily に load され、collapse した groups を記憶します。Settings で custom aliases と context-window overrides を追加できます。Claude の 1M variants は base models の置き換えではなく、追加 options です。
 
-### Usage と cost
+### 使用量と料金
 
 Model selector の横の badge が active provider の usage を表示します。Model menu にはより詳しい readouts があり、provider が quota windows を公開する場合は quota を、cost だけが利用できる場合は spend を表示します。Refresh 中や失敗時も最後に取得できた値を保つため、meter が急に消えることはありません。静かな UI が好みなら settings で全体をオフにできます。
 
@@ -407,7 +407,7 @@ Model selector の横の badge が active provider の usage を表示します�
 | Kimi Code | ACP と session cost metadata から集計した monthly spend |
 | Grok Build | OAuth 認証による共有の週間 Grok 使用枠、リセット時刻、Extra Usage Credits；session cost metadata からの monthly API spend |
 
-### Plan mode
+### 計画モード
 
 Active provider が Plan mode をサポートしている場合、次の 2 通りで有効にできます。
 
@@ -418,55 +418,66 @@ Plan mode では、provider が変更を始める前にまず計画します。C
 
 Provider の計画が完了すると、Grimoire はレンダリング済みの計画、要求された permissions、キーボードで扱いやすい行を備えた折りたたみ可能な Plan complete カードを表示します。Approve は同じ session で続行し、feedback を入力すると provider が計画を見直せるように Plan mode を維持します。
 
-### Context と mentions
+### コンテキストとメンション
 
 Composer から vault notes と folders を直接 mention できます。Current note や linked note を取り込み、settings で persistent external context paths を追加できます。Provider が image input を受け付ける場合は、画像を貼り付けたり drop したりできます。Provider integration が対応する場合は MCP servers も mention できます。Context tab には、bound note、model、permission mode、pinned files、`.grimoire/grok/system.md` のような launch artifacts、および session 中に agent が読み込んだ files が表示されます。
 
-### Inline editing
+### ノート内での編集
 
 選択範囲に対して "Grimoire: Inline edit" を実行します。Prompt がテキストの横に開き、edit は accept/reject できる diff として返り、provider-backed inline edit service を通じて実行されます。Selection の置換と新しい text の挿入の両方に対応しています。
 
-### Clarifying questions
+### 確認の質問
 
 Provider が structured user input を求めると、Grimoire は turn を一時停止し、composer の上に質問を表示します。Claude Code ではこれを `AskUserQuestion` として公開し、Codex app-server では experimental な `request_user_input` / `requestUserInput` surface として公開し、Qwen Code は ACP permission metadata を提供します。Grimoire はこれらの provider-specific mechanisms を同じ inline question UI に normalize します。Single-select、multi-select、freeform answers は provider run に戻されるため、agent は別の chat message なしで続行できます。
 
-### Commands
+### コマンド
 
 Built-in commands は image generation や resume などの Grimoire workflows をカバーします。Claude Code slash commands、OpenCode、Grok Build、Qwen Code runtime commands のように provider が独自 commands を公開する場合は、provider-owned catalogs 経由で表示されます。使わない commands は settings で隠せます。
 
-### Image generation
+### 画像生成
 
 画像を貼り付けるか drop すると attachment として追加できます。Built-in `/image [prompt]` command は image API を直接呼びません。Active provider に通常の turn を送り、あなたが設定した image generation 手段を使うよう指示します：provider-native tooling、MCP tools、または local command。Agent は結果を vault に保存し、`![[path/to/image.png]]` のような embed を返します。Image generation が設定されていない場合は、何が不足しているかを説明する通常の回答が返ります。
 
-### Safety と permissions
+### 安全性と権限
 
 Permission modes は provider に属するため、Grimoire はそれらを再実装せず、shared composer controls として表示します。Active provider が plan mode をサポートする場合、permission control と `Shift+Tab` はどちらも Safe、Auto-approve、Plan を順に切り替えます。Safe mode と permission prompts は作業中も見える状態を保ちます。Bang-bash mode は、enabled provider が提供する場合にのみ表示されます。Configured MCP servers、shell access、API keys は sensitive data として扱ってください。実際に sensitive だからです。
 
-### Debug logging
+### デバッグログ
 
 Default ではオフです。有効にすると、Grimoire は sanitized JSONL を `.grimoire/logs/YYYY-MM-DD.jsonl` に書き込みます。Prompts、answers、note contents、paths、environment values、secrets は redact されます。これは provider と runtime issues を診断するためのもので、transcript を保存するためのものではありません。
 
-### Settings
+### 設定
 
-General settings は auto-scroll、title generation、usage indicators、debug logging、locale、tabs、どの provider が settings view を所有するかを扱います。Per-provider tabs は CLI paths、model behavior、commands、agents、skills、provider-owned config を扱います。Project workspace environment variables も provider ごとに scoped して設定できます。
+設定は4つのタブに分かれています。**一般**では言語、チャットの位置、タブ、表示を、**プロバイダー**では CLI の有効化とモデルを、**詳細**ではコンテキスト、会話、ツール、診断を、**情報**ではバージョンと更新内容を扱います。Obsidian 標準の設定検索にも対応しています。
+
+プロバイダー一覧には CLI の検出状況と有効化スイッチが表示され、その下に選択したプロバイダーの設定が並びます。
 
 <p align="center">
-  <img src="../../assets/readme/settings-general.png" alt="Grimoire の一般設定" width="100%">
+  <img src="../../assets/readme/settings-providers.png" alt="Grimoire の12種類の CLI 連携と Codex モデル設定の一覧" width="100%">
 </p>
+
+<details>
+<summary>一般設定</summary>
+
+<p align="center">
+  <img src="../../assets/readme/settings-general.png" alt="言語、パネル位置、タブ、ラベル、スクロール、会話タイトルの一般設定" width="100%">
+</p>
+
+</details>
 
 ## Grimoire がデータを置く場所
 
 | Path | 内容 |
 | --- | --- |
-| `.grimoire/grimoire-settings.json` | App settings と provider configuration |
-| `.grimoire/sessions/*.meta.json` | Session metadata |
-| `.grimoire/logs/YYYY-MM-DD.jsonl` | Opt-in sanitized debug logs |
+| `.grimoire/grimoire-settings.json` | アプリ設定とプロバイダー設定 |
+| `.grimoire/sessions/*.meta.json` | セッションのメタデータ |
+| `.grimoire/logs/YYYY-MM-DD.jsonl` | 任意で有効にする、機密情報を除去したデバッグログ |
 | `.grimoire/claude/statusline-usage.json` | Plan meter 用の Claude usage snapshot |
 | `.grimoire/grok/` | Grok Build launch artifacts、managed config、session pointers |
 
 Provider-native files under `.claude/`, `.codex/`, `.opencode/`, and `.grimoire/grok/` はその場で読み書きされるため、provider setup は Grimoire の外でも portable なままです。
 
-## Privacy
+## プライバシー
 
 Grimoire は Obsidian の中で、あなたのマシン上で動作します。Backend はなく、telemetry を追加せず、prompts、answers、notes、files、tool output、API keys、usage logs を Grimoire service にアップロードしません。書き込む logs は上記の optional sanitized debug logs だけで、それも vault 内に残ります。
 
@@ -474,7 +485,7 @@ Grimoire が隠せないものは provider 自体です。有効化した CLI �
 
 Obsidian のポリシーに基づいたネットワーク利用、アカウント要件、外部ファイルアクセス、ログ、telemetry の概要については、[DISCLOSURES.md](../../DISCLOSURES.md) を参照してください。
 
-## Development
+## 開発
 
 Contributions を歓迎します。Pull Request を開く前に [CONTRIBUTING.md](../../CONTRIBUTING.md) を読んでください。architecture、security、tests、review の期待事項を説明しています。
 
@@ -501,18 +512,18 @@ npm run build:release
 
 npm は development、CI、releases の canonical package manager です。dependencies を変更したら `package-lock.json` を最新に保ってください。secondary package-manager lockfiles は意図的に commit しません。
 
-## Releases
+## リリース
 
 Grimoire releases は `1.0.0` のような semver tags から publish されます。Release workflow は local gate を実行し、Obsidian bundle を build し、tag が `package.json` と `manifest.json` に一致することを検証し、`main.js`、`manifest.json`、`styles.css` を GitHub Release に attach します。
 
 Obsidian Community plugins が推奨されるユーザー向けインストール方法です。GitHub Releases には、manual install と BRAT 向けの bundle assets を引き続き添付します。`main` を releasable development に使い、manifest version と一致する tag で publish します。
 
-## Roadmap
+## 開発計画
 
-現在 Grimoire は Codex、Claude Code、Antigravity CLI、Gemini CLI (Legacy)、OpenCode、MiMoCode、Kimi Code、Grok Build、Qwen Code、Devin、Reasonix とともに ship されています。
+現在 Grimoire は Codex、Claude Code、Antigravity CLI、Gemini CLI (Legacy)、OpenCode、MiMoCode、Kimi Code、Grok Build、Qwen Code、Devin、Reasonix、Command Code とともに ship されています。
 
 次の候補は GitHub Copilot CLI、その他の ACP-compatible providers、そして runtime が Obsidian に embed できるほど安定した local model CLIs です。Implementation notes は [docs/provider-roadmap.md](../provider-roadmap.md) にあります。
 
-## License
+## ライセンス
 
 MIT。詳しくは [LICENSE](../../LICENSE) を参照してください。

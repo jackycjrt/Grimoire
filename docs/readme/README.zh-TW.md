@@ -20,16 +20,16 @@
 </p>
 
 <p align="center">
-  <img src="../../assets/readme/chat-workspace.png" alt="Grimoire 側邊欄與 Obsidian 筆記並排執行" width="100%">
+  <img src="../../assets/readme/chat-workspace.png" alt="Obsidian 中的 Ocean Atlas 旁，Codex Astra High 正在討論海洋分層、洋流與海洋生物的關係" width="100%">
 </p>
 
 <p align="center">
-  <sub>在筆記所在的同一個 Obsidian workspace 中，與本地 CLI 代理對話。</sub>
+  <sub>真實筆記與根據筆記連結展開的對話。截圖顯示開發中的 2.0 版本。</sub>
 </p>
 
 > **提示：2.0 正在開發中。** 下一個主要版本會把 Grimoire 遷移到以提供者為基礎的執行架構：由一個核心驅動每個 CLI，並為每一輪精確記錄一個結果；同時帶來跟隨儲存庫主題與強調色的全新設計。相關工作已合併到 `main` 分支，但尚未納入任何已發布版本。目前發布版本仍是 1.3.2。對話、設定與提供者檔案將原樣保留。
 
-Grimoire 將 agentic CLI 助手帶入 Obsidian。Codex、Claude Code、Antigravity CLI、Gemini CLI (Legacy)、OpenCode、MiMoCode、Kimi Code、Grok Build、Qwen Code、Devin 和 Reasonix 都在同一個側邊欄中執行：讀取筆記、編輯檔案、執行命令、呼叫工具，並把 session history 保存在真實的 vault context 中。Grimoire 不經過自家伺服器：沒有 telemetry、沒有 hosted backend，也沒有夾在你和 provider 之間的 proxy。
+Grimoire 將 agentic CLI 助手帶入 Obsidian。Codex、Claude Code、Antigravity CLI、Gemini CLI (Legacy)、OpenCode、MiMoCode、Kimi Code、Grok Build、Qwen Code、Devin、Reasonix 和 Command Code 都在同一個側邊欄中執行：讀取筆記、編輯檔案、執行命令、呼叫工具，並把 session history 保存在真實的 vault context 中。Grimoire 不經過自家伺服器：沒有 telemetry、沒有 hosted backend，也沒有夾在你和 provider 之間的 proxy。
 
 它面向已經在 Obsidian 中工作的人：你可以使用本地 context、本地檔案、明確選擇的 provider，並在介面中直接看到 usage 和 cost。
 
@@ -38,25 +38,25 @@ Grimoire 將 agentic CLI 助手帶入 Obsidian。Codex、Claude Code、Antigravi
 ## 為什麼選擇 Grimoire
 
 - 在筆記中直接使用你已經信任的 CLI 代理。
-- 從 composer 切換 provider。Codex、Claude Code、Antigravity CLI、Gemini CLI (Legacy)、OpenCode、MiMoCode、Kimi Code、Grok Build、Qwen Code、Devin 和 Reasonix 共用一個 model picker。
+- 從 composer 切換 provider。Codex、Claude Code、Antigravity CLI、Gemini CLI (Legacy)、OpenCode、MiMoCode、Kimi Code、Grok Build、Qwen Code、Devin、Reasonix 和 Command Code 共用一個 model picker。
 - 讓每一次 turn 都基於 vault context。可以 mention 筆記、資料夾和 MCP tools，不需要手動複製路徑。
 - 在選擇模型的位置直接看到 cost 和 limits。
 - 保持 local-first。Grimoire 不收集 telemetry，不 proxy prompts，也不執行 backend。
 
 ## 各 provider 能做什麼
 
-| 能力 | Codex | Claude Code | OpenCode | Grok Build | MiMoCode | Kimi Code | Antigravity CLI | Gemini CLI (Legacy) | Qwen Code | Devin | Reasonix | Command Code |
+| 功能 | Codex | Claude Code | OpenCode | Grok Build | MiMoCode | Kimi Code | Antigravity CLI | Gemini CLI (Legacy) | Qwen Code | Devin | Reasonix | Command Code |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 本地 persistent runtime | 是 | 是 | 是 | 是 | 是 | 是 | 否 | 是 | 是 | 是 | 是 | 否 |
-| 原生 history hydration | 是 | 是 | 是 | 是 | 是 | 是 | 否 | 是 | 否 | 否 | 否 | 否 |
-| Plan mode | 是 | 是 | 是 | 是 | 是 | 是 | 否 | 是 | 是 | 是 | 是 | 否 |
-| Image attachments | 是 | 是 | 是 | 是 | 是 | 是 | 否 | 是 | 是 | 是 | 否 | 否 |
-| Instruction mode | 是 | 是 | 是 | 是 | 是 | 是 | 否 | 是 | 是 | 是 | 是 | 否 |
-| Reasoning effort controls | 是 | 是 | 是 | 是 | 是 | 是 | 是 | 是 | 是 | 否 | 是 | Yes (model-specific) |
-| Rewind | 否 | 是 | 否 | 是 | 否 | 否 | 否 | 否 | 否 | 否 | 否 | 否 |
-| Fork | 是 | 是 | 否 | 是 | 否 | 否 | 否 | 否 | 否 | 否 | 否 | 否 |
-| Provider slash commands | 否 | 是 | 是 | 是 | 是 | 是 | 否 | 是 | 是 | 是 | 是 | 否 |
-| Grimoire-managed MCP UI | 否 | 是 | 是 | 是 | 是 | 是 | 否 | 是 | 是 | 是 | 是 | 否 |
+| 本地持續執行環境 | 支援 | 支援 | 支援 | 支援 | 支援 | 支援 | 不支援 | 支援 | 支援 | 支援 | 支援 | 不支援 |
+| 原生歷史恢復 | 支援 | 支援 | 支援 | 支援 | 支援 | 支援 | 不支援 | 支援 | 不支援 | 不支援 | 不支援 | 不支援 |
+| 計畫模式 | 支援 | 支援 | 支援 | 支援 | 支援 | 支援 | 不支援 | 支援 | 支援 | 支援 | 支援 | 不支援 |
+| 圖片附件 | 支援 | 支援 | 支援 | 支援 | 支援 | 支援 | 不支援 | 支援 | 支援 | 支援 | 不支援 | 不支援 |
+| 指令模式 | 支援 | 支援 | 支援 | 支援 | 支援 | 支援 | 不支援 | 支援 | 支援 | 支援 | 支援 | 不支援 |
+| 推理強度控制 | 支援 | 支援 | 支援 | 支援 | 支援 | 支援 | 支援 | 支援 | 支援 | 不支援 | 支援 | 支援（依模型而定） |
+| 回溯 | 不支援 | 支援 | 不支援 | 支援 | 不支援 | 不支援 | 不支援 | 不支援 | 不支援 | 不支援 | 不支援 | 不支援 |
+| 分支 | 支援 | 支援 | 不支援 | 支援 | 不支援 | 不支援 | 不支援 | 不支援 | 不支援 | 不支援 | 不支援 | 不支援 |
+| 提供者斜線命令 | 不支援 | 支援 | 支援 | 支援 | 支援 | 支援 | 不支援 | 支援 | 支援 | 支援 | 支援 | 不支援 |
+| Grimoire 管理的 MCP 介面 | 不支援 | 支援 | 支援 | 支援 | 支援 | 支援 | 不支援 | 支援 | 支援 | 支援 | 支援 | 不支援 |
 
 ## 安裝
 
@@ -145,7 +145,7 @@ claude
 
 在 Grimoire 中，Claude Code 會讀取並保留你的 `.claude/` 檔案，執行在 Claude Code SDK 上，並支援 slash commands、MCP settings、agents、skills、plans、rewind 和 fork。當 Claude 同時回報 quota 和 cost 時，你會並排看到 quota windows 和 API spend。
 
-**Respect Claude Code settings** is enabled by default. Grimoire reads Claude Code user settings (`~/.claude/settings.json`) and vault settings (`.claude/settings.json`) for `model` and `env`, then uses those values in the Claude model selector and runtime environment. This lets Claude Code custom models work in Grimoire too, including Anthropic-compatible gateways such as MiniMax, Z.ai, and others. Project settings override user settings, and explicit Grimoire environment settings override both.
+**遵循 Claude Code 設定**預設為啟用。Grimoire 會從使用者設定（`~/.claude/settings.json`）與儲存庫設定（`.claude/settings.json`）讀取 `model` 和 `env`，並套用到 Claude 模型選擇器與執行環境。因此，Claude Code 自訂模型也能在 Grimoire 使用，包括 MiniMax、Z.ai 等 Anthropic 相容閘道。專案設定優先於使用者設定，而在 Grimoire 明確指定的環境設定優先於兩者。
 
 ```json
 {
@@ -204,8 +204,8 @@ qwen
 
 在互動式 CLI 使用 `/auth`，選擇 Alibaba ModelStudio、Third-party Providers 或 Custom Provider；Qwen OAuth 已停止。然後在 Grimoire 啟用 Qwen Code，它會啟動 `qwen --acp`。Safe、Auto-approve 和 Plan 對應 Qwen 的 `default`、`yolo` 和 `plan`；其他 automatic modes 在 shared toolbar 中會保守顯示為 Safe。模型和 modes 來自 live ACP session。
 
-- [Qwen Code documentation](https://qwenlm.github.io/qwen-code-docs/en/)
-- [Qwen Code authentication](https://qwenlm.github.io/qwen-code-docs/en/users/configuration/auth/)
+- [Qwen Code 文件](https://qwenlm.github.io/qwen-code-docs/en/)
+- [Qwen Code 驗證](https://qwenlm.github.io/qwen-code-docs/en/users/configuration/auth/)
 - [Qwen Code repository](https://github.com/QwenLM/qwen-code)
 
 如果 Qwen 無法啟動或沒有顯示模型，請在 Qwen Code 中執行 `/doctor`、完成 `/auth`、檢查 `qwen --version`，並確認 Grimoire settings 中的 Qwen CLI path。
@@ -265,24 +265,24 @@ Reasonix 不只請求權限，也會提問：它的 `ask` tool 經由同一通�
 
 關於 Safe 模式有一點要知道：`ask` 只擋下 Reasonix 判定為需要授權的 tool，而不是全部 tool，因此它認為 read-only 的 shell command 會直接執行而不詢問。Grimoire 會對 Reasonix 透過協定進行的每一次檔案寫入進行確認，這正是讓 vault 待在一個問題之後的機制。如果某個 session 完全不該寫入，請使用 Plan。
 
-Reasonix 的設定放在 `~/.reasonix/config.toml`，API keys 依該檔案給出的名稱從環境變數讀取。Vault skills 從 `.reasonix/skills` 與 `.agents/skills` 讀取。Grimoire 在 `.grimoire/mcp/reasonix.json` 維護獨立的專案 MCP 清單，並注入 ACP session。用量來自 Reasonix 自身的 status notification；只有當你的 model provider 有價格時才會顯示 cost。圖片附件、reasoning effort 控制、fork 與 rewind 都不支援。
+Reasonix 的設定放在 `~/.reasonix/config.toml`，API keys 依該檔案給出的名稱從環境變數讀取。Vault skills 從 `.reasonix/skills` 與 `.agents/skills` 讀取。Grimoire 在 `.grimoire/mcp/reasonix.json` 維護獨立的專案 MCP 清單，並注入 ACP session。用量來自 Reasonix 自身的 status notification；只有當你的 model provider 有價格時才會顯示 cost。圖片附件、fork 與 rewind 都不支援。
 
 ### Command Code
 
-Command Code is opt-in in the unreleased 2.0 build. Install and authenticate in a terminal, then enable it under Settings → Grimoire → Providers:
+Command Code 可在尚未發布的 2.0 版本中選擇啟用。請在終端機安裝並登入，再到設定 → Grimoire → 供應商啟用：
 
 ```bash
 npm i -g command-code
 command-code login
 ```
 
-Reasoning effort is discovered for the selected model from the installed CLI. The picker offers only that model's supported levels and a CLI default option; models without adjustable effort have no picker. Explicit selections apply to the current run through the native session mod API without changing global CLI settings. CLI default preserves native behavior, including an effort already stored in a resumed session.
+推理強度依已安裝 CLI 回報的所選模型資訊決定。選擇器僅提供該模型支援的等級與 CLI 預設值；不支援調整強度的模型不顯示選擇器。明確選取的等級會透過原生工作階段修改 API 套用到目前執行，不會改動 CLI 全域設定。CLI 預設值保留原生行為，包括恢復工作階段中已儲存的推理強度。
 
-Grimoire streams answers and tool activity from the CLI's headless JSON output, discovers models with `--list-models`, and saves the native session ID for explicit resume after reload. Authentication, native configuration, skills, MCP and transcripts stay with Command Code. Context usage uses reported input tokens against an estimated or user-supplied context limit; account quotas and prices are not inferred.
+Grimoire 從 CLI 的無介面 JSON 輸出串流顯示回答與工具活動，透過 `--list-models` 探索模型，並儲存原生工作階段 ID，以便重新載入後明確恢復。驗證、原生設定、技能、MCP 與對話記錄仍由 Command Code 管理。上下文用量將回報的輸入 token 數與估計或使用者指定的上限比較，不推測帳戶配額或價格。
 
-**Safe** pauses edits, commands and other non-read tools for a one-time approval in Grimoire. Denying, cancelling or losing the approval connection prevents execution. Safe currently requires the verified Command Code 1.53.0 npm installation and disables native subagents, whose separate loops cannot use this approval bridge. **Auto-approve** runs without Grimoire prompts; native deny and ask rules still apply in both modes. This integration does not expose interactive questions, image attachments, plan controls, slash commands, managed MCP/skills/agents, auxiliary tasks, fork, rewind, or native history import.
+**Safe** 會暫停編輯、命令及其他非唯讀工具，等待 Grimoire 中的一次性核准。拒絕、取消或核准連線中斷皆會阻止執行。目前 Safe 需要經過驗證的 Command Code 1.53.0 npm 安裝，並停用原生子代理，因為它們的獨立迴圈無法使用這個核准機制。**Auto-approve** 不顯示 Grimoire 確認提示；原生拒絕與詢問規則在兩種模式下仍然生效。此整合不提供互動式提問、圖片附件、計畫控制、斜線命令、受管理的 MCP/技能/代理、輔助任務、分支、回溯或原生歷史匯入。
 
-- [Command Code headless documentation](https://commandcode.ai/docs/headless)
+- [Command Code 無介面執行文件](https://commandcode.ai/docs/headless)
 
 ### OpenCode
 
@@ -295,8 +295,8 @@ opencode
 
 Homebrew、npm、bun 和 package-manager installs 也可以。先在 OpenCode 中設定 provider credentials，然後在 Grimoire 中啟用。
 
-- [OpenCode download](https://opencode.ai/download)
-- [OpenCode provider docs](https://opencode.ai/docs/providers)
+- [下載 OpenCode](https://opencode.ai/download)
+- [OpenCode 提供者文件](https://opencode.ai/docs/providers)
 - [OpenCode config docs](https://opencode.ai/docs/config)
 
 在 Grimoire 中，OpenCode 透過 ACP 執行，使用 Grimoire-managed launch artifacts，並支援 persistent runtime、native history、plan mode、image input、provider commands 和 reasoning effort。當 cost metadata 可用時，它會顯示 monthly spend。
@@ -351,19 +351,19 @@ Grok 4.5 目前是 Grok Build 的預設模型。Grimoire 從已驗證的 Grok CL
 
 ## 功能
 
-### Chat workspace
+### 聊天工作區
 
 一個專注的側邊欄，支援多個 tabs。每個 tab 都保留自己的 draft、provider、model、context 和 runtime。關閉再開啟 Obsidian 後，sessions 會恢復，並且每個 response 都保留 provider、model 和 reasoning effort。Rewind 和 fork 會在目前 provider 支援時出現。你一旦手動捲動去閱讀歷史，auto-scroll 會自動讓位。10 秒沒有可見輸出後，shared wait indicator 會顯示 active provider 和已等待時間；等待問題或 permission 時會暫停。
 
-### Tab、歷史與導覽控制
+### 分頁、歷史與導覽
 
-右鍵點擊 tab 可重新命名、複製、關閉、關閉其他 tabs 或關閉右側 tabs；middle-click 會關閉 tab，而限時 Undo 會還原其 draft 和位置。可從 chat history 透過 action、modifier-click 或 middle-click 在新 tab 開啟儲存的對話。長對話提供五向 navigator：頂端、上一個 prompt、對話目錄、下一個 prompt 和底端。完成的 message 會在 copy action 旁顯示本地化 completion timestamp。
+開啟分頁操作選單或在分頁上按右鍵，即可重新命名、複製或關閉分頁。按滑鼠中鍵可關閉分頁，復原可恢復其草稿與位置。在歷史浮動視窗中搜尋舊對話，並以新分頁開啟。歷史會區分手動命名與自動產生的標題。對話工具列提供跳轉按鈕與目錄；完成的回答會顯示完成時間。
 
 <p align="center">
-  <img src="../../assets/readme/conversation-history.png" alt="Grimoire 對話歷史與分頁導覽" width="100%">
+  <img src="../../assets/readme/conversation-history.png" alt="歷史搜尋顯示三個 Ocean Atlas 對話、使用的模型及標題來源" width="100%">
 </p>
 
-### Parallel workers、settings 與 composer
+### 並行代理、設定與輸入區
 
 **Parallel workers** approval card 會顯示 inherited model，並只啟動你選取的建議任務。Settings 使用 Obsidian native search，並保留永久的 What's New 項目。Provider settings 和 composer 在各 provider 間使用一致的 surface，同時保留 provider-owned controls 和 configuration。
 
@@ -374,13 +374,13 @@ Grok 4.5 目前是 Grok Build 的預設模型。Grimoire 從已驗證的 Grok CL
 | `Enter` | 傳送目前的 turn。啟用 **Send only with button** 時此快捷鍵不可用。 |
 | `Shift+Enter` | 在 composer 中插入新行。 |
 | `Shift+Tab` | 循環切換 permission modes：`Safe -> Auto-approve -> Plan -> Safe`。不支援 Plan mode 的 providers 會在 Safe 和 Auto-approve 之間切換。 |
-| `Escape` | 停止目前的 response，或關閉已開啟的 chat history 面板。 |
+| `Escape` | 停止目前的回答，或關閉歷史浮動視窗。 |
 
-### Model selector
+### 模型選擇器
 
-一個 picker，按 provider 分組，並按 label 排序：Antigravity、Claude Code、Codex、Devin、Gemini CLI (Legacy)、Grok Build、Kimi Code、MiMoCode、OpenCode、Qwen Code 和 Reasonix。Search 會匹配 labels、descriptions、groups 和 model IDs。Catalogs 會 lazy load，並記住你摺疊過的 groups。你可以在 settings 中新增 custom aliases 和 context-window overrides。Claude 的 1M variants 是額外 options，不會替代 base models。
+一個 picker，按 provider 分組，並按 label 排序：Antigravity、Claude Code、Codex、Command Code、Devin、Gemini CLI (Legacy)、Grok Build、Kimi Code、MiMoCode、OpenCode、Qwen Code 和 Reasonix。Search 會匹配 labels、descriptions、groups 和 model IDs。Catalogs 會 lazy load，並記住你摺疊過的 groups。你可以在 settings 中新增 custom aliases 和 context-window overrides。Claude 的 1M variants 是額外 options，不會替代 base models。
 
-### Usage 和 cost
+### 用量與費用
 
 Model selector 旁邊的 badge 會持續顯示目前 provider 的 usage；model menu 中有更完整的 readouts：如果 provider 暴露 quota windows 就顯示 quota，如果只有 cost 可用就顯示 spend。Refresh 進行中或失敗時，最後一次成功的數值會保留，因此 meter 不會突然清空。如果你想要更安靜的 UI，可以在 settings 中關閉整個 usage/cost 顯示。
 
@@ -398,7 +398,7 @@ Model selector 旁邊的 badge 會持續顯示目前 provider 的 usage；model 
 | Kimi Code | 從 ACP 和 session cost metadata 聚合的 monthly spend |
 | Grok Build | 透過 OAuth 顯示共用的每週 Grok 使用額度、重設時間和 Extra Usage Credits；來自 session cost metadata 的 monthly API spend |
 
-### Plan mode
+### 計畫模式
 
 當 active provider 支援 Plan mode 時，可以用兩種方式開啟：
 
@@ -409,49 +409,60 @@ Plan mode 會要求 provider 先制定計畫，再開始進行變更。在 compo
 
 當 provider 完成計畫後，Grimoire 會顯示可折疊的 Plan complete 卡片，其中包含渲染後的計畫、要求的 permissions，以及適合鍵盤操作的列。Approve 會在同一個 session 中繼續；輸入 feedback 會保持 Plan mode，讓 provider 可以修改計畫。
 
-### Context 和 mentions
+### 上下文與提及
 
 可以直接在 composer 中 mention vault notes 和 folders，拉入 current 或 linked note，並在 settings 中新增 persistent external context paths。Provider 支援 image input 時，可以貼上或拖放圖片。支援的 provider integrations 中也可以 mention MCP servers。Context 分頁會顯示綁定的筆記、model、permission mode、固定檔案、`.grimoire/grok/system.md` 等 launch artifacts，以及 agent 在 session 期間載入的檔案。
 
-### Inline editing
+### 筆記內編輯
 
 對選取文字執行 "Grimoire: Inline edit"。Prompt 會在文字旁開啟，edit 會以 diff 回傳，你可以 accept 或 reject，並且會透過 provider-backed inline edit service 執行。它既支援替換 selection，也支援插入新文字。
 
-### Clarifying questions
+### 釐清問題
 
 當 provider 要求 structured user input 時，Grimoire 會暫停 turn，並在 composer 上方顯示問題。Claude Code 將它暴露為 `AskUserQuestion`；Codex app-server 將它暴露為實驗性的 `request_user_input` / `requestUserInput` surface；Qwen Code 透過 ACP permission metadata 傳遞 `AskUserQuestion`。Grimoire 會把這些 provider-specific mechanisms 正規化到同一個 inline question UI。Single-select、multi-select 和 freeform answers 會回傳給 provider run，讓 agent 不需要另一條 chat message 就能繼續。
 
-### Commands
+### 命令
 
 Built-in commands 覆蓋 Grimoire workflows，例如 image generation 和 resume。Provider 暴露的自有 commands，例如 Claude Code slash commands、OpenCode、Grok Build 和 Qwen Code runtime commands，會透過 provider-owned catalogs 顯示。你可以在 settings 中隱藏不使用的 commands。
 
-### Image generation
+### 圖片產生
 
 貼上或拖放圖片即可附加到 turn。Built-in `/image [prompt]` command 本身不會呼叫任何 image API。它會向目前 provider 傳送一個普通 turn，指示 provider 使用你已設定的 image generation 能力：provider-native tooling、MCP tools 或 local command。Agent 會把結果保存到 vault，並回傳類似 `![[path/to/image.png]]` 的 embed。如果沒有設定 image generation，你會得到一條普通回覆，說明缺少什麼。
 
-### Safety 和 permissions
+### 安全與權限
 
 Permission modes 屬於 provider，因此 Grimoire 透過 shared composer controls 顯示它們，而不是重新實作一套。當 active provider 支援 plan mode 時，permission control 和 `Shift+Tab` 都會在 Safe、Auto-approve 和 Plan 之間循環。Safe mode 和 permission prompts 在工作時保持可見。Bang-bash mode 只會在 enabled provider 提供時顯示。Configured MCP servers、shell access 和 API keys 都應該被視為 sensitive，因為它們確實 sensitive。
 
-### Debug logging
+### 偵錯記錄
 
 預設關閉。啟用後，Grimoire 會將 sanitized JSONL 寫入 `.grimoire/logs/YYYY-MM-DD.jsonl`，其中 prompts、answers、note contents、paths、environment values 和 secrets 都會被 redact。它用於診斷 provider 和 runtime issues，而不是保存 transcript。
 
-### Settings
+### 設定
 
-General settings 覆蓋 auto-scroll、title generation、usage indicators、debug logging、locale、tabs，以及哪個 provider 擁有 settings view。Per-provider tabs 處理 CLI paths、model behavior、commands、agents、skills 和 provider-owned config。你還可以設定 project workspace environment variables，並按 provider scoped。
+設定分成四個分頁：**一般**管理語言、聊天位置、分頁與顯示；**供應商**用於啟用 CLI 並設定模型；**進階設定**管理上下文、對話、工具與診斷；**關於**顯示版本及更新內容。設定支援 Obsidian 原生搜尋。
+
+提供者總覽顯示 CLI 偵測結果與啟用開關，下方列出所選提供者的設定。
 
 <p align="center">
-  <img src="../../assets/readme/settings-general.png" alt="Grimoire 一般設定" width="100%">
+  <img src="../../assets/readme/settings-providers.png" alt="Grimoire 的十二種 CLI 整合總覽及 Codex 模型設定" width="100%">
 </p>
+
+<details>
+<summary>一般設定</summary>
+
+<p align="center">
+  <img src="../../assets/readme/settings-general.png" alt="語言、面板位置、聊天分頁、標籤、捲動與對話標題的一般設定" width="100%">
+</p>
+
+</details>
 
 ## Grimoire 將資料存放在哪裡
 
 | Path | 內容 |
 | --- | --- |
-| `.grimoire/grimoire-settings.json` | App settings 和 provider configuration |
-| `.grimoire/sessions/*.meta.json` | Session metadata |
-| `.grimoire/logs/YYYY-MM-DD.jsonl` | Opt-in sanitized debug logs |
+| `.grimoire/grimoire-settings.json` | 應用程式設定與提供者設定 |
+| `.grimoire/sessions/*.meta.json` | 工作階段中繼資料 |
+| `.grimoire/logs/YYYY-MM-DD.jsonl` | 選擇啟用且已移除敏感資訊的偵錯記錄 |
 | `.grimoire/claude/statusline-usage.json` | 用於 plan meter 的 Claude usage snapshot |
 | `.grimoire/grok/` | Grok Build launch artifacts、managed config 和 session pointers |
 
@@ -465,7 +476,7 @@ Grimoire 執行在 Obsidian 內部、你的電腦上。它沒有 backend，不�
 
 如需了解面向 Obsidian policy 的網路使用、帳戶需求、外部檔案存取、logging 和 telemetry 的摘要，請參閱 [DISCLOSURES.md](../../DISCLOSURES.md)。
 
-## Development
+## 開發
 
 歡迎 contributions。開啟 pull request 前請閱讀 [CONTRIBUTING.md](../../CONTRIBUTING.md)，其中說明 architecture、security、tests 和 review 的要求。
 
@@ -492,18 +503,18 @@ npm run build:release
 
 npm 是 development、CI 和 releases 的 canonical package manager。dependencies 變更時，請保持 `package-lock.json` 最新；secondary package-manager lockfiles 有意不提交。
 
-## Releases
+## 發布版本
 
 Grimoire releases 透過 semver tags 發布，例如 `1.0.0`。Release workflow 會執行 local gate，建構 Obsidian bundle，驗證 tag 與 `package.json` 和 `manifest.json` 匹配，然後將 `main.js`、`manifest.json` 和 `styles.css` 附加到 GitHub Release。
 
 Obsidian Community plugins 是推薦的使用者安裝方式。GitHub Releases 仍然提供用於手動安裝和 BRAT 的 bundle assets。使用 `main` 做 releasable development，然後透過與 manifest version 匹配的 tag 發布。
 
-## Roadmap
+## 開發計畫
 
-目前 Grimoire 隨 Codex、Claude Code、Antigravity CLI、Gemini CLI (Legacy)、OpenCode、MiMoCode、Kimi Code、Grok Build、Qwen Code、Devin 和 Reasonix 一起發布。
+目前 Grimoire 隨 Codex、Claude Code、Antigravity CLI、Gemini CLI (Legacy)、OpenCode、MiMoCode、Kimi Code、Grok Build、Qwen Code、Devin、Reasonix 和 Command Code 一起發布。
 
 下一步計畫：GitHub Copilot CLI、其他 ACP-compatible providers，以及當 runtime 足夠穩定可嵌入 Obsidian 時的 local model CLIs。Implementation notes 位於 [docs/provider-roadmap.md](../provider-roadmap.md)。
 
-## 授權
+## 授權條款
 
 MIT。參見 [LICENSE](../../LICENSE)。

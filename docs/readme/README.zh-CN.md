@@ -20,41 +20,41 @@
 </p>
 
 <p align="center">
-  <img src="../../assets/readme/chat-workspace.png" alt="Grimoire 侧边栏与 Obsidian 笔记并排运行" width="100%">
+  <img src="../../assets/readme/chat-workspace.png" alt="Obsidian 中的 Ocean Atlas 旁边，Codex Astra High 正在讨论海洋分层、洋流与海洋生物的联系" width="100%">
 </p>
 
 <p align="center">
-  <sub>在笔记所在的同一 Obsidian 工作区中，与本地 CLI 代理对话。</sub>
+  <sub>真实笔记与基于笔记链接的对话。截图展示的是开发中的 2.0 版本。</sub>
 </p>
 
 > **提示：2.0 正在开发中。** 下一个大版本将把 Grimoire 迁移到以提供商为基础的执行架构：由一个内核驱动每个 CLI，并为每一轮精确记录一个结果；同时带来跟随仓库主题与强调色的全新设计。相关工作已合并到 `main` 分支，但尚未进入任何已发布版本。当前发布版本仍是 1.3.2。对话、设置和提供商文件将原样保留。
 
-Grimoire 将智能体 CLI 助手带入 Obsidian。Codex、Claude Code、Antigravity CLI、Gemini CLI（旧版）、OpenCode、MiMoCode、Kimi Code、Grok Build、Qwen Code、Devin 和 Reasonix 都位于同一个侧边栏中；它们可以读取笔记、编辑文件、执行命令、调用工具，并将会话历史保存在你的真实仓库中。任何内容都不会经由 Grimoire 服务器传输：没有遥测、没有托管后端，也没有处在中间的代理服务器。
+Grimoire 将智能体 CLI 助手带入 Obsidian。Codex、Claude Code、Antigravity CLI、Gemini CLI（旧版）、OpenCode、MiMoCode、Kimi Code、Grok Build、Qwen Code、Devin、Reasonix 和 Command Code 都位于同一个侧边栏中；它们可以读取笔记、编辑文件、执行命令、调用工具，并将会话历史保存在你的真实仓库中。任何内容都不会经由 Grimoire 服务器传输：没有遥测、没有托管后端，也没有处在中间的代理服务器。
 
 Grimoire 面向已经使用 Obsidian 工作，并希望 AI 助手像仓库的一部分那样运作的用户：上下文留在本地、文件留在本地、供应商由你明确选择，用量也真正可见。
 
 ## 为什么选择 Grimoire
 
 - 在笔记里直接使用你已经信任的 CLI 代理。
-- 直接从输入区切换供应商。Codex、Claude Code、Antigravity CLI、Gemini CLI（旧版）、OpenCode、MiMoCode、Kimi Code、Grok Build、Qwen Code、Devin 和 Reasonix 共用一个模型选择器。
+- 直接从输入区切换供应商。Codex、Claude Code、Antigravity CLI、Gemini CLI（旧版）、OpenCode、MiMoCode、Kimi Code、Grok Build、Qwen Code、Devin、Reasonix 和 Command Code 共用一个模型选择器。
 - 让每轮对话都以你的仓库为依据。可以提及笔记、文件夹和 MCP 工具，无需手动粘贴路径。
 - 在模型选择器旁查看费用和限制——也就是你作出模型选择的位置。
 - 坚持本地优先。Grimoire 不收集遥测数据、不代理转发提示词，也不运行后端服务。
 
 ## 各供应商支持的功能
 
-| 能力 | Codex | Claude Code | OpenCode | Grok Build | MiMoCode | Kimi Code | Antigravity CLI | Gemini CLI（旧版） | Qwen Code | Devin | Reasonix | Command Code |
+| 功能 | Codex | Claude Code | OpenCode | Grok Build | MiMoCode | Kimi Code | Antigravity CLI | Gemini CLI (Legacy) | Qwen Code | Devin | Reasonix | Command Code |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 本地持久运行时 | 是 | 是 | 是 | 是 | 是 | 是 | 否 | 是 | 是 | 是 | 是 | 否 |
-| 原生历史记录恢复 | 是 | 是 | 是 | 是 | 是 | 是 | 否 | 是 | 否 | 否 | 否 | 否 |
-| 规划模式 | 是 | 是 | 是 | 是 | 是 | 是 | 否 | 是 | 是 | 是 | 是 | 否 |
-| 图片附件 | 是 | 是 | 是 | 是 | 是 | 是 | 否 | 是 | 是 | 是 | 否 | 否 |
-| 指令模式 | 是 | 是 | 是 | 是 | 是 | 是 | 否 | 是 | 是 | 是 | 是 | 否 |
-| 推理强度控制 | 是 | 是 | 是 | 是 | 是 | 是 | 是 | 是 | 是 | 否 | 是 | 否 |
-| 回退 | 否 | 是 | 否 | 是 | 否 | 否 | 否 | 否 | 否 | 否 | 否 | 否 |
-| 分叉 | 是 | 是 | 否 | 是 | 否 | 否 | 否 | 否 | 否 | 否 | 否 | 否 |
-| 供应商斜杠命令 | 否 | 是 | 是 | 是 | 是 | 是 | 否 | 是 | 是 | 是 | 是 | 否 |
-| Grimoire 管理的 MCP 界面 | 否 | 是 | 是 | 是 | 是 | 是 | 否 | 是 | 是 | 是 | 是 | 否 |
+| 本地持久运行环境 | 支持 | 支持 | 支持 | 支持 | 支持 | 支持 | 不支持 | 支持 | 支持 | 支持 | 支持 | 不支持 |
+| 原生历史恢复 | 支持 | 支持 | 支持 | 支持 | 支持 | 支持 | 不支持 | 支持 | 不支持 | 不支持 | 不支持 | 不支持 |
+| 计划模式 | 支持 | 支持 | 支持 | 支持 | 支持 | 支持 | 不支持 | 支持 | 支持 | 支持 | 支持 | 不支持 |
+| 图片附件 | 支持 | 支持 | 支持 | 支持 | 支持 | 支持 | 不支持 | 支持 | 支持 | 支持 | 不支持 | 不支持 |
+| 指令模式 | 支持 | 支持 | 支持 | 支持 | 支持 | 支持 | 不支持 | 支持 | 支持 | 支持 | 支持 | 不支持 |
+| 推理强度控制 | 支持 | 支持 | 支持 | 支持 | 支持 | 支持 | 支持 | 支持 | 支持 | 不支持 | 支持 | 支持（取决于模型） |
+| 回退 | 不支持 | 支持 | 不支持 | 支持 | 不支持 | 不支持 | 不支持 | 不支持 | 不支持 | 不支持 | 不支持 | 不支持 |
+| 分支 | 支持 | 支持 | 不支持 | 支持 | 不支持 | 不支持 | 不支持 | 不支持 | 不支持 | 不支持 | 不支持 | 不支持 |
+| 供应商斜杠命令 | 不支持 | 支持 | 支持 | 支持 | 支持 | 支持 | 不支持 | 支持 | 支持 | 支持 | 支持 | 不支持 |
+| Grimoire 管理的 MCP 界面 | 不支持 | 支持 | 支持 | 支持 | 支持 | 支持 | 不支持 | 支持 | 支持 | 支持 | 支持 | 不支持 |
 
 ## 安装
 
@@ -268,24 +268,24 @@ Reasonix 不只请求权限，也会提问：它的 `ask` 工具经由同一通�
 
 关于 Safe 模式有一点需要知道：`ask` 只拦截 Reasonix 判定为需要授权的工具，而不是全部工具，因此它认为只读的 shell 命令会直接执行而不询问。Grimoire 会对 Reasonix 通过协议进行的每一次文件写入进行确认，这正是让仓库处在一个问题之后的机制。如果某个会话完全不应写入，请使用 Plan。
 
-Reasonix 的配置保存在 `~/.reasonix/config.toml`，API 密钥按该文件给出的名称从环境变量读取。仓库技能从 `.reasonix/skills` 和 `.agents/skills` 读取。Grimoire 在 `.grimoire/mcp/reasonix.json` 中维护独立的项目 MCP 列表，并注入到 ACP 会话。用量来自 Reasonix 自身的状态通知；只有当你的模型供应商有价格时才会显示费用。图片附件、推理强度控制、分叉与回退均不支持。
+Reasonix 的配置保存在 `~/.reasonix/config.toml`，API 密钥按该文件给出的名称从环境变量读取。仓库技能从 `.reasonix/skills` 和 `.agents/skills` 读取。Grimoire 在 `.grimoire/mcp/reasonix.json` 中维护独立的项目 MCP 列表，并注入到 ACP 会话。用量来自 Reasonix 自身的状态通知；只有当你的模型供应商有价格时才会显示费用。图片附件、分叉与回退均不支持。
 
 ### Command Code
 
-Command Code is opt-in in the unreleased 2.0 build. Install and authenticate in a terminal, then enable it under Settings → Grimoire → Providers:
+Command Code 可在尚未发布的 2.0 构建中按需启用。在终端安装并登录后，到设置 → Grimoire → 供应商中启用：
 
 ```bash
 npm i -g command-code
 command-code login
 ```
 
-Reasoning effort is discovered for the selected model from the installed CLI. The picker offers only that model's supported levels and a CLI default option; models without adjustable effort have no picker. Explicit selections apply to the current run through the native session mod API without changing global CLI settings. CLI default preserves native behavior, including an effort already stored in a resumed session.
+推理强度根据已安装 CLI 返回的当前模型信息确定。选择器只提供该模型支持的级别及 CLI 默认值；不支持调整强度的模型不会显示选择器。明确选择的级别通过原生会话修改 API 应用于当前运行，不改变 CLI 全局设置。CLI 默认值保留原生行为，包括恢复会话中已保存的推理强度。
 
-Grimoire streams answers and tool activity from the CLI's headless JSON output, discovers models with `--list-models`, and saves the native session ID for explicit resume after reload. Authentication, native configuration, skills, MCP and transcripts stay with Command Code. Context usage uses reported input tokens against an estimated or user-supplied context limit; account quotas and prices are not inferred.
+Grimoire 从 CLI 的无界面 JSON 输出中流式显示回答和工具活动，通过 `--list-models` 发现模型，并保存原生会话 ID，以便重新加载后明确恢复。认证、原生配置、技能、MCP 和对话记录仍由 Command Code 管理。上下文用量将报告的输入令牌数与估算或用户指定的上下文上限比较，不推测账户配额和价格。
 
-**Safe** pauses edits, commands and other non-read tools for a one-time approval in Grimoire. Denying, cancelling or losing the approval connection prevents execution. Safe currently requires the verified Command Code 1.53.0 npm installation and disables native subagents, whose separate loops cannot use this approval bridge. **Auto-approve** runs without Grimoire prompts; native deny and ask rules still apply in both modes. This integration does not expose interactive questions, image attachments, plan controls, slash commands, managed MCP/skills/agents, auxiliary tasks, fork, rewind, or native history import.
+**Safe** 会暂停编辑、命令及其他非只读工具，等待 Grimoire 中的一次性批准。拒绝、取消或批准连接中断均会阻止执行。目前 Safe 要求经过验证的 Command Code 1.53.0 npm 安装，并禁用原生子代理，因为其独立循环无法使用此批准机制。**Auto-approve** 不显示 Grimoire 确认提示；原生拒绝和询问规则在两种模式中仍然生效。此集成不提供交互式提问、图片附件、计划控制、斜杠命令、托管的 MCP/技能/代理、辅助任务、分支、回退或原生历史导入。
 
-- [Command Code headless documentation](https://commandcode.ai/docs/headless)
+- [Command Code 无界面运行文档](https://commandcode.ai/docs/headless)
 
 ### OpenCode
 
@@ -358,15 +358,15 @@ Grok 4.5 目前是驱动 Grok Build 的默认模型。Grimoire 从已认证的 G
 
 这是一个专注于对话的多标签页侧边栏。每个标签页都保留自己的草稿、供应商、模型、上下文和运行时。关闭并重新打开 Obsidian 后，会话会恢复；每条回答都会保留供应商、模型和推理强度信息。当前供应商支持时，界面会显示回退与分叉操作。当你滚离底部阅读内容时，自动滚动会立即停止跟随。连续 10 秒没有可见输出时，共用的等待指示器会显示当前供应商和已等待时间；等待用户回答或授权时则会暂停计时。
 
-### Tab、历史与导航控制
+### 标签页、历史与导航
 
-右键点击 tab 可以重命名、复制、关闭、关闭其他 tabs 或关闭右侧 tabs；中键点击会关闭 tab，限时 Undo 会恢复其 draft 和位置。可以从 chat history 通过对应 action、modifier-click 或中键点击在新 tab 中打开保存的对话。长对话提供五向 navigator：顶部、上一条 prompt、对话目录、下一条 prompt 和底部。完成的 message 会在 copy action 旁显示本地化 completion timestamp。
+打开标签页操作菜单或右键点击标签页，即可重命名、复制或关闭标签页。中键点击可关闭标签页，撤销可恢复其草稿和位置。在历史浮层中搜索旧对话，并在新标签页中打开。历史会区分手动命名和自动生成的标题。对话工具栏提供跳转按钮和目录；已完成的回答显示完成时间。
 
 <p align="center">
-  <img src="../../assets/readme/conversation-history.png" alt="Grimoire 对话历史与标签页导航" width="100%">
+  <img src="../../assets/readme/conversation-history.png" alt="历史搜索显示三个 Ocean Atlas 对话、所用模型及标题来源" width="100%">
 </p>
 
-### Parallel workers、settings 与 composer
+### 并行代理、设置与输入区
 
 **Parallel workers** approval card 会显示继承的 model，并且只启动你选择的建议任务。Settings 使用 Obsidian native search，并保留永久的 What's New 入口。Provider settings 与 composer 在各 provider 间使用一致的 surface，同时保留 provider-owned controls 和 configuration。
 
@@ -377,11 +377,11 @@ Grok 4.5 目前是驱动 Grok Build 的默认模型。Grimoire 从已认证的 G
 | `Enter` | 发送当前轮次。启用**仅使用按钮发送**时，此快捷键不会发送。 |
 | `Shift+Enter` | 在输入区中插入新行。 |
 | `Shift+Tab` | 循环切换权限模式：`安全 → 自动批准 → 规划 → 安全`。不支持规划模式的供应商只会在“安全”和“自动批准”之间切换。 |
-| `Escape` | 停止当前回答，或关闭已打开的对话历史面板。 |
+| `Escape` | 停止当前回答，或关闭历史浮层。 |
 
 ### 模型选择器
 
-所有模型共用一个选择器，按供应商分组并按名称排序：Antigravity、Claude Code、Codex、Devin、Gemini CLI（旧版）、Grok Build、Kimi Code、MiMoCode、OpenCode、Qwen Code 和 Reasonix。搜索会匹配名称、描述、分组和模型 ID，并且在筛选时不会改变菜单尺寸。模型目录按需加载，并会记住你折叠过的分组。你可以在设置中添加自定义别名和上下文窗口覆盖值。Claude 的 1M 上下文变体是额外选项，不会替代基础模型。
+所有模型共用一个选择器，按供应商分组并按名称排序：Antigravity、Claude Code、Codex、Command Code、Devin、Gemini CLI（旧版）、Grok Build、Kimi Code、MiMoCode、OpenCode、Qwen Code 和 Reasonix。搜索会匹配名称、描述、分组和模型 ID，并且在筛选时不会改变菜单尺寸。模型目录按需加载，并会记住你折叠过的分组。你可以在设置中添加自定义别名和上下文窗口覆盖值。Claude 的 1M 上下文变体是额外选项，不会替代基础模型。
 
 ### 用量与费用
 
@@ -401,7 +401,7 @@ Grok 4.5 目前是驱动 Grok Build 的默认模型。Grimoire 从已认证的 G
 | Kimi Code | 从 ACP 与会话费用元数据汇总的月度支出 |
 | Grok Build | 通过 OAuth 获取的每周共享额度、重置时间和 Extra Usage Credits；以及从会话费用元数据汇总的月度 API 支出 |
 
-### 规划模式
+### 计划模式
 
 当前供应商支持规划模式时，可以通过两种方式开启：
 
@@ -416,7 +416,7 @@ Grok 4.5 目前是驱动 Grok Build 的默认模型。Grimoire 从已认证的 G
 
 可以直接在输入区通过 `@` 提及仓库中的笔记和文件夹，引入当前笔记或链接笔记，也可以在设置中添加持久的外部上下文路径。供应商支持图片输入时，可以粘贴或拖放图片；受支持的集成还可以提及 MCP 服务器。“上下文”标签页会显示绑定笔记、模型、权限模式、固定文件、`.grimoire/grok/system.md` 等启动文件，以及代理在会话期间读取的文件。
 
-### 内联编辑
+### 笔记内编辑
 
 对选中文本运行“Grimoire：内联编辑”。提示框会在文本旁打开，修改结果以差异对比形式返回，你可以接受或拒绝。该功能通过由供应商支持的内联编辑服务执行，既能替换选区，也能插入新文本。
 
@@ -444,19 +444,30 @@ Grok 4.5 目前是驱动 Grok Build 的默认模型。Grimoire 从已认证的 G
 
 ### 设置
 
-通用设置包括跟随 Obsidian 的主题行为、自动滚动、标题生成、用量指示器、调试日志、界面语言、标签页，以及由哪个供应商负责显示设置页面。各供应商标签页用于配置 CLI 路径、模型行为、命令、代理、技能，以及存在时的供应商自有配置。你还可以设置项目工作区环境变量，并在需要时将其限定到特定供应商。
+设置分为四个标签页：**常规**管理语言、聊天位置、标签页和显示；**供应商**用于启用 CLI 和配置模型；**高级设置**管理上下文、对话、工具与诊断；**关于**显示版本及更新内容。设置支持 Obsidian 原生搜索。
+
+供应商概览显示 CLI 检测结果和启用开关，下方展示所选供应商的设置。
 
 <p align="center">
-  <img src="../../assets/readme/settings-general.png" alt="Grimoire 通用设置" width="100%">
+  <img src="../../assets/readme/settings-providers.png" alt="Grimoire 的十二种 CLI 集成概览及 Codex 模型设置" width="100%">
 </p>
+
+<details>
+<summary>通用设置</summary>
+
+<p align="center">
+  <img src="../../assets/readme/settings-general.png" alt="语言、面板位置、聊天标签页、标签、滚动及对话标题的通用设置" width="100%">
+</p>
+
+</details>
 
 ## Grimoire 将数据存放在哪里
 
 | 路径 | 内容 |
 | --- | --- |
-| `.grimoire/grimoire-settings.json` | 应用设置和供应商配置 |
+| `.grimoire/grimoire-settings.json` | 应用设置与供应商配置 |
 | `.grimoire/sessions/*.meta.json` | 会话元数据 |
-| `.grimoire/logs/YYYY-MM-DD.jsonl` | 手动启用后生成的清理版调试日志 |
+| `.grimoire/logs/YYYY-MM-DD.jsonl` | 可选启用且经过脱敏的调试日志 |
 | `.grimoire/claude/statusline-usage.json` | 用于套餐用量指示器的 Claude 用量快照 |
 | `.grimoire/grok/` | Grok Build 启动文件、托管配置和会话指针 |
 
@@ -499,15 +510,15 @@ npm run build:release
 
 npm 是开发、CI 和发布流程的规范包管理器。依赖发生变化时，请同步更新 `package-lock.json`；次要的包管理器的锁文件特意不提交。
 
-## 发布
+## 发布版本
 
 Grimoire 使用语义化版本标签发布，例如 `1.0.0`。发布流程会运行本地检查、构建 Obsidian 插件包、验证标签与 `package.json` 和 `manifest.json` 一致，然后将 `main.js`、`manifest.json` 和 `styles.css` 附加到 GitHub Release。
 
 Obsidian 社区插件市场是推荐的安装方式。GitHub Releases 仍会提供用于手动安装和 BRAT 的插件文件。可发布的开发工作在 `main` 分支进行，发布标签必须与清单中的版本号一致。
 
-## 路线图
+## 开发计划
 
-目前 Grimoire 随 Codex、Claude Code、Antigravity CLI、Gemini CLI（旧版）、OpenCode、MiMoCode、Kimi Code、Grok Build、Qwen Code、Devin 和 Reasonix 一同发布。
+目前 Grimoire 随 Codex、Claude Code、Antigravity CLI、Gemini CLI（旧版）、OpenCode、MiMoCode、Kimi Code、Grok Build、Qwen Code、Devin、Reasonix 和 Command Code 一同发布。
 
 下一步计划包括 GitHub Copilot CLI、其他 ACP 兼容供应商，以及运行时足够稳定、可嵌入 Obsidian 的本地模型 CLI。实现说明位于 [provider-roadmap.md](../provider-roadmap.md)。
 

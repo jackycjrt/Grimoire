@@ -20,16 +20,16 @@
 </p>
 
 <p align="center">
-  <img src="../../assets/readme/chat-workspace.png" alt="Painel lateral do Grimoire ao lado de uma nota do Obsidian" width="100%">
+  <img src="../../assets/readme/chat-workspace.png" alt="Ocean Atlas no Obsidian ao lado de um chat Codex Astra High sobre camadas oceânicas, correntes e vida marinha" width="100%">
 </p>
 
 <p align="center">
-  <sub>Converse com agentes de CLI locais no mesmo espaço de trabalho do Obsidian onde suas notas ficam.</sub>
+  <sub>Uma nota real e uma conversa baseada nos seus links. As capturas mostram a versão 2.0 em desenvolvimento.</sub>
 </p>
 
 > **Aviso: a 2.0 está em andamento.** A próxima versão principal leva o Grimoire a uma arquitetura de execução baseada em provedores, em que um único núcleo conduz cada CLI e registra exatamente um resultado por turno, e traz um redesign que segue o tema e a cor de destaque do seu cofre. O trabalho já foi mesclado em `main` e ainda não faz parte de nenhuma versão publicada. A versão publicada continua sendo a 1.3.2. Conversas, configurações e arquivos dos provedores são mantidos sem alterações.
 
-O Grimoire traz assistentes de CLI agênticos para o Obsidian. Codex, Claude Code, Antigravity CLI, Gemini CLI (Legacy), OpenCode, MiMoCode, Kimi Code, Grok Build, Qwen Code, Devin e Reasonix vivem em um único painel lateral, onde leem suas notas, editam arquivos, executam comandos, chamam ferramentas e mantêm o histórico da sessão no seu vault real. Nada passa por um servidor do Grimoire. Não há telemetria, backend hospedado nem proxy no meio do caminho.
+O Grimoire traz assistentes de CLI agênticos para o Obsidian. Codex, Claude Code, Antigravity CLI, Gemini CLI (Legacy), OpenCode, MiMoCode, Kimi Code, Grok Build, Qwen Code, Devin, Reasonix e Command Code vivem em um único painel lateral, onde leem suas notas, editam arquivos, executam comandos, chamam ferramentas e mantêm o histórico da sessão no seu vault real. Nada passa por um servidor do Grimoire. Não há telemetria, backend hospedado nem proxy no meio do caminho.
 
 Ele foi feito para quem já trabalha no Obsidian e quer uma ajuda de IA que se comporte como parte do vault: contexto local, arquivos locais, um provedor escolhido de propósito e uso que você realmente consegue acompanhar.
 
@@ -38,7 +38,7 @@ Ele foi feito para quem já trabalha no Obsidian e quer uma ajuda de IA que se c
 ## Por que usar o Grimoire
 
 - Use os agentes de CLI nos quais você já confia, dentro das suas notas.
-- Alterne provedores pelo compositor. Codex, Claude Code, Antigravity CLI, Gemini CLI legado, OpenCode, MiMoCode, Kimi Code, Grok Build, Qwen Code, Devin e Reasonix compartilham um seletor de modelos.
+- Alterne provedores pelo compositor. Codex, Claude Code, Antigravity CLI, Gemini CLI legado, OpenCode, MiMoCode, Kimi Code, Grok Build, Qwen Code, Devin, Reasonix e Command Code compartilham um seletor de modelos.
 - Fundamente cada turno no seu vault. Mencione notas, pastas e ferramentas MCP em vez de colar caminhos manualmente.
 - Veja custos e limites ao lado do seletor de modelo, onde você toma essa decisão de qualquer forma.
 - Continue local-first. O Grimoire não coleta telemetria, não faz proxy de prompts nem executa um backend.
@@ -47,16 +47,16 @@ Ele foi feito para quem já trabalha no Obsidian e quer uma ajuda de IA que se c
 
 | Recurso | Codex | Claude Code | OpenCode | Grok Build | MiMoCode | Kimi Code | Antigravity CLI | Gemini CLI (Legacy) | Qwen Code | Devin | Reasonix | Command Code |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Runtime local persistente | Sim | Sim | Sim | Sim | Sim | Sim | Não | Sim | Sim | Sim | Sim | Não |
-| Hidratação nativa do histórico | Sim | Sim | Sim | Sim | Sim | Sim | Não | Sim | Não | Não | Não | Não |
-| Modo de plano | Sim | Sim | Sim | Sim | Sim | Sim | Não | Sim | Sim | Sim | Sim | Não |
-| Anexos de imagem | Sim | Sim | Sim | Sim | Sim | Sim | Não | Sim | Sim | Sim | Não | Não |
-| Modo de instrução | Sim | Sim | Sim | Sim | Sim | Sim | Não | Sim | Sim | Sim | Sim | Não |
-| Controles de esforço de raciocínio | Sim | Sim | Sim | Sim | Sim | Sim | Sim | Sim | Sim | Não | Sim | Não |
-| Retroceder | Não | Sim | Não | Sim | Não | Não | Não | Não | Não | Não | Não | Não |
-| Bifurcar | Sim | Sim | Não | Sim | Não | Não | Não | Não | Não | Não | Não | Não |
-| Comandos de barra do provedor | Não | Sim | Sim | Sim | Sim | Sim | Não | Sim | Sim | Sim | Sim | Não |
-| UI de MCP gerenciada pelo Grimoire | Não | Sim | Sim | Sim | Sim | Sim | Não | Sim | Sim | Sim | Sim | Não |
+| Execução local persistente | Sim | Sim | Sim | Sim | Sim | Sim | Não | Sim | Sim | Sim | Sim | Não |
+| Restauração do histórico nativo | Sim | Sim | Sim | Sim | Sim | Sim | Não | Sim | Não | Não | Não | Não |
+| Modo de planejamento | Sim | Sim | Sim | Sim | Sim | Sim | Não | Sim | Sim | Sim | Sim | Não |
+| Imagens anexadas | Sim | Sim | Sim | Sim | Sim | Sim | Não | Sim | Sim | Sim | Não | Não |
+| Modo de instruções | Sim | Sim | Sim | Sim | Sim | Sim | Não | Sim | Sim | Sim | Sim | Não |
+| Controle do esforço de raciocínio | Sim | Sim | Sim | Sim | Sim | Sim | Sim | Sim | Sim | Não | Sim | Sim (depende do modelo) |
+| Retrocesso | Não | Sim | Não | Sim | Não | Não | Não | Não | Não | Não | Não | Não |
+| Ramificação | Sim | Sim | Não | Sim | Não | Não | Não | Não | Não | Não | Não | Não |
+| Comandos slash do provedor | Não | Sim | Sim | Sim | Sim | Sim | Não | Sim | Sim | Sim | Sim | Não |
+| Gestão de MCP pelo Grimoire | Não | Sim | Sim | Sim | Sim | Sim | Não | Sim | Sim | Sim | Sim | Não |
 
 ## Instalação
 
@@ -270,24 +270,24 @@ O esforço de raciocínio é um seletor alimentado pela sessão, não uma lista 
 
 Uma coisa a saber sobre o Safe: `ask` protege as ferramentas que o Reasonix classifica como sujeitas a permissão, não todas, então um comando de shell que ele julga somente leitura pode rodar sem perguntar. O Grimoire aprova cada gravação de arquivo que o Reasonix faz pelo protocolo, e é isso que mantém o vault atrás de uma pergunta. Para uma sessão que não pode escrever, use o Plan.
 
-O Reasonix mantém a configuração em `~/.reasonix/config.toml` e lê as chaves de API do ambiente com os nomes que esse arquivo indica. As habilidades do vault são lidas de `.reasonix/skills` e `.agents/skills`. O Grimoire gerencia uma lista MCP de projeto isolada em `.grimoire/mcp/reasonix.json` e a injeta nas sessões ACP. O uso vem das próprias notificações de status do Reasonix, e o custo aparece só quando seu provedor de modelos tem preço. Anexos de imagem, controle de esforço de raciocínio, fork e rewind não são suportados.
+O Reasonix mantém a configuração em `~/.reasonix/config.toml` e lê as chaves de API do ambiente com os nomes que esse arquivo indica. As habilidades do vault são lidas de `.reasonix/skills` e `.agents/skills`. O Grimoire gerencia uma lista MCP de projeto isolada em `.grimoire/mcp/reasonix.json` e a injeta nas sessões ACP. O uso vem das próprias notificações de status do Reasonix, e o custo aparece só quando seu provedor de modelos tem preço. Anexos de imagem, fork e rewind não são suportados.
 
 ### Command Code
 
-Command Code is opt-in in the unreleased 2.0 build. Install and authenticate in a terminal, then enable it under Settings → Grimoire → Providers:
+Command Code é opcional na versão 2.0 ainda não publicada. Instale e autentique pelo terminal e depois ative em Configurações → Grimoire → Provedores:
 
 ```bash
 npm i -g command-code
 command-code login
 ```
 
-Reasoning effort is discovered for the selected model from the installed CLI. The picker offers only that model's supported levels and a CLI default option; models without adjustable effort have no picker. Explicit selections apply to the current run through the native session mod API without changing global CLI settings. CLI default preserves native behavior, including an effort already stored in a resumed session.
+A CLI instalada informa os níveis de esforço de raciocínio do modelo selecionado. O seletor oferece apenas os níveis compatíveis e a opção padrão da CLI; modelos sem esforço ajustável não têm seletor. Escolhas explícitas se aplicam à execução atual pela API nativa de alteração de sessão, sem mudar as configurações globais da CLI. A opção padrão mantém o comportamento nativo, inclusive um esforço já salvo na sessão retomada.
 
-Grimoire streams answers and tool activity from the CLI's headless JSON output, discovers models with `--list-models`, and saves the native session ID for explicit resume after reload. Authentication, native configuration, skills, MCP and transcripts stay with Command Code. Context usage uses reported input tokens against an estimated or user-supplied context limit; account quotas and prices are not inferred.
+Grimoire transmite respostas e atividade das ferramentas pela saída JSON da CLI sem interface, descobre modelos com `--list-models` e salva o ID nativo da sessão para retomada explícita após recarregar. Autenticação, configuração, habilidades, MCP e transcrições continuam sob responsabilidade do Command Code. O uso de contexto compara os tokens de entrada informados com um limite estimado ou definido pelo usuário; cotas da conta e preços não são presumidos.
 
-**Safe** pauses edits, commands and other non-read tools for a one-time approval in Grimoire. Denying, cancelling or losing the approval connection prevents execution. Safe currently requires the verified Command Code 1.53.0 npm installation and disables native subagents, whose separate loops cannot use this approval bridge. **Auto-approve** runs without Grimoire prompts; native deny and ask rules still apply in both modes. This integration does not expose interactive questions, image attachments, plan controls, slash commands, managed MCP/skills/agents, auxiliary tasks, fork, rewind, or native history import.
+**Safe** pausa edições, comandos e outras ferramentas que não sejam somente de leitura até uma aprovação pontual no Grimoire. Negar, cancelar ou perder a conexão de aprovação impede a execução. Atualmente, Safe exige a instalação npm verificada do Command Code 1.53.0 e desativa subagentes nativos, cujos ciclos separados não podem usar esse mecanismo. **Auto-approve** funciona sem solicitações do Grimoire; as regras nativas de negação e confirmação continuam valendo nos dois modos. A integração não oferece perguntas interativas, imagens anexadas, controles de planejamento, comandos slash, MCP/habilidades/agentes gerenciados, tarefas auxiliares, ramificação, retrocesso nem importação do histórico nativo.
 
-- [Command Code headless documentation](https://commandcode.ai/docs/headless)
+- [Documentação do modo sem interface do Command Code](https://commandcode.ai/docs/headless)
 
 ### OpenCode
 
@@ -356,19 +356,19 @@ No Grimoire, Grok Build é executado sobre ACP por `grok agent stdio` com artefa
 
 ## Recursos
 
-### Espaço de trabalho de chat
+### Espaço de trabalho do chat
 
 Um painel lateral focado, com várias abas. Cada aba mantém seu próprio rascunho, provedor, modelo, contexto e runtime. Feche e reabra o Obsidian, e suas sessões voltarão, com o provedor, o modelo e o esforço de raciocínio preservados em cada resposta. Retroceder e bifurcar aparecem quando o provedor ativo os oferece. A rolagem automática recua no momento em que você rola para ler algo. Após 10 segundos sem saída visível, um indicador compartilhado de espera mostra o provedor ativo e o tempo decorrido; ele pausa enquanto uma pergunta ou permissão estiver aguardando.
 
-### Controles de abas, histórico e navegação
+### Abas, histórico e navegação
 
-Clique com o botão direito em uma aba para renomeá-la, duplicá-la, fechá-la, fechar outras abas ou fechar as abas à sua direita. O clique do meio fecha uma aba, e a ação temporizada de Desfazer restaura uma aba fechada com seu rascunho e posição. Abra uma conversa salva em uma nova aba pelo respectivo item no histórico de chat, com clique modificador ou clique do meio. Conversas longas contam com um navegador de cinco direções para o início, prompt anterior, diretório da conversa, próximo prompt e fim. Mensagens concluídas exibem um horário de conclusão localizado ao lado da ação de copiar.
+Abra o menu de ações da aba ou clique nela com o botão direito para renomear, duplicar ou fechar abas. O clique do meio fecha uma aba; Desfazer restaura seu rascunho e posição. Pesquise chats anteriores no histórico flutuante e abra conversas em novas abas. O histórico distingue títulos definidos manualmente e gerados pelo modelo. A barra da conversa oferece controles de navegação e um índice; respostas concluídas mostram o horário de conclusão.
 
 <p align="center">
-  <img src="../../assets/readme/conversation-history.png" alt="Histórico de conversas e navegação por abas do Grimoire" width="100%">
+  <img src="../../assets/readme/conversation-history.png" alt="Pesquisa no histórico com três conversas Ocean Atlas, seus modelos e a origem dos títulos" width="100%">
 </p>
 
-### Trabalhadores paralelos, configurações e compositor
+### Agentes em paralelo, configurações e editor de mensagens
 
 O cartão de aprovação **Trabalhadores paralelos** mostra o modelo herdado e permite selecionar apenas as tarefas propostas a iniciar. As configurações usam a busca nativa do Obsidian e mantêm uma entrada permanente de Novidades. As configurações do provedor e o compositor usam uma superfície consistente entre os provedores, mantendo controles e configurações pertencentes ao provedor onde devem estar.
 
@@ -379,11 +379,11 @@ O cartão de aprovação **Trabalhadores paralelos** mostra o modelo herdado e p
 | `Enter` | Envia o turno atual. Desativado quando **Enviar somente com o botão** está ativado. |
 | `Shift+Enter` | Insere uma nova linha no compositor. |
 | `Shift+Tab` | Alterna os modos de permissão: `Safe -> Auto-approve -> Plan -> Safe`. Provedores sem modo de plano alternam entre Safe e Auto-approve. |
-| `Escape` | Interrompe a resposta ativa ou fecha a folha aberta do histórico de chat. |
+| `Escape` | Interrompe a resposta ativa ou fecha o histórico flutuante. |
 
-### Seletor de modelo
+### Seletor de modelos
 
-Um único seletor, agrupado por provedor e ordenado por rótulo: Antigravity, Claude Code, Codex, Devin, Gemini CLI (Legacy), Grok Build, Kimi Code, MiMoCode, OpenCode, Qwen Code e Reasonix. A busca percorre rótulos, descrições, grupos e IDs de modelos sem redimensionar o menu enquanto você filtra. Os catálogos carregam de forma preguiçosa e lembram os grupos que você recolheu. Adicione aliases personalizados e substituições de janela de contexto nas configurações. As variantes 1M do Claude são opções extras, não substitutas dos modelos básicos.
+Um único seletor, agrupado por provedor e ordenado por rótulo: Antigravity, Claude Code, Codex, Command Code, Devin, Gemini CLI (Legacy), Grok Build, Kimi Code, MiMoCode, OpenCode, Qwen Code e Reasonix. A busca percorre rótulos, descrições, grupos e IDs de modelos sem redimensionar o menu enquanto você filtra. Os catálogos carregam de forma preguiçosa e lembram os grupos que você recolheu. Adicione aliases personalizados e substituições de janela de contexto nas configurações. As variantes 1M do Claude são opções extras, não substitutas dos modelos básicos.
 
 ### Uso e custo
 
@@ -403,7 +403,7 @@ Um selo ao lado do seletor de modelo mantém à vista o uso do provedor ativo, c
 | Kimi Code | Gasto mensal agregado a partir de ACP e metadados de custo da sessão |
 | Grok Build | Uso semanal compartilhado do Grok, horário de redefinição e Extra Usage Credits via OAuth; gasto mensal de API a partir dos metadados de custo da sessão |
 
-### Modo de plano
+### Modo de planejamento
 
 Quando o provedor ativo oferece modo de plano, você pode ativá-lo de duas formas:
 
@@ -418,7 +418,7 @@ Quando um provedor termina o planejamento, o Grimoire mostra um cartão recolhí
 
 Mencione notas e pastas do vault diretamente no compositor, inclua a nota atual ou vinculada e adicione caminhos persistentes de contexto externo nas configurações. Cole ou solte imagens quando o provedor aceitar entrada de imagem. Mencione servidores MCP quando a integração do provedor oferecer suporte. A aba Contexto mostra a nota vinculada, o modelo, o modo de permissão, arquivos fixados, artefatos de inicialização como `.grimoire/grok/system.md` e arquivos que o agente carregou durante a sessão.
 
-### Edição em linha
+### Edição na nota
 
 Execute "Grimoire: Inline edit" sobre uma seleção. Um prompt é aberto ao lado do texto, a edição retorna como um diff que você aceita ou rejeita, e o fluxo passa pelo serviço de edição em linha apoiado pelo provedor. Ele lida tanto com a substituição de uma seleção quanto com a inserção de novo texto.
 
@@ -440,25 +440,36 @@ Cole ou solte imagens para anexá-las. O comando integrado `/image [prompt]` nã
 
 Os modos de permissão pertencem ao provedor; por isso, o Grimoire os apresenta em controles compartilhados do compositor, em vez de reinventá-los. O controle de permissão e `Shift+Tab` percorrem Safe, Auto-approve e Plan quando o provedor ativo oferece modo de plano. O modo Safe e os prompts de permissão ficam visíveis enquanto você trabalha. O modo bang-bash só aparece quando um provedor ativado o oferece. Trate servidores MCP configurados, acesso ao shell e chaves de API como itens sensíveis, pois eles são.
 
-### Registro de depuração
+### Registros de depuração
 
 Desativado por padrão. Ao ativá-lo, o Grimoire grava JSONL sanitizado em `.grimoire/logs/YYYY-MM-DD.jsonl`, com prompts, respostas, conteúdo de notas, caminhos, valores de ambiente e segredos ocultados. Ele serve para diagnosticar problemas de provedor e runtime, não para manter uma transcrição.
 
 ### Configurações
 
-As configurações gerais abrangem comportamento de tema que acompanha o Obsidian, rolagem automática, geração de títulos, indicadores de uso, registro de depuração, localidade, abas e qual provedor possui a tela de configurações. As abas de cada provedor tratam caminhos de CLI, comportamento de modelo, comandos, agentes, habilidades e configurações pertencentes ao provedor, quando existentes. Você também pode definir variáveis de ambiente do espaço de trabalho do projeto, com escopo por provedor quando necessário.
+Quatro abas organizam as configurações: **Geral** para idioma, posição do chat, abas e exibição; **Provedores** para ativar CLIs e configurar seus modelos; **Avançado** para contexto, conversas, ferramentas e diagnóstico; e **Sobre** para versão e novidades. As configurações aparecem na pesquisa nativa do Obsidian.
+
+A visão geral dos provedores mostra as CLIs detectadas e os controles de ativação. As configurações do provedor selecionado aparecem abaixo.
 
 <p align="center">
-  <img src="../../assets/readme/settings-general.png" alt="Configurações gerais do Grimoire" width="100%">
+  <img src="../../assets/readme/settings-providers.png" alt="Visão das doze integrações CLI do Grimoire e das configurações de modelos Codex" width="100%">
 </p>
+
+<details>
+<summary>Configurações gerais</summary>
+
+<p align="center">
+  <img src="../../assets/readme/settings-general.png" alt="Configurações de idioma, posição do painel, abas, rótulos, rolagem e títulos das conversas" width="100%">
+</p>
+
+</details>
 
 ## Onde o Grimoire mantém seus dados
 
 | Caminho | Conteúdo |
 | --- | --- |
-| `.grimoire/grimoire-settings.json` | Configurações do aplicativo e configuração de provedores |
-| `.grimoire/sessions/*.meta.json` | Metadados de sessão |
-| `.grimoire/logs/YYYY-MM-DD.jsonl` | Registros de depuração sanitizados e opcionais |
+| `.grimoire/grimoire-settings.json` | Configurações do aplicativo e dos provedores |
+| `.grimoire/sessions/*.meta.json` | Metadados das sessões |
+| `.grimoire/logs/YYYY-MM-DD.jsonl` | Registros de depuração sanitizados, ativados opcionalmente |
 | `.grimoire/claude/statusline-usage.json` | Instantâneo do uso do Claude para o medidor de plano |
 | `.grimoire/grok/` | Artefatos de inicialização do Grok Build, configuração gerenciada e ponteiros de sessão |
 
@@ -499,15 +510,15 @@ npm run build:release
 
 npm é o gerenciador de pacotes canônico para desenvolvimento, CI e lançamentos. Mantenha `package-lock.json` atualizado quando as dependências mudarem; arquivos de bloqueio de gerenciadores de pacotes secundários não são incluídos intencionalmente no repositório.
 
-## Lançamentos
+## Versões publicadas
 
 Os lançamentos do Grimoire são publicados a partir de tags semver, como `1.0.0`. O fluxo de lançamento executa a verificação local, cria o pacote do Obsidian, verifica se a tag corresponde a `package.json` e `manifest.json` e depois anexa `main.js`, `manifest.json` e `styles.css` ao GitHub Release.
 
 Os plugins da comunidade do Obsidian são o caminho recomendado de instalação para usuários. Os GitHub Releases continuam trazendo os ativos do pacote para instalações manuais e BRAT. Use `main` para o desenvolvimento que pode ser lançado e depois publique criando uma tag da versão que corresponde ao manifesto.
 
-## Roteiro
+## Roteiro de desenvolvimento
 
-Hoje, o Grimoire inclui Codex, Claude Code, Antigravity CLI, Gemini CLI (Legacy), OpenCode, MiMoCode, Kimi Code, Grok Build, Qwen Code, Devin e Reasonix.
+Hoje, o Grimoire inclui Codex, Claude Code, Antigravity CLI, Gemini CLI (Legacy), OpenCode, MiMoCode, Kimi Code, Grok Build, Qwen Code, Devin, Reasonix e Command Code.
 
 Os próximos da lista são GitHub Copilot CLI, outros provedores compatíveis com ACP e CLIs de modelos locais assim que seus runtimes estiverem estáveis o suficiente para serem incorporados ao Obsidian. As notas de implementação estão em [docs/provider-roadmap.md](../provider-roadmap.md).
 

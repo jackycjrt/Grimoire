@@ -20,11 +20,11 @@
 </p>
 
 <p align="center">
-  <img src="assets/readme/chat-workspace.png" alt="Grimoire side panel running beside an Obsidian vault note" width="100%">
+  <img src="assets/readme/chat-workspace.png" alt="Ocean Atlas in Obsidian beside a Codex Astra High chat connecting ocean layers, currents, and marine life" width="100%">
 </p>
 
 <p align="center">
-  <sub>Chat with local CLI agents from the same Obsidian workspace where your notes live.</sub>
+  <sub>A real vault note and a conversation grounded in its links. Screenshots show the 2.0 development build.</sub>
 </p>
 
 > **Heads-up: 2.0 is in progress.** The next major release moves Grimoire onto a provider-based execution architecture, where one kernel drives every CLI and records exactly one outcome per turn, and brings a redesign that follows your vault's theme and accent. It is merged into `main` and is not in a published release yet. The current release is still 1.3.2. Conversations, settings, and provider files carry over unchanged.
@@ -267,7 +267,7 @@ Reasoning effort is a picker fed by the session, not a fixed list. Which levels 
 
 One thing to know about Safe mode: `ask` gates the tools Reasonix classifies as permission-gated, not every tool, so a shell command it judges read-only can run without a prompt. Grimoire approves every file write Reasonix makes through the protocol, which is what keeps the vault behind a question. For a session that must not write, use Plan.
 
-Reasonix owns its configuration in `~/.reasonix/config.toml` and reads API keys from the environment under the names that file gives. Vault skills are read from `.reasonix/skills` and `.agents/skills`. Grimoire manages an isolated project MCP list in `.grimoire/mcp/reasonix.json` and injects it into ACP sessions. Usage comes from Reasonix's own status notifications, and a cost appears only when your model provider has a price. Image attachments, reasoning effort control, fork, and rewind are not supported.
+Reasonix owns its configuration in `~/.reasonix/config.toml` and reads API keys from the environment under the names that file gives. Vault skills are read from `.reasonix/skills` and `.agents/skills`. Grimoire manages an isolated project MCP list in `.grimoire/mcp/reasonix.json` and injects it into ACP sessions. Usage comes from Reasonix's own status notifications, and a cost appears only when your model provider has a price. Image attachments, fork, and rewind are not supported.
 
 ### Command Code
 
@@ -359,10 +359,10 @@ A focused side panel with multiple tabs. Each tab keeps its own draft, provider,
 
 ### Tab, history, and navigation controls
 
-Right-click a tab to rename, duplicate, close it, close other tabs, or close tabs to its right. Middle-click closes a tab, and the timed Undo action restores a closed tab with its draft and position. Open a saved conversation in a new tab from chat history with its action, a modifier-click, or a middle-click. Long conversations have a five-way navigator for the top, previous prompt, conversation directory, next prompt, and bottom. Completed messages show a localized completion timestamp next to their copy action.
+Open the tab actions menu or right-click a tab to rename, duplicate, or close tabs. Middle-click closes a tab, and Undo restores its draft and position. Search past chats in the history popover and reopen a conversation in a new tab. History marks manually named and auto-generated titles. The transcript toolbar provides jump controls and a thread outline; completed answers show their completion time.
 
 <p align="center">
-  <img src="assets/readme/conversation-history.png" alt="Grimoire conversation history and tab navigation" width="100%">
+  <img src="assets/readme/conversation-history.png" alt="History search showing three Ocean Atlas conversations, their models, and title-origin markers" width="100%">
 </p>
 
 ### Parallel workers, settings, and composer
@@ -376,11 +376,11 @@ The **Parallel workers** approval card shows the inherited model and lets you se
 | `Enter` | Send the current turn. Disabled when **Send only with button** is enabled. |
 | `Shift+Enter` | Insert a new line in the composer. |
 | `Shift+Tab` | Cycle permission modes: `Safe -> Auto-approve -> Plan -> Safe`. Providers without Plan mode cycle between Safe and Auto-approve. |
-| `Escape` | Stop the active response, or close the open chat history sheet. |
+| `Escape` | Stop the active response, or close the open history popover. |
 
 ### Model selector
 
-One picker, grouped by provider and sorted by label: Antigravity, Claude Code, Codex, Devin, Gemini CLI (Legacy), Grok Build, Kimi Code, MiMoCode, OpenCode, Qwen Code, and Reasonix. Search runs across labels, descriptions, groups, and model IDs without resizing the menu while you filter. Catalogs load lazily and remember which groups you collapsed. Add custom aliases and context-window overrides in settings. Claude's 1M variants are extra options, not replacements for the base models.
+One picker, grouped by provider and sorted by label: Antigravity, Claude Code, Codex, Command Code, Devin, Gemini CLI (Legacy), Grok Build, Kimi Code, MiMoCode, OpenCode, Qwen Code, and Reasonix. Search runs across labels, descriptions, groups, and model IDs without resizing the menu while you filter. Catalogs load lazily and remember which groups you collapsed. Add custom aliases and context-window overrides in settings. Claude's 1M variants are extra options, not replacements for the base models.
 
 ### Usage and cost
 
@@ -443,11 +443,22 @@ Off by default. Turn it on and Grimoire writes sanitized JSONL to `.grimoire/log
 
 ### Settings
 
-General settings cover Obsidian-following theme behavior, auto-scroll, title generation, usage indicators, debug logging, locale, tabs, and which provider owns the settings view. Per-provider tabs handle CLI paths, model behavior, commands, agents, skills, and provider-owned config where it exists. You can also set project workspace environment variables, scoped per provider when needed.
+Four tabs keep configuration organized: **General** for language, chat placement, tabs, and display; **Providers** for enabling CLIs and configuring their models; **Advanced** for context, conversations, tools, and diagnostics; and **About** for version information and What's New. Settings participate in Obsidian's native search.
+
+The provider overview shows CLI detection and enable switches, with the selected provider's settings below.
 
 <p align="center">
-  <img src="assets/readme/settings-general.png" alt="Grimoire general settings" width="100%">
+  <img src="assets/readme/settings-providers.png" alt="Grimoire provider overview with twelve CLI integrations and Codex model settings" width="100%">
 </p>
+
+<details>
+<summary>General settings</summary>
+
+<p align="center">
+  <img src="assets/readme/settings-general.png" alt="General settings for language, panel placement, chat tabs, labels, scrolling, and conversation titles" width="100%">
+</p>
+
+</details>
 
 ## Where Grimoire keeps your data
 

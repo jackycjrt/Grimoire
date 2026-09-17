@@ -1,119 +1,88 @@
 # Changelog
 
+User-facing changes by release. Version 2.0 is in development; **1.3.2 is the current published release**.
+
 ## 2.0.0 - Unreleased
 
-The provider runtime is rebuilt on an execution kernel, and the chat surfaces are redrawn on the Nordic design system. Every provider runs through the kernel, and what a chat surface draws is read from the kernel's record of a turn rather than from whether the provider stopped talking. Existing conversations, settings, and provider-owned files are read as they are; nothing needs migrating.
-
-### Changed
-
-- Compress the embedded changelog with gzip to keep the complete release history inside Obsidian Sync Standard’s 5 MB asset limit as providers are added.
-
-- A permission card that offers several answers no longer commits one of them on `Enter` or `a`. Those shortcuts exist for the ordinary card, where one option allows and one rejects; a provider that asks a question on the permission channel offers three or four distinct answers, and the shortcut took whichever came first. Each answer is still reachable by its own number, which the card draws.
-- Every turn now ends in exactly one recorded outcome - succeeded, failed, cancelled, interrupted, rejected before dispatch, or unknown. A connection that drops mid-answer no longer renders as a finished reply, and a turn whose fate the provider never confirmed is shown as a warning instead of being drawn as success.
-- A turn that never reached the provider - a permission check that refuses on the default mode, a session the CLI would not open - now says so in the conversation, where before it left an empty assistant message.
-- Cancelling a turn dispatches the cancel and waits for the provider to confirm it stopped. The interruption is drawn at once, as before; what changed is that the record of the turn is no longer written until the provider has actually answered.
-- The plugin follows the vault's theme and accent colour on every surface. The accent had been a fixed violet on thirty-two of them, because Obsidian defines no accent triple and the fallback was silently used. Scrollbars, hovers, menus, and backdrops no longer carry dark-only colours into light themes, and the settings sheet is drawn with Obsidian's own controls.
-- The chat view is redrawn. Tabs are a strip under one rule with the open tab underlined in your accent; a tab that is working shows a pulsing dot and a tab waiting on you shows a hollow one. The panel switch is a rail of icons that names the panel you are in, and the transcript's jump controls move into it from the five translucent circles that used to float over the text you were reading.
-- Your own message sits on the vault's second background instead of inside an accent-tinted card, and the line above an answer says which provider and model produced it as a caption rather than as a heading. A run of tool steps is drawn against a single hairline, with the argument in monospace and the result right-aligned.
-- The composer is one card with one line, and Send is a single square that becomes Stop while a turn runs. Stop used to appear only once a subagent was seen working, so an ordinary turn could not be stopped from the composer at all.
-- Chat history opens as a popover beside the button rather than as a sheet covering the conversation you were reading.
-- Every decision Grimoire asks for - a plan to approve, a question to answer, a permission to grant - now wears one shape: a glyph, what is being decided, the material it acts on, and numbered choices, with the chosen one marked by a rule rather than a filled card.
-- A provider is identified by its own mark drawn in the theme's muted ink. The nine brand colours are gone, and status is carried by a dot beside a word rather than by a hue.
-- The tab menu can be opened from the header. It was reachable only by right-click, which put closing, renaming, auto-renaming and duplicating a tab out of the keyboard's reach.
-- Nineteen clickable elements that only a mouse could reach - including a modal that offered a choice the keyboard could only decline - now have a role, a name, a tab stop, and Enter/Space handling.
-- Session metadata in `.grimoire/sessions/` is written as a versioned record. A file written before the envelope existed is read as revision 1 and rewritten in place at its next write, never renamed. A writer applies only the fields it changed, so two views of one conversation no longer overwrite each other's edits.
+A redesigned workspace that follows your Obsidian theme, with more reliable agent runs and easier context management. Existing conversations, settings, and provider files carry over without migration.
 
 ### Added
 
-- Fixed blocked Command Code tool calls remaining in the running state after completion, and work-mode menus overriding provider-specific permission labels and descriptions.
-- Added Command Code as an opt-in provider: streamed answers and tool activity, CLI model discovery, model-specific reasoning effort without global CLI configuration writes, native session resume after reload, context token estimates, host-specific CLI paths, and scoped environment settings. Authentication and native configuration remain CLI-owned. Safe mode now pauses edits, commands and other non-read tools for a one-time Grimoire approval. Cancellation, a lost connection or a missing approval hook prevents execution. Safe requires the verified Command Code 1.53.0 npm installation and disables native subagents. Auto-approve runs without Grimoire prompts; native deny and ask rules still apply. Image attachments, plan mode, slash commands, auxiliary tasks, fork, and rewind are not exposed in this integration.
+- Devin and Reasonix as opt-in providers, with live model discovery, permission controls, native resume, and managed MCP servers. Reasonix also reports turn usage and model-specific reasoning effort (#108).
+- Command Code as an opt-in provider, with streamed answers and tools, live models, reasoning effort, native resume, context estimates, and host-specific CLI settings. Safe mode requires the verified 1.53.0 npm installation and disables native subagents; Auto-approve retains the CLI's native rules. Images, Plan mode, slash commands, auxiliary tasks, fork, and rewind are not exposed.
+- One searchable context manager for notes, mentions, and external files, with multi-select removal and estimated token costs. Missing files and context overflows remain visible; the Add picker supports attaching several notes in one visit.
+- Recovery records for interrupted runs and agent work after a restart. Stored locally in `.grimoire/control/`, they contain no prompts, transcripts, secrets, or raw provider payloads.
+- A configurable turn duration limit: 30 minutes by default, or 0 for no ceiling, separate from the 10-minute inactivity timeout (#145).
+- Optional labels for all Chat, Sources, and Context panels, plus title-origin markers and a Regenerate title action in history (#161).
 
-- Devin CLI (Cognition) as an opt-in provider over `devin acp`: models and modes from the live session, permission requests for shell commands, file writes approved by Grimoire, native resume, and Grimoire-managed MCP servers in `.grimoire/mcp/devin.json`. (#108)
-- Reasonix as an opt-in provider over `reasonix acp`: models and modes from the live session, permission requests that carry their own subject, file writes approved by Grimoire, native resume, per-turn tokens read from Reasonix's own status notifications, and Grimoire-managed MCP servers in `.grimoire/mcp/reasonix.json`. Safe, Plan, and Auto-approve drive both of Reasonix's axes, because it keeps the session mode and the tool-approval posture apart — and a turn that cannot set the posture is refused rather than run, since that posture is the only thing separating Safe from Auto-approve. Reasoning effort is a picker filled from the session rather than a fixed list, because which levels a model takes is decided by the provider block serving it; Auto heads the list and leaves the choice to Reasonix.
+### Improved
 
-- Context management. Everything attached to your next message - the open note, notes you mentioned, files from outside the vault - is now one list. One file the composer draws as a chip; from the second it says how many, roughly what they cost, and what share of the model's context window they would take, on a line the same height as the chip it replaces, so attaching a file never shrinks the box you write in. A Manage dialog lists all of it grouped and searchable, with per-file removal, multi-select, and a window budget in the footer. An Add picker searches the vault and stays open on Tab so attaching six notes takes one visit, and its footer can reach a file or a folder from outside the vault as well as the note you are looking at. Costs are estimates and are labelled as such. Nothing is dropped silently: a file that moved keeps its row and says so, and going over the window warns you without disabling Send.
-- The Manage dialog opens from wherever you are: a list control beside the composer's Add chip, Manage on the summary line, Review when the context will not fit, and a "Manage context" command you can bind a shortcut to.
-- A setting for panel labels. The Chat / Sources / Context switch ships as icons with the current panel named; turn on "Show panel labels" to name all three.
-- `.grimoire/control/` holds the kernel's lifecycle records: which run owns which process, generations, state, terminals, and the evidence needed to recover after a crash or a quit mid-turn. They carry no prompts, no transcripts, no secrets, and no provider payloads, and deleting a conversation deletes its records with it. An older plugin build ignores the directory, so a downgrade is safe.
-- A run left `dispatching` or `running` by a quit is classified honestly at the next load instead of being shown as still running.
-- Agent work started from a conversation is durable: a restart shows what became of it rather than forgetting it.
-- A setting for how long one turn may run. A turn is stopped after ten minutes of silence, which is the check meant for a provider that has stopped answering; separately, no turn may run longer than the ceiling this setting names - thirty minutes by default. Raise it for long agentic work, or set it to 0 to remove it. Advanced, under Conversations (#145).
-- A conversation records who wrote its title - the placeholder cut from your first message, the model, or you - and the history list marks it before the name: a spark for a title a model wrote, a pencil for one you typed, nothing for a placeholder nobody has named yet. The mark is a shape rather than a colour, and names itself on hover. "Regenerate title" is now offered for any conversation instead of only after a failed generation: a title you are not happy with is not a failed one. Conversations from before this say nothing rather than guess (#161).
+- The Nordic interface follows the vault's theme and accent throughout: quieter message cards, compact tool steps, underlined tabs, provider marks, and native settings controls.
+- Chat history opens beside its button. Two-line rows keep titles clear of hover actions; conversation navigation lives in the panel rail.
+- Plans, questions, and permissions share numbered decision cards. Tab actions and previously mouse-only controls are keyboard accessible.
+- Every turn records one outcome. Dropped connections, rejected starts, and unconfirmed results are shown explicitly; cancellation waits for provider confirmation before its outcome is saved.
+- Session updates preserve changes made by other views of the same conversation. Earlier metadata remains readable and is updated in place on the next save.
+- The bundled changelog is compressed to help keep the plugin within Obsidian Sync Standard's 5 MB asset limit.
 
 ### Fixed
 
-- Code in an answer is readable again. A fenced block was set two steps below the sentence introducing it, because the correction that keeps inline code the size of the words around it also landed inside the block, on a size the block had already stepped down from. It computed at roughly 10px against 13px of prose, in answers and in reasoning both; it now sits one step below the prose, the same optical size as a word of inline code in it.
-- Grok Build's context meter, Kimi Code's, and Qwen Code's read usage from the turn that produced it, so the meter no longer lags a turn behind or stays empty on a provider that reports usage only after the prompt returns.
-- Resuming an OpenCode session no longer opens a fresh session on every reload. OpenCode answers `session/load` with its config options and no session id, and requiring the echo turned every resume into "the agent returned another session".
-- Stopping the title generation for one tab no longer stops it for every other open tab.
-- The history list no longer spins on a conversation nothing is naming. A generation that finished after the list was drawn never reached it, so the spinner it raised stayed up; one that failed outright recorded no outcome at all and spun for good, across restarts included; and a run left unfinished by quitting Obsidian came back still spinning. The regenerate control is no longer drawn on a row where pressing it would refuse without a word (#161).
-- A history row is two lines now, and its hover controls no longer sit on the last words of the title. They are wider than the stamp they used to float over, so nothing could reserve room for them; they have their own place on the second line, opposite the stamp, and the title has the first line to itself. The popover is a little wider to go with it (#161).
-- A turn that is still working is no longer stopped for taking too long. The run timeout was armed once when the turn was dispatched and never moved afterwards, so ten minutes of streaming output ended exactly like ten minutes of silence - on Claude, on Codex, and on every provider running through the ACP backend. The window now measures silence and is restarted by everything the turn produces, and a finished turn no longer leaves a live timer behind it (#145).
+- Stop is available for ordinary turns, and active output resets the inactivity timer instead of healthy runs timing out (#145).
+- Multi-choice permissions no longer select the first answer through generic approval shortcuts. Command Code blocked tools settle correctly, and work-mode menus retain provider-specific labels.
+- Restored readable code-block sizing and current-turn context usage for Grok Build, Kimi Code, and Qwen Code.
+- OpenCode resumes saved sessions correctly. Cancelling title generation affects only its own tab, and history no longer leaves completed, failed, or interrupted title jobs spinning (#161).
 
 ## 1.3.2 - 2026-09-06
 
 ### Added
 
-- Antigravity turns can now carry images. `agy` has no image flag and its print-mode transport is text-only, so an attachment rides along as a temp file whose path the prompt names: the agent opens it, answers about it, and the file is removed when the turn ends - on success, failure, and cancel alike. The file keeps the name you gave it in any alphabet, since that name is the only label the image carries into the CLI, and an image that could not be handed over is now named in the chat instead of quietly missing from the answer. Print-mode history holds no images, so a follow-up question about the same picture needs it attached again.
-- Added an auto-rename control to the tab rename dialog and the tab context menu, so a conversation can be re-titled from its own content without clearing the field first (#123).
-- Conversation titles are now generated in the interface language. The title prompt is English, so a Russian vault still got English tab titles; the request now names the plugin locale, for every provider. Titles that arrive wrapped in a model's preamble - `Here is your title:` - are unwrapped rather than becoming the title (#120).
-- Added the Refresh models button to the Codex, Gemini CLI, and Qwen Code settings tabs, matching the one Claude already had. A model added on the service side, or a CLI reinstalled somewhere else, can now be picked up without disabling and re-enabling the provider. A refresh that retires the selected model moves the selection off the dead id instead of leaving it there (#129, #131).
+- Image attachments for Antigravity, passed as temporary files and removed after the turn. Reattach an image for follow-up questions because print-mode history does not retain it.
+- Auto-rename from tab controls, with generated titles in the interface language (#120, #123).
+- Refresh models in Codex, Gemini CLI, and Qwen Code settings (#129, #131).
 
 ### Improved
 
-- Image attachments now live in the vault at `.grimoire/attachments/<sha256>.<ext>` instead of being serialized into session metadata. A message keeps the hash, so a conversation update no longer rewrites megabytes of base64 on every field change, the same screenshot across ten conversations is one file, and deleting a conversation reclaims what nothing else references. Images are scaled to at most 2000 px on the long edge on the way in, which is also why a large screenshot is no longer refused for a size it will not have once stored. Attachments saved before the store keep working exactly as they did (#126).
-- The fallback conversation title - what a conversation is called before a generated one arrives, and instead of one when title generation is unavailable - is now built rather than cut at the first punctuation mark. Measured over 135 real conversations: 97 unique titles became 135, four titles that leaked `<git_status>`-style context blocks became none, and sentences no longer break inside a version number such as `1.4.5` (#118).
-- Every title source now shares one 100-character budget and one truncation, so a generated title, a fallback title, and a fork title no longer end differently on the same text, and none of them cuts through an emoji. The prompt still asks for about 50 characters; the budget is a safety net against a title being mutilated mid-word, not a target (#124).
-- Closing the full-size image viewer with Escape no longer cancels the running turn along with it (#126).
+- Images are resized to at most 2000 px and stored once by content in `.grimoire/attachments/`. Existing attachments remain readable; closing the viewer with Escape leaves the running turn intact (#126).
+- More distinctive fallback titles, no leaked context wrappers, and consistent 100-character limits that preserve emoji (#118, #124).
 
 ### Fixed
 
-- Stopped reopening a Claude conversation from duplicating every message in it. Hydration merged the conversation's own messages with the transcript's while keying only on ids drawn from two namespaces that can never collide, so each open appended a second copy of the whole exchange and saved it back to session metadata. Conversations already stored with duplicates repair themselves the next time they are opened (#127, #128).
-- Fixed every Grok Build turn failing with `Cannot read properties of undefined (reading 'trim')` once a saved session was reopened. ACP's `session/load` speaks about the session the client named, so an agent need not echo the id back - Grok Build 1.0.13 answers with `models` and `_meta` alone - and the runtime bound itself to that missing field. Resuming a Grok conversation had never once succeeded: the load failed, a fresh session was created behind it, and the whole transcript was replayed into it as the next prompt. The runtime now keeps the id it asked to load, the way the Qwen adapter already did; Gemini CLI, OpenCode, MiMoCode, and Kimi Code carried the same binding and are fixed with it.
-- Kept an image attached to a message when a conversation is rebuilt from the provider's own log. Grok Build, OpenCode, MiMoCode, and Kimi Code replace the stored turns with their native transcript when a chat is opened, and a turn rebuilt that way carries no attachment - Grok saves the picture into its session's `assets` directory and names the path in the prompt instead of keeping it on the message. The stored attachment now travels onto the matching turn, so reopening a chat no longer empties it of the images it was about.
-- Stopped a reopened Codex conversation from showing `<image name=[Image #1] path="/tmp/...">` where the attached picture belongs. Codex records an image input as that wrapper in its own transcript, so the hydrated turn stopped matching the turn Grimoire had stored - and the stored turn, the only one carrying the attachment, was discarded along with the thumbnail. The wrapper is now kept out of the displayed message, which also lets the stored turn survive hydration with its image intact.
-- Codex, Gemini CLI, and Qwen Code now notice new models after the CLI is upgraded in place. Each catalog was keyed on the CLI path and environment, none of which an upgrade over the same path touches, so a settled catalog was never probed again: measured against codex-cli 0.153.4, three of the seven models it reports were unreachable and a retired one was still offered as the default. The key now carries the binary's size and modification time, the way Claude's already did (#129, #131).
-- Stopped the model picker from cutting a label in half. It split on the last `/`, which in a Qwen ModelStudio name such as `[ModelStudio Token Plan for Global/Intl] qwen3.7-plus` belongs to the bracket rather than to a vendor prefix. A slash inside brackets or parentheses is now ignored, and a leading `[qualifier]` is read the same way a `vendor/model` prefix already was (#132).
-- Grok Build now keeps a model declared in `config.toml` as `[model."<id>"]`, which is the supported way to point Grok at a local OpenAI-compatible endpoint. Selecting one silently fell back to the frontier default, because the catalog was rebuilt from the cloud cache alone right before each prompt. A config-declared model also wins over a cached entry of the same id, which is the order Grok itself resolves them in (#121).
-- Passed those local model definitions on to Grok's auxiliary processes, so a locally served model can be used for title generation and the slash-command catalog instead of being unknown to them. The auxiliaries keep the permission mode Grimoire assigns them rather than inheriting the vault's (#122).
-- Named a Codex image attachment after the file you picked again. A field-name mismatch meant every image reached Codex as `image-1`, `image-2`, and so on, with your own file name thrown away.
-- Left a Claude question dialog Grimoire cannot render unanswered instead of reporting a dismissal you never made, and recorded the reason in the debug log. Answering a dialog kind the host never declared closed that dialog under whichever client could display it (#109).
-- Updated the Claude Agent SDK to 0.3.241, and cleared the `fast-uri` and `qs` advisories that had left `npm audit` red on production dependencies.
+- Reopening Claude chats no longer duplicates messages; existing duplicates are repaired on open (#127, #128).
+- Restored ACP session resume when providers omit the session ID from their reply, and preserved image attachments when rebuilding native history.
+- Codex retains attachment names and thumbnails without exposing internal image wrappers.
+- Model catalogs refresh after in-place CLI upgrades, and model labels containing bracketed slashes remain intact (#129, #131, #132).
+- Grok Build respects locally configured models in both chat and auxiliary tasks (#121, #122).
+- Unsupported Claude question dialogs remain unanswered instead of being reported as dismissed (#109).
+- Updated Claude Agent SDK to 0.3.241 and resolved production `fast-uri` and `qs` advisories.
 
 ## 1.3.1 - 2026-08-31
 
 ### Fixed
 
-- Restored Codex's ability to ask you a question outside Plan mode. Codex keeps its `request_user_input` tool behind an experimental feature flag in its default collaboration mode, so a question the agent tried to ask in Safe or Auto mode was refused with `request_user_input is unavailable in Default mode` and the turn carried on with a guess instead. Grimoire now starts the Codex app-server with that feature enabled, using the configuration override rather than the `--enable` flag so that a Codex build which does not know the feature still starts instead of failing to launch at all (#110).
-- Taught Grimoire to render an AskUserQuestion that Claude Code hands over as a user dialog. Newer Claude Code builds can route the question to the host as a `request_user_dialog` control request instead of the permission callback, and Grimoire never advertised that it could display one, so the question degraded to the CLI's no-dialog behavior. It now opens in the same question UI as before: a permission the CLI already denied stays denied, and a dismissed question is reported back as a decline with its reason rather than a silent cancel (#109).
+- Restored Codex questions in Safe and Auto modes without breaking older CLIs (#110).
+- Rendered Claude's native user-dialog questions in the shared question UI, preserving denied permissions and explicit dismissal outcomes (#109).
 
 ## 1.3.0 - 2026-08-29
 
 ### Added
 
-- Follow-ups typed while the agent is working are now queued as separate turns instead of being merged into one message. The queue is a list you can work row by row - edit, remove, or clear it - and the message at the head can be steered into the running turn instead of waiting. A held queue offers Resume.
-- Added a notice when a saved session could not be resumed. Grimoire opens a fresh session and the messages above are not in its context, which previously showed up only as the agent quietly having forgotten the conversation; the thread now ends in a marked seam naming the new session, drawn before you type rather than after a turn has been spent.
-- Added Refresh buttons for the Claude model catalog and slash-command list, so a newly installed model or command can be picked up without disabling and re-enabling the provider.
+- Editable follow-up queues with remove, clear, steer, and resume controls.
+- A visible notice when a saved session cannot resume and its replacement starts without earlier context.
+- Manual refresh for Claude models and slash commands.
 
 ### Improved
 
-- Antigravity now streams answer text and tool steps while the run is still open, instead of showing nothing until the CLI finishes. Tool cards close with the output `agy` reports, and their parameter summaries read correctly for `agy`'s PascalCase arguments.
-- Grok Build's reasoning-effort picker now offers what the session reports for the selected model, rather than a fixed list, and keeps those levels through a model switch. `xhigh` is available on the models that report it.
-- Claude's slash-command list is persisted with the configuration it was discovered under and reused on load, instead of probing a billable session on every start. A probe that finds nothing now backs off instead of retrying immediately.
-- Settled model catalogs are no longer rediscovered on a timer. They refresh when the resolved CLI path or provider configuration actually changes, or when you ask.
+- Antigravity streams answers and tool activity as they arrive.
+- Grok Build offers the selected model's native effort levels, including `xhigh` where supported.
+- Cached catalogs and Claude commands avoid repeated discovery sessions; they refresh when configuration changes or on request.
 
 ### Fixed
 
-- Stopped a failed session resume from silently re-sending the entire conversation to the agent. A dropped session was handed the whole transcript as the next prompt, so one failed resume cost what the whole conversation costs - measured at roughly 34k tokens for a short question that needed none of it. The replacement session now starts clean, and the drop is recorded so an editor restart cannot mistake it for a first-ever message (#99).
-- Decided a lost session by asking the agent through `session/list` rather than reading the answer out of the error text. Every managed CLI reports a missing session as a generic internal error - Grok Build as `Path not found`, OpenCode and MiMoCode as a bare `Internal error` - so an expired token used to be indistinguishable from a session that was genuinely gone. Authentication and configuration failures now surface instead of silently dropping the conversation's context.
-- Fixed the message queue firing at a session that had just failed: a steered follow-up escaped the hold, the hold itself rendered nothing so there was no way to see or resume it, and cancelling a turn while resuming destroyed the queued message.
-- Stopped a queue from following you into the next conversation. Switching conversations refilled the composer and re-attached images from the conversation you had just left.
-- Kept an edited queue entry in its original position instead of moving it to the end.
-- Rendered LaTeX-delimited math (`\(...\)` and `\[...\]`) instead of leaking the delimiters into the message (#81).
-- Seeded a model catalog only under the configuration key it was discovered with, so a catalog found for one CLI path is no longer served for another (#98).
-- Seeded the Gemini, Qwen, and Codex catalogs when the CLI path resolves after startup, instead of leaving the picker empty until a restart.
-- Stopped Claude rewriting its command cache every time the slash-command dropdown opened.
-- Translated the Grok subagent Variant, Color, and Steps labels in Russian, Japanese, Korean, and Traditional Chinese. The same three fields were already translated everywhere else in settings, so those languages showed English labels on one screen and their own on another.
+- Failed resumes no longer resend the entire transcript or mistake authentication errors for missing sessions (#99).
+- Queued messages stay in their conversation and original order, and remain recoverable after a failed or cancelled turn.
+- Rendered LaTeX-delimited math correctly (#81).
+- Model caches remain scoped to their CLI configuration and populate when CLI paths resolve after startup (#98).
+- Removed redundant Claude command-cache writes and completed localized Grok subagent labels.
+
 
 ## 1.1.10 - 2026-08-25
 

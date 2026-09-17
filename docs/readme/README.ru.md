@@ -20,16 +20,16 @@
 </p>
 
 <p align="center">
-  <img src="../../assets/readme/chat-workspace.png" alt="Панель Grimoire рядом с заметкой Obsidian" width="100%">
+  <img src="../../assets/readme/chat-workspace.png" alt="Ocean Atlas в Obsidian рядом с чатом Codex Astra High о слоях океана, течениях и морской жизни" width="100%">
 </p>
 
 <p align="center">
-  <sub>Общайтесь с локальными CLI-агентами прямо в том же Obsidian workspace, где живут ваши заметки.</sub>
+  <sub>Настоящая заметка и диалог, опирающийся на её ссылки. На скриншотах — разрабатываемая версия 2.0.</sub>
 </p>
 
 > **Внимание: идёт работа над 2.0.** Следующий мажорный релиз переводит Grimoire на провайдер-ориентированную архитектуру исполнения, где одно ядро управляет каждым CLI и записывает ровно один исход на ход, и приносит редизайн, следующий теме и акцентному цвету вашего хранилища. Работа уже влита в `main`, но в опубликованный релиз пока не вошла. Текущий опубликованный релиз — по-прежнему 1.3.2. Беседы, настройки и файлы провайдеров переносятся без изменений.
 
-Grimoire встраивает agentic CLI-ассистентов в Obsidian. Codex, Claude Code, Antigravity CLI, Gemini CLI (Legacy), OpenCode, MiMoCode, Kimi Code, Grok Build, Qwen Code, Devin и Reasonix живут в одной боковой панели: читают заметки, редактируют файлы, запускают команды, вызывают инструменты и сохраняют историю сессий рядом с вашим настоящим vault. Всё работает без сервера Grimoire: нет telemetry, hosted backend и proxy между вами и провайдером.
+Grimoire встраивает agentic CLI-ассистентов в Obsidian. Codex, Claude Code, Antigravity CLI, Gemini CLI (Legacy), OpenCode, MiMoCode, Kimi Code, Grok Build, Qwen Code, Devin, Reasonix и Command Code живут в одной боковой панели: читают заметки, редактируют файлы, запускают команды, вызывают инструменты и сохраняют историю сессий рядом с вашим настоящим vault. Всё работает без сервера Grimoire: нет telemetry, hosted backend и proxy между вами и провайдером.
 
 Grimoire сделан для тех, кто уже работает в Obsidian и хочет, чтобы AI-помощник ощущался частью vault: локальный контекст, локальные файлы, осознанный выбор провайдера и usage/cost прямо в интерфейсе.
 
@@ -38,7 +38,7 @@ Grimoire сделан для тех, кто уже работает в Obsidian 
 ## Зачем Grimoire
 
 - Используйте CLI-агентов, которым уже доверяете, прямо внутри заметок.
-- Переключайте провайдеров из composer. Codex, Claude Code, Antigravity CLI, Gemini CLI (Legacy), OpenCode, MiMoCode, Kimi Code, Grok Build, Qwen Code, Devin и Reasonix используют один model picker.
+- Переключайте провайдеров из composer. Codex, Claude Code, Antigravity CLI, Gemini CLI (Legacy), OpenCode, MiMoCode, Kimi Code, Grok Build, Qwen Code, Devin, Reasonix и Command Code используют один model picker.
 - Привязывайте каждый turn к vault-контексту. Упоминайте заметки, папки и MCP tools без ручного копирования путей.
 - Видьте cost и limits рядом с выбором модели, именно там, где принимается решение.
 - Оставайтесь local-first. Grimoire не собирает telemetry, не проксирует prompts и не запускает backend.
@@ -47,16 +47,16 @@ Grimoire сделан для тех, кто уже работает в Obsidian 
 
 | Возможность | Codex | Claude Code | OpenCode | Grok Build | MiMoCode | Kimi Code | Antigravity CLI | Gemini CLI (Legacy) | Qwen Code | Devin | Reasonix | Command Code |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Локальный persistent runtime | Да | Да | Да | Да | Да | Да | Нет | Да | Да | Да | Да | Нет |
-| Нативное восстановление истории | Да | Да | Да | Да | Да | Да | Нет | Да | Нет | Нет | Нет | Нет |
-| Plan mode | Да | Да | Да | Да | Да | Да | Нет | Да | Да | Да | Да | Нет |
-| Image attachments | Да | Да | Да | Да | Да | Да | Нет | Да | Да | Да | Нет | Нет |
-| Instruction mode | Да | Да | Да | Да | Да | Да | Нет | Да | Да | Да | Да | Нет |
-| Reasoning effort controls | Да | Да | Да | Да | Да | Да | Да | Да | Да | Нет | Да | Yes (model-specific) |
-| Rewind | Нет | Да | Нет | Да | Нет | Нет | Нет | Нет | Нет | Нет | Нет | Нет |
-| Fork | Да | Да | Нет | Да | Нет | Нет | Нет | Нет | Нет | Нет | Нет | Нет |
-| Provider slash commands | Нет | Да | Да | Да | Да | Да | Нет | Да | Да | Да | Да | Нет |
-| Grimoire-managed MCP UI | Нет | Да | Да | Да | Да | Да | Нет | Да | Да | Да | Да | Нет |
+| Локальная постоянная среда выполнения | Да | Да | Да | Да | Да | Да | Нет | Да | Да | Да | Да | Нет |
+| Восстановление нативной истории | Да | Да | Да | Да | Да | Да | Нет | Да | Нет | Нет | Нет | Нет |
+| Режим планирования | Да | Да | Да | Да | Да | Да | Нет | Да | Да | Да | Да | Нет |
+| Вложения изображений | Да | Да | Да | Да | Да | Да | Нет | Да | Да | Да | Нет | Нет |
+| Режим инструкций | Да | Да | Да | Да | Да | Да | Нет | Да | Да | Да | Да | Нет |
+| Настройка глубины рассуждений | Да | Да | Да | Да | Да | Да | Да | Да | Да | Нет | Да | Да (зависит от модели) |
+| Откат | Нет | Да | Нет | Да | Нет | Нет | Нет | Нет | Нет | Нет | Нет | Нет |
+| Ветвление | Да | Да | Нет | Да | Нет | Нет | Нет | Нет | Нет | Нет | Нет | Нет |
+| Slash-команды провайдера | Нет | Да | Да | Да | Да | Да | Нет | Да | Да | Да | Да | Нет |
+| Управление MCP через Grimoire | Нет | Да | Да | Да | Да | Да | Нет | Да | Да | Да | Да | Нет |
 
 ## Установка
 
@@ -208,8 +208,8 @@ qwen
 
 В интерактивном CLI выполните `/auth` и выберите Alibaba ModelStudio, Third-party Providers или Custom Provider; Qwen OAuth прекращён. Затем включите Qwen Code в Grimoire: он запускает `qwen --acp`. Safe, Auto-approve и Plan соответствуют Qwen `default`, `yolo` и `plan`; другие automatic modes в shared toolbar консервативно показаны как Safe. Модели и modes приходят из live ACP session.
 
-- [Qwen Code documentation](https://qwenlm.github.io/qwen-code-docs/en/)
-- [Qwen Code authentication](https://qwenlm.github.io/qwen-code-docs/en/users/configuration/auth/)
+- [Документация Qwen Code](https://qwenlm.github.io/qwen-code-docs/en/)
+- [Авторизация Qwen Code](https://qwenlm.github.io/qwen-code-docs/en/users/configuration/auth/)
 - [Qwen Code repository](https://github.com/QwenLM/qwen-code)
 
 Если Qwen не запускается или модели не появились, выполните `/doctor` внутри Qwen Code, завершите `/auth`, проверьте `qwen --version` и путь к Qwen CLI в настройках Grimoire.
@@ -269,24 +269,24 @@ Reasoning effort это не фиксированный список, а пик�
 
 Про режим Safe стоит знать одно. `ask` закрывает те инструменты, которые Reasonix относит к требующим разрешения, а не все: shell-команда, признанная read-only, выполняется без вопроса. Grimoire спрашивает про каждую запись файла, которую Reasonix делает по протоколу, и именно это держит vault за вопросом. Если сессия не должна писать вообще ничего, используйте Plan.
 
-Reasonix хранит конфигурацию в `~/.reasonix/config.toml` и читает API-ключи из окружения под именами, которые указаны в этом файле. Навыки vault читаются из `.reasonix/skills` и `.agents/skills`. Grimoire ведёт отдельный список MCP в `.grimoire/mcp/reasonix.json` и передаёт его в ACP-сессию. Расход берётся из собственных status-уведомлений Reasonix, а стоимость появляется, только если у вашего провайдера моделей есть цена. Вложения-изображения, управление reasoning effort, fork и rewind не поддерживаются.
+Reasonix хранит конфигурацию в `~/.reasonix/config.toml` и читает API-ключи из окружения под именами, которые указаны в этом файле. Навыки vault читаются из `.reasonix/skills` и `.agents/skills`. Grimoire ведёт отдельный список MCP в `.grimoire/mcp/reasonix.json` и передаёт его в ACP-сессию. Расход берётся из собственных status-уведомлений Reasonix, а стоимость появляется, только если у вашего провайдера моделей есть цена. Вложения-изображения, fork и rewind не поддерживаются.
 
 ### Command Code
 
-Command Code is opt-in in the unreleased 2.0 build. Install and authenticate in a terminal, then enable it under Settings → Grimoire → Providers:
+Command Code включается отдельно в разрабатываемой версии 2.0. Установите его и войдите в аккаунт через терминал, затем включите в Настройки → Grimoire → Провайдеры:
 
 ```bash
 npm i -g command-code
 command-code login
 ```
 
-Reasoning effort is discovered for the selected model from the installed CLI. The picker offers only that model's supported levels and a CLI default option; models without adjustable effort have no picker. Explicit selections apply to the current run through the native session mod API without changing global CLI settings. CLI default preserves native behavior, including an effort already stored in a resumed session.
+Уровни reasoning effort определяются установленным CLI для выбранной модели. Список содержит только поддерживаемые уровни и вариант по умолчанию CLI; у моделей без такой настройки список отсутствует. Явный выбор применяется к текущему запуску через нативный API изменения сессии, не меняя глобальные настройки CLI. Вариант по умолчанию сохраняет нативное поведение, включая уровень, уже записанный в возобновляемой сессии.
 
-Grimoire streams answers and tool activity from the CLI's headless JSON output, discovers models with `--list-models`, and saves the native session ID for explicit resume after reload. Authentication, native configuration, skills, MCP and transcripts stay with Command Code. Context usage uses reported input tokens against an estimated or user-supplied context limit; account quotas and prices are not inferred.
+Grimoire отображает поток ответов и действий инструментов из JSON-вывода CLI без интерфейса, получает модели через `--list-models` и сохраняет нативный ID сессии для явного возобновления после перезагрузки. Авторизация, конфигурация, навыки, MCP и журналы диалогов остаются у Command Code. Заполнение контекста рассчитывается по сообщённым входным токенам относительно оценочного или заданного пользователем лимита; квоты аккаунта и цены не вычисляются предположительно.
 
-**Safe** pauses edits, commands and other non-read tools for a one-time approval in Grimoire. Denying, cancelling or losing the approval connection prevents execution. Safe currently requires the verified Command Code 1.53.0 npm installation and disables native subagents, whose separate loops cannot use this approval bridge. **Auto-approve** runs without Grimoire prompts; native deny and ask rules still apply in both modes. This integration does not expose interactive questions, image attachments, plan controls, slash commands, managed MCP/skills/agents, auxiliary tasks, fork, rewind, or native history import.
+**Safe** приостанавливает правки, команды и другие инструменты, не ограниченные чтением, до разового разрешения в Grimoire. Отказ, отмена или потеря соединения с механизмом разрешений предотвращают выполнение. Сейчас Safe требует проверенную npm-установку Command Code 1.53.0 и отключает нативных субагентов: их отдельные циклы не могут использовать этот механизм. **Auto-approve** работает без запросов Grimoire; нативные правила запрета и подтверждения действуют в обоих режимах. Интеграция не предоставляет интерактивные вопросы, изображения, управление планом, slash-команды, управляемые MCP/навыки/агентов, вспомогательные задачи, ветвление, откат и импорт нативной истории.
 
-- [Command Code headless documentation](https://commandcode.ai/docs/headless)
+- [Документация Command Code о режиме без интерфейса](https://commandcode.ai/docs/headless)
 
 ### OpenCode
 
@@ -299,8 +299,8 @@ opencode
 
 Homebrew, npm, bun и package-manager installs тоже подходят. Настройте provider credentials в OpenCode, затем включите его в Grimoire.
 
-- [OpenCode download](https://opencode.ai/download)
-- [OpenCode provider docs](https://opencode.ai/docs/providers)
+- [Скачать OpenCode](https://opencode.ai/download)
+- [Провайдеры OpenCode](https://opencode.ai/docs/providers)
 - [OpenCode config docs](https://opencode.ai/docs/config)
 
 Внутри Grimoire OpenCode работает через ACP с Grimoire-managed launch artifacts, persistent runtime, native history, plan mode, image input, provider commands и reasoning effort. Он показывает monthly spend, когда cost metadata доступна.
@@ -363,19 +363,19 @@ grok
 
 ## Возможности
 
-### Chat workspace
+### Рабочая область чата
 
 Фокусная боковая панель с несколькими tabs. У каждой tab свой draft, provider, model, context и runtime. Закройте и снова откройте Obsidian — сессии восстановятся, а provider, model и reasoning effort сохранятся на каждом ответе. Rewind и fork появляются, когда активный provider их поддерживает. Auto-scroll останавливается, когда вы прокручиваете историю вручную. Через 10 секунд без видимого вывода shared wait indicator показывает активный provider и время ожидания; на вопросах и permissions он приостанавливается.
 
-### Управление tabs, историей и навигацией
+### Вкладки, история и навигация
 
-Щёлкните правой кнопкой по tab, чтобы переименовать, дублировать, закрыть её, закрыть остальные tabs или tabs справа. Средняя кнопка мыши закрывает tab, а временное действие Undo восстанавливает закрытую tab вместе с draft и позицией. Сохранённый диалог можно открыть в новой tab из истории её действием, modifier-click или средней кнопкой. В длинных диалогах есть пятипозиционный navigator: начало, предыдущий prompt, каталог диалогов, следующий prompt и конец. У завершённых messages рядом с copy action показывается локализованный completion timestamp.
+Откройте меню действий вкладки или щёлкните по ней правой кнопкой, чтобы переименовать, дублировать или закрыть вкладки. Средняя кнопка закрывает вкладку, а отмена восстанавливает её черновик и позицию. Ищите прошлые чаты во всплывающей истории и открывайте диалоги в новых вкладках. История отмечает названия, заданные вручную и сгенерированные моделью. Панель диалога содержит кнопки перехода и оглавление; у завершённых ответов указано время завершения.
 
 <p align="center">
-  <img src="../../assets/readme/conversation-history.png" alt="История диалогов и навигация по вкладкам Grimoire" width="100%">
+  <img src="../../assets/readme/conversation-history.png" alt="Поиск по истории: три диалога Ocean Atlas, их модели и отметки происхождения названий" width="100%">
 </p>
 
-### Parallel workers, settings и composer
+### Параллельные агенты, настройки и поле ввода
 
 Карточка подтверждения **Parallel workers** показывает inherited model и позволяет выбрать только те предложенные задачи, которые будут запущены. Settings использует native search Obsidian и содержит постоянный пункт What's New. Provider settings и composer используют единый интерфейс для всех providers, сохраняя provider-owned controls и configuration на их месте.
 
@@ -386,13 +386,13 @@ grok
 | `Enter` | Отправить текущий turn. Не работает, если включено **Send only with button**. |
 | `Shift+Enter` | Вставить новую строку в composer. |
 | `Shift+Tab` | Переключить permission mode по кругу: `Safe -> Auto-approve -> Plan -> Safe`. У providers без Plan mode переключает Safe и Auto-approve. |
-| `Escape` | Остановить активный ответ или закрыть открытую панель истории чатов. |
+| `Escape` | Остановить активный ответ или закрыть всплывающую историю. |
 
-### Model selector
+### Выбор модели
 
-Один picker, сгруппированный по провайдерам и отсортированный по label: Antigravity, Claude Code, Codex, Devin, Gemini CLI (Legacy), Grok Build, Kimi Code, MiMoCode, OpenCode, Qwen Code и Reasonix. Search работает по labels, descriptions, groups и model IDs. Catalogs загружаются lazily и запоминают, какие groups вы свернули. В settings можно добавить custom aliases и context-window overrides. Claude 1M variants — дополнительные options, а не замена базовых моделей.
+Один picker, сгруппированный по провайдерам и отсортированный по label: Antigravity, Claude Code, Codex, Command Code, Devin, Gemini CLI (Legacy), Grok Build, Kimi Code, MiMoCode, OpenCode, Qwen Code и Reasonix. Search работает по labels, descriptions, groups и model IDs. Catalogs загружаются lazily и запоминают, какие groups вы свернули. В settings можно добавить custom aliases и context-window overrides. Claude 1M variants — дополнительные options, а не замена базовых моделей.
 
-### Usage и cost
+### Использование и стоимость
 
 Badge рядом с model selector показывает usage активного provider; подробный readout находится внутри model menu: quota windows, если provider их отдаёт, и spend, если доступна только стоимость. Последние хорошие значения остаются на месте, пока refresh идёт или падает, поэтому meter не исчезает внезапно. Всё это можно выключить в settings, если хочется более тихий UI.
 
@@ -410,7 +410,7 @@ Badge рядом с model selector показывает usage активного
 | Kimi Code | Monthly spend, агрегированный из ACP и session cost metadata |
 | Grok Build | Общий недельный лимит Grok, время сброса и Extra Usage Credits при OAuth-авторизации; monthly API spend из session cost metadata |
 
-### Plan mode
+### Режим планирования
 
 Когда active provider поддерживает Plan mode, его можно включить двумя способами:
 
@@ -421,57 +421,68 @@ Plan mode просит provider сначала составить план, пр
 
 Когда provider завершает планирование, Grimoire показывает сворачиваемую карточку Plan complete с отрендеренным планом, запрошенными permissions и keyboard-friendly строками. Approve продолжает работу в той же session; feedback оставляет Plan mode активным, чтобы provider мог пересобрать план.
 
-### Context и mentions
+### Контекст и упоминания
 
 Упоминайте vault notes и folders прямо из composer, подтягивайте current или linked note, добавляйте persistent external context paths в settings. Вставляйте или перетаскивайте изображения, если provider поддерживает image input. Упоминайте MCP servers там, где provider integration это поддерживает. Вкладка Context показывает привязанную заметку, model, permission mode, закреплённые файлы, launch artifacts вроде `.grimoire/grok/system.md` и файлы, которые agent загрузил во время session.
 
-### Inline editing
+### Редактирование в заметке
 
 Запустите "Grimoire: Inline edit" на выделенном тексте. Рядом с текстом откроется prompt, edit вернётся как diff, который можно accept или reject, а сама операция пойдёт через provider-backed inline edit service. Работает и для замены выделения, и для вставки нового текста.
 
-### Clarifying questions
+### Уточняющие вопросы
 
 Когда provider запрашивает structured user input, Grimoire ставит turn на паузу и показывает вопрос над composer. Claude Code называет это `AskUserQuestion`; Codex app-server отдаёт экспериментальную поверхность `request_user_input` / `requestUserInput`; Qwen Code передаёт `AskUserQuestion` через ACP permission metadata. Grimoire нормализует эти provider-specific механизмы в один inline question UI. Single-select, multi-select и freeform answers возвращаются в provider run, чтобы agent продолжил без отдельного chat message.
 
 Если вопрос перекрывает текст чата, который нужно перечитать, нажмите chevron в header вопроса: панель свернётся в компактную полоску. Выбранные и freeform answers сохраняются до разворачивания или отправки вопроса.
 
-### Commands
+### Команды
 
 Built-in commands покрывают workflows Grimoire, включая image generation и resume. Providers, которые отдают свои commands, например Claude Code slash commands, OpenCode, Grok Build и Qwen Code runtime commands, показывают их через provider-owned catalogs. Ненужные команды можно скрыть в settings.
 
-### Image generation
+### Генерация изображений
 
 Вставляйте или перетаскивайте изображения, чтобы прикрепить их к turn. Built-in command `/image [prompt]` сам не вызывает image API. Он отправляет обычный turn активному provider с инструкцией использовать то, что вы настроили для image generation: provider-native tooling, MCP tools или local command. Agent сохраняет результат в vault и возвращает embed вроде `![[path/to/image.png]]`. Если image generation не настроена, вы получите обычный ответ с объяснением, чего не хватает.
 
-### Safety и permissions
+### Безопасность и разрешения
 
 Permission modes принадлежат provider, поэтому Grimoire показывает их через shared composer controls, а не переизобретает. Permission control и `Shift+Tab` переключают Safe, Auto-approve и Plan по одному циклу, когда active provider поддерживает plan mode. Safe mode и permission prompts остаются видимыми во время работы. Bang-bash mode появляется только если enabled provider его поддерживает. Относитесь к configured MCP servers, shell access и API keys как к sensitive данным, потому что они sensitive.
 
-### Debug logging
+### Отладочные журналы
 
 По умолчанию выключен. Если включить, Grimoire пишет sanitized JSONL в `.grimoire/logs/YYYY-MM-DD.jsonl`: prompts, answers, note contents, paths, environment values и secrets редактируются. Это инструмент диагностики provider/runtime issues, а не transcript.
 
-### Settings
+### Настройки
 
-General settings покрывают auto-scroll, title generation, usage indicators, debug logging, locale, tabs и то, какой provider владеет settings view. Per-provider tabs отвечают за CLI paths, model behavior, commands, agents, skills и provider-owned config, если она есть. Также можно задавать project workspace environment variables, scoped per provider.
+Четыре вкладки разделяют настройки: **Общие** — язык, расположение чата, вкладки и отображение; **Провайдеры** — включение CLI и настройка моделей; **Расширенные** — контекст, диалоги, инструменты и диагностика; **О плагине** — версия и список изменений. Настройки доступны через встроенный поиск Obsidian.
+
+Обзор провайдеров показывает обнаруженные CLI и переключатели включения. Ниже расположены настройки выбранного провайдера.
 
 <p align="center">
-  <img src="../../assets/readme/settings-general.png" alt="Общие настройки Grimoire" width="100%">
+  <img src="../../assets/readme/settings-providers.png" alt="Обзор двенадцати CLI-провайдеров Grimoire и настройки моделей Codex" width="100%">
 </p>
+
+<details>
+<summary>Общие настройки</summary>
+
+<p align="center">
+  <img src="../../assets/readme/settings-general.png" alt="Общие настройки языка, расположения панели, вкладок, подписей, прокрутки и названий диалогов" width="100%">
+</p>
+
+</details>
 
 ## Где Grimoire хранит данные
 
 | Path | Что там |
 | --- | --- |
-| `.grimoire/grimoire-settings.json` | App settings и provider configuration |
-| `.grimoire/sessions/*.meta.json` | Session metadata |
-| `.grimoire/logs/YYYY-MM-DD.jsonl` | Opt-in sanitized debug logs |
+| `.grimoire/grimoire-settings.json` | Настройки приложения и провайдеров |
+| `.grimoire/sessions/*.meta.json` | Метаданные сессий |
+| `.grimoire/logs/YYYY-MM-DD.jsonl` | Очищенные от чувствительных данных отладочные журналы; включаются отдельно |
 | `.grimoire/claude/statusline-usage.json` | Claude usage snapshot для plan meter |
 | `.grimoire/grok/` | Grok Build launch artifacts, managed config и session pointers |
 
 Provider-native файлы под `.claude/`, `.codex/`, `.opencode/` и `.grimoire/grok/` читаются и записываются на месте, поэтому ваша provider setup остаётся переносимой за пределы Grimoire.
 
-## Privacy
+## Конфиденциальность
 
 Grimoire работает внутри Obsidian, на вашем компьютере. У него нет backend, telemetry и механизма загрузки prompts, answers, notes, files, tool output, API keys или usage logs в сервис Grimoire. Единственные logs, которые он пишет, — optional sanitized debug logs выше, и они остаются в вашем vault.
 
@@ -479,7 +490,7 @@ Grimoire работает внутри Obsidian, на вашем компьют�
 
 Для ориентированного на политику Obsidian summary по использованию сети, требованиям к аккаунту, доступу к внешним файлам, логированию и telemetry см. [DISCLOSURES.md](../../DISCLOSURES.md).
 
-## Development
+## Разработка
 
 Мы приветствуем contributions. Перед открытием pull request прочитайте [CONTRIBUTING.md](../../CONTRIBUTING.md): в нём описаны требования к architecture, security, tests и review.
 
@@ -506,15 +517,15 @@ npm run build:release
 
 npm — canonical package manager для development, CI и releases. При изменении dependencies поддерживайте `package-lock.json` в актуальном состоянии; secondary package-manager lockfiles намеренно не коммитятся.
 
-## Releases
+## Релизы
 
 Релизы Grimoire публикуются из semver tags вроде `1.0.0`. Release workflow запускает local gate, собирает Obsidian bundle, проверяет, что tag совпадает с `package.json` и `manifest.json`, затем прикрепляет `main.js`, `manifest.json` и `styles.css` к GitHub Release.
 
 Obsidian Community plugins — рекомендуемый способ установки для пользователей. GitHub Releases по-прежнему содержат bundle assets для ручной установки и BRAT. Используйте `main` для releasable development, затем публикуйте релиз тегом, совпадающим с версией manifest.
 
-## Roadmap
+## Планы развития
 
-Сейчас Grimoire поставляется с Codex, Claude Code, Antigravity CLI, Gemini CLI (Legacy), OpenCode, MiMoCode, Kimi Code, Grok Build, Qwen Code, Devin и Reasonix.
+Сейчас Grimoire поставляется с Codex, Claude Code, Antigravity CLI, Gemini CLI (Legacy), OpenCode, MiMoCode, Kimi Code, Grok Build, Qwen Code, Devin, Reasonix и Command Code.
 
 Следующие в списке: GitHub Copilot CLI, другие ACP-compatible providers и local model CLIs, когда их runtime станет достаточно стабильным для embedding в Obsidian. Implementation notes находятся в [docs/provider-roadmap.md](../provider-roadmap.md).
 
