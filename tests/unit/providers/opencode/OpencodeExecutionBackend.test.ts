@@ -643,6 +643,30 @@ describe('OpencodeExecutionBackend', () => {
 
     expectTerminal(captured, 'invalidated', 'pre-dispatch-rejected');
     expect(fixture.client.promptRequests).toHaveLength(0);
+    expect(contentPayloads(captured)).toContainEqual({
+      kind: 'turn-refused',
+      message: 'Could not apply session configuration: configuration failed',
+    });
+  });
+
+  it('reports a configuration timeout without dispatching a late configuration', async () => {
+    const pending = deferred<void>();
+    const apply = jest.fn(() => pending.promise);
+    const fixture = createFixture({ dynamicApply: apply });
+    const session = await createSession(fixture.backend);
+    const events = collectEvents(session.createRun(request('1')));
+    await waitFor(() => apply.mock.calls.length === 1);
+    fixture.scheduler.fireAllUpTo(500);
+
+    const captured = await events;
+    expectTerminal(captured, 'invalidated', 'pre-dispatch-rejected');
+    expect(contentPayloads(captured)).toContainEqual({
+      kind: 'turn-refused',
+      message: 'Could not apply session configuration: Managed ACP dynamic configuration timed out.',
+    });
+    pending.resolve();
+    await flushPromises();
+    expect(fixture.client.promptRequests).toHaveLength(0);
   });
 
   it('does not silently relinquish an unconfirmed managed process on disposal', async () => {

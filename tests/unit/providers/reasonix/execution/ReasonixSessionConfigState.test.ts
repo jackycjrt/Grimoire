@@ -222,6 +222,15 @@ describe('ReasonixSessionConfigState', () => {
       expect(state.resolveSelectedRawModelId()).toBe('claude-opus-5-medium');
     });
 
+    it('keeps the session model on later turns until the user selects another one', () => {
+      const { state, settings } = createState();
+      state.syncSessionDiscovery(recordedSession());
+
+      expect(state.resolveSelectedRawModelId()).toBe('custom-api-z-ai/glm-5.3-flash');
+      settings.savedProviderModel = { reasonix: 'reasonix:custom-api-z-ai/glm-5.3' };
+      expect(state.resolveSelectedRawModelId()).toBe('custom-api-z-ai/glm-5.3');
+    });
+
     it('labels the badge with the model the session is actually on', () => {
       const { state, settings } = createState();
       updateReasonixProviderSettings(settings, { visibleModels: ['swe-1-6-slow'] });

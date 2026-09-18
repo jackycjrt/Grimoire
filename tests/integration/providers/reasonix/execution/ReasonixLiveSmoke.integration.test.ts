@@ -162,8 +162,8 @@ live('Reasonix live smoke', () => {
       .map(row => row.command);
   }
 
-  it('row 1: answers a plain message, and streams it', async () => {
-    const { runtime, shutdown } = await createHarness();
+  it.each(['normal', 'plan', 'full_access'])('row 1: answers a plain message, and streams it (%s)', async permissionMode => {
+    const { runtime, shutdown } = await createHarness({ permissionMode });
 
     const chunks = await drain(runtime.query(
       runtime.prepareTurn({ text: 'Reply with exactly: OK' }),
@@ -224,16 +224,25 @@ live('Reasonix live smoke', () => {
     return `grimoire${Math.random().toString(36).slice(2, 8)}`;
   }
 
-  it('row 7: continues the same session on a second turn', async () => {
-    const { runtime, shutdown } = await createHarness();
+  it.each(['auto', 'enabled'])('row 7: continues the same session on a second turn (effort %s)', async effortLevel => {
+    const { runtime, plugin, shutdown } = await createHarness({ permissionMode: 'normal' });
+    updateReasonixProviderSettings(plugin.settings, {
+      effortLevel,
+      availableEfforts: [{ id: 'enabled', name: 'Enabled' }],
+    });
     const word = mintedWord();
-    await drain(runtime.query(runtime.prepareTurn({
-      text: `Remember the word ${word}. Reply with exactly: OK`,
+    const first = await drain(runtime.query(runtime.prepareTurn({
+      text: `For this conversation only, the code word is ${word}. `
+        + 'Do not use tools or save it to persistent memory. Reply with exactly: OK',
     })));
+    report('ROW 7 FIRST', JSON.stringify(summarize(first)));
+    expect(errorsOf(first)).toEqual([]);
+    expect(answerOf(first)).toContain('OK');
+    expect(first.some(chunk => chunk.type === 'tool_use')).toBe(false);
     const sessionId = runtime.getSessionId();
 
     const chunks = await drain(runtime.query(runtime.prepareTurn({
-      text: 'What word did I ask you to remember? Reply with the word only.',
+      text: 'What is the code word from my previous message? Do not use tools. Reply with the word only.',
     })));
 
     report('ROW 7', String(sessionId), JSON.stringify(summarize(chunks)));

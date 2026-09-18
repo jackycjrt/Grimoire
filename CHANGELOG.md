@@ -2,6 +2,13 @@
 
 User-facing changes by release.
 
+## Unreleased
+
+### Fixed
+
+- Reasonix 1.38.10 can start turns with its new permission presets while older CLI versions remain supported. Configuration failures now show their actual cause instead of suggesting a missing session (#197).
+- Reasonix keeps the current session model when none was explicitly selected and avoids reapplying an unchanged model or thinking level, which could discard conversation context between turns.
+
 ## 2.0.0 - 2026-09-17
 
 A redesigned workspace that follows your Obsidian theme, with more reliable agent runs and easier context management. Existing conversations, settings, and provider files carry over without migration.

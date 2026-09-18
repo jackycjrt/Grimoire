@@ -156,6 +156,7 @@ describe('Reasonix execution composition', () => {
     distinctSessions?: boolean;
     dropsFirstPrompt?: boolean;
     refusesMode?: boolean;
+    refusesConfig?: string;
     refusesSession?: string;
     rejectsPrompt?: string;
     sessionLoadFails?: boolean;
@@ -337,6 +338,9 @@ describe('Reasonix execution composition', () => {
           // config option, which reports back what the session now holds.
           setModel: async () => ({}),
           setConfigOption: async request => {
+            if (options.refusesConfig) {
+              throw new JsonRpcErrorResponse('session/set_config_option', -32602, options.refusesConfig);
+            }
             configOptions.push({
               configId: request.configId,
               sessionId: request.sessionId,
@@ -655,6 +659,21 @@ describe('Reasonix execution composition', () => {
       .toBe(true);
     execution.dispose();
     await host.dispose();
+  });
+
+  it('shows a configuration refusal without suggesting that a fresh session is missing', async () => {
+    const detail = 'session/set_config_option: invalid value yolo for tool_approval';
+    const { execution, host, prompts } = await createHarness({ refusesConfig: detail });
+    try {
+      const runtime = execution.createRuntime();
+      const chunks = await drain(runtime.query(runtime.prepareTurn({ text: 'hello' })));
+      expect(chunks.filter(chunk => chunk.type === 'error').map(chunk => chunk.content))
+        .toEqual([`Could not apply session configuration: ${detail}`]);
+      expect(prompts).toHaveLength(0);
+    } finally {
+      execution.dispose();
+      await host.dispose();
+    }
   });
 
   it('says why the agent would not open a session, in the agent words', async () => {
@@ -1013,7 +1032,7 @@ describe('Reasonix execution composition', () => {
     await host.dispose();
   });
 
-  it('sets the model a vault has learned, and none before it has learned one', async () => {
+  it('keeps the model the session reported after discovering its catalog', async () => {
     const plugin = createPlugin();
     const { execution, host, configOptions } = await createHarness({ plugin });
     const runtime = execution.createRuntime();
@@ -1024,7 +1043,7 @@ describe('Reasonix execution composition', () => {
 
     await drain(runtime.query(runtime.prepareTurn({ text: 'second' })));
 
-    expect(modelCalls(configOptions)).toEqual(['custom-api-z-ai/glm-5.3']);
+    expect(modelCalls(configOptions)).toEqual([]);
     execution.dispose();
     await host.dispose();
   });
