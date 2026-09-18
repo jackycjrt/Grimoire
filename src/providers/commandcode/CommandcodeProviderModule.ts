@@ -15,7 +15,7 @@ export const commandcodeCapabilities: ProviderCapabilityDescriptor = {
   mcp: { ownership: 'unsupported', sessionConfiguration: 'unsupported', perRunSelection: 'unsupported' },
   agents: { definitions: 'none', spawnOrigin: [], stableIdentity: false, progressObservation: 'none',
     resultExtraction: false, cancellation: false, statusQuery: false, reattachment: false },
-  input: { imageAttachments: 'unsupported', instructionMode: 'unsupported' },
+  input: { imageAttachments: 'grimoire', instructionMode: 'unsupported' },
   interactions: { approvals: 'grimoire', questions: 'unsupported', planMode: 'unsupported' },
   conversation: { fork: 'unsupported', rewind: 'unsupported', steering: 'unsupported', compaction: 'unsupported' },
   security: { enforcement: 'grimoire' },
@@ -27,7 +27,8 @@ export const commandcodeCapabilities: ProviderCapabilityDescriptor = {
   },
 };
 
-const fields = new Set(['enabled', 'cliPath', 'cliPathsByHost', 'environmentVariables', 'discoveredModels', 'reasoningEffortsByModel']);
+const fields = new Set(['enabled', 'cliPath', 'cliPathsByHost', 'environmentVariables', 'discoveredModels', 'reasoningEffortsByModel',
+  'visibleModels', 'modelAliases', 'imageAttachmentsAsFiles']);
 
 export interface CommandcodeModuleContext extends ProviderWorkspaceSlots {
   resolveSessionId?(conversationId: string): string | null;

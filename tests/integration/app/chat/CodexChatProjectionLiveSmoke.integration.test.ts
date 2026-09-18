@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 import { createDurableInMemoryVaultAdapter } from '@test/helpers/inMemoryVaultAdapter';
+import { imageAttachmentRoundTrip } from "@test/integration/app/chat/chatProjectionImageRow";
 import {
   openChatProjection,
   userMessage,
@@ -186,6 +187,15 @@ live('Codex chat projection live smoke', () => {
     runtimes.set(harness.tab, runtime);
     return { harness, release, runtime, sent };
   }
+
+  it('image attachments: delivers both pictures and preserves their saved references', async () => {
+    const { harness, sent } = await createHarness();
+    try {
+      await imageAttachmentRoundTrip(harness, CONVERSATION_ID, process.env.GRIMOIRE_CODEX_MODEL);
+    } finally {
+      report('IMAGE RPC', ...sent.map(call => call.split(' ')[0]));
+    }
+  });
 
   it('row A: draws one answer, once, and leaves it in the vault', async () => {
     const { harness } = await createHarness();

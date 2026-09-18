@@ -6,6 +6,7 @@ import { getHostnameKey } from '@/utils/env';
 import { resolveCliFile } from '@/utils/resolveCliExecutable';
 
 import { getCommandcodeSettings, updateCommandcodeSettings } from '../settings';
+import { renderCommandcodeModelPicker } from './CommandcodeModelPicker';
 
 export const commandcodeSettingsTabRenderer: ProviderSettingsTabRenderer = {
   render(container, context) {
@@ -14,7 +15,14 @@ export const commandcodeSettingsTabRenderer: ProviderSettingsTabRenderer = {
     new Setting(container).setName('Setup')
       .setDesc('Install with npm i -g command-code, then run command-code login in a terminal. Authentication stays with the CLI.');
     new Setting(container).setName('Headless permissions')
-      .setDesc('Safe asks in Grimoire before each edit, command or other non-read tool. It requires command-code 1.53.0 from npm and does not run native subagents. Auto-approve runs without asking. Native deny and ask rules still apply. Questions, images and slash commands are unavailable here.');
+      .setDesc('Safe asks in Grimoire before each edit, command or other non-read tool. It requires command-code 1.53.0 from npm and does not run native subagents. Auto-approve runs without asking. Native deny and ask rules still apply. Questions and slash commands are unavailable here.');
+    new Setting(container).setName('Image attachments as files')
+      .setDesc('Open pasted or dropped images with the file-reading tool. Select a model that can read images; the CLI does not report image support. This requires an extra tool call. Images stay in the vault attachment store with the conversation.')
+      .addToggle(toggle => toggle.setValue(getCommandcodeSettings(plugin.settings).imageAttachmentsAsFiles)
+        .onChange(async value => {
+          updateCommandcodeSettings(plugin.settings, { imageAttachmentsAsFiles: value });
+          await plugin.saveSettings();
+        }));
     new Setting(container).setName('CLI path')
       .setDesc('Optional path to command-code on this computer. Leave empty to detect it automatically.')
       .addText(text => {
@@ -37,6 +45,7 @@ export const commandcodeSettingsTabRenderer: ProviderSettingsTabRenderer = {
           })();
         });
       });
+    renderCommandcodeModelPicker(container, context);
     const environment = context.createWorkspaceSection(container, ['environment']);
     renderEnvironmentSettingsSection({ container: environment, plugin, scope: 'provider:commandcode',
       heading: 'Environment', name: 'Environment variables',

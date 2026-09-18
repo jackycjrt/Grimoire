@@ -4,6 +4,7 @@ import { Setting } from 'obsidian';
 import { renderEnvironmentSettingsSection } from '../../../features/settings/ui/EnvironmentSettingsSection';
 import { McpSettingsManager } from '../../../features/settings/ui/McpSettingsManager';
 import { renderProviderDisabledNotice } from '../../../features/settings/ui/ProviderDisabledNotice';
+import { type ModelPickerModel, renderProviderModelPicker } from '../../../features/settings/ui/ProviderModelPicker';
 import { ProviderSkillSettings } from '../../../features/settings/ui/ProviderSkillSettings';
 import { t } from '../../../i18n/i18n';
 import type {
@@ -27,18 +28,6 @@ import {
   updateGrokProviderSettings,
 } from '../settings';
 import { GrokAgentSettings } from './GrokAgentSettings';
-
-const ALL_PROVIDERS_KEY = 'all';
-
-
-interface EnrichedModel {
-  description: string;
-  isAvailable: boolean;
-  modelLabel: string;
-  providerKey: string;
-  providerLabel: string;
-  rawId: string;
-}
 
 export const grokSettingsTabRenderer: ProviderSettingsTabRenderer = {
   render(container, context) {
@@ -154,434 +143,53 @@ export const grokSettingsTabRenderer: ProviderSettingsTabRenderer = {
       updateCliPathValidation(currentValue, text.inputEl);
     });
 
-    new Setting(container).setName(t('settings.models')).setHeading();
-
-    new Setting(container)
-      .setName(t('settings.grok.visibleModels.name'))
-      .setDesc(t('settings.grok.visibleModels.desc'));
-
-    const pickerEl = container.createDiv({ cls: 'grimoire-grok-model-picker' });
-
-    let searchQuery = '';
-    let providerFilter = ALL_PROVIDERS_KEY;
-
-    const summaryEl = pickerEl.createDiv({ cls: 'grimoire-grok-model-picker-summary' });
-    const selectedEl = pickerEl.createDiv({ cls: 'grimoire-grok-model-picker-selected' });
-    const catalogEl = pickerEl.createEl('details', { cls: 'grimoire-grok-model-picker-catalog' });
-    catalogEl.open = getGrokProviderSettings(settingsBag).visibleModels.length === 0;
-    const catalogSummaryEl = catalogEl.createEl('summary', {
-      cls: 'grimoire-grok-model-picker-catalog-summary',
-    });
-    catalogSummaryEl.createSpan({
-      cls: 'grimoire-grok-model-picker-catalog-caret',
-      text: '▸',
-    });
-    catalogSummaryEl.createSpan({
-      cls: 'grimoire-grok-model-picker-catalog-title',
-      text: t('settings.grok.modelPicker.browseModels'),
-    });
-    const catalogSummaryCountEl = catalogSummaryEl.createSpan({
-      cls: 'grimoire-grok-model-picker-catalog-count',
-    });
-
-    const controlsEl = catalogEl.createDiv({ cls: 'grimoire-grok-model-picker-controls' });
-
-    const searchInput = controlsEl.createEl('input', {
-      cls: 'grimoire-grok-model-picker-search',
-      type: 'search',
-    });
-    searchInput.placeholder = t('settings.grok.modelPicker.searchPlaceholder');
-    searchInput.addEventListener('input', () => {
-      searchQuery = searchInput.value.trim().toLowerCase();
-      renderList();
-    });
-
-    const providerSelectEl = controlsEl.createEl('select', {
-      cls: 'grimoire-grok-model-picker-provider',
-    });
-    providerSelectEl.addEventListener('change', () => {
-      providerFilter = providerSelectEl.value;
-      renderList();
-    });
-
-    const listEl = catalogEl.createDiv({ cls: 'grimoire-grok-model-picker-list' });
-    let loadingModelCatalog = false;
-    let modelCatalogLoadFailed = false;
-
-    const getEnrichedModels = (): EnrichedModel[] => {
-      const current = getGrokProviderSettings(settingsBag);
-      return buildEnrichedModels(current.discoveredModels, current.visibleModels);
-    };
-
-    const filterModels = (models: EnrichedModel[]): EnrichedModel[] => {
-      return models.filter((model) => {
-        if (providerFilter !== ALL_PROVIDERS_KEY && model.providerKey !== providerFilter) {
-          return false;
-        }
-
-        if (!searchQuery) {
-          return true;
-        }
-
-        return (
-          model.rawId.toLowerCase().includes(searchQuery)
-          || model.modelLabel.toLowerCase().includes(searchQuery)
-          || model.providerLabel.toLowerCase().includes(searchQuery)
-          || model.description.toLowerCase().includes(searchQuery)
-        );
-      });
-    };
-
-    const persistVisibleModels = async (visibleModels: string[]): Promise<void> => {
-      const currentVisibleModels = getGrokProviderSettings(settingsBag).visibleModels;
-      const normalized = normalizeGrokVisibleModels(
-        visibleModels,
-        getGrokProviderSettings(settingsBag).discoveredModels,
-      );
-      if (sameStringList(currentVisibleModels, normalized)) {
-        return;
-      }
-
-      updateGrokProviderSettings(settingsBag, { visibleModels: normalized });
-      await context.plugin.saveSettings();
-      renderAll();
-      context.refreshModelSelectors();
-    };
-
-    const persistModelMetadata = async (rawId: string): Promise<void> => {
-      try {
-        const loaded = await context.plugin.getGrokExecution().metadata.discoverMetadata({
-          model: encodeGrokModelId(rawId),
-        });
-        if (loaded) {
-          context.refreshModelSelectors();
-        }
-      } catch {
-        // Metadata warmup is opportunistic; the first chat turn can still
-        // discover it. The session closes itself on every path.
-      }
-    };
-
-    const persistModelAliases = async (modelAliases: Record<string, string>): Promise<void> => {
-      updateGrokProviderSettings(settingsBag, { modelAliases });
-      await context.plugin.saveSettings();
-      renderSelected();
-      context.refreshModelSelectors();
-    };
-
-    const renderSummary = (): void => {
-      summaryEl.empty();
-      const current = getGrokProviderSettings(settingsBag);
-      const enriched = getEnrichedModels();
-      const providerCount = new Set(enriched.map((model) => model.providerKey)).size;
-      const providerWord = t(providerCount === 1
-        ? 'settings.grok.modelPicker.providerSingular'
-        : 'settings.grok.modelPicker.providerPlural');
-
-      summaryEl.createSpan({ text: `${t('settings.grok.modelPicker.visibleLabel')} ` });
-      summaryEl.createSpan({
-        cls: 'grimoire-grok-model-picker-summary-value',
-        text: String(current.visibleModels.length),
-      });
-      summaryEl.createSpan({
-        text: ` ${t('settings.grok.modelPicker.summaryDiscovered', {
-          count: providerCount,
-          providerWord,
-          total: current.discoveredModels.length,
-        })}`,
-      });
-
-      let catalogSummary = t('settings.grok.modelPicker.noDiscovered');
-      if (loadingModelCatalog) {
-        catalogSummary = t('settings.grok.modelPicker.loadingModels');
-      } else if (current.discoveredModels.length > 0) {
-        catalogSummary = t('settings.grok.modelPicker.availableCount', { count: current.discoveredModels.length });
-      }
-      catalogSummaryCountEl.setText(catalogSummary);
-    };
-
-    const renderSelected = (): void => {
-      selectedEl.empty();
-      const current = getGrokProviderSettings(settingsBag);
-      if (current.visibleModels.length === 0) {
-        selectedEl.toggleClass('grimoire-hidden', true);
-        return;
-      }
-
-      selectedEl.toggleClass('grimoire-hidden', false);
-      const enrichedByRawId = new Map(
-        getEnrichedModels().map((model) => [model.rawId, model] as const),
-      );
-
-      const headerEl = selectedEl.createDiv({ cls: 'grimoire-grok-model-picker-selected-header' });
-      headerEl.createSpan({
-        cls: 'grimoire-grok-model-picker-selected-label',
-        text: t('settings.grok.modelPicker.selectedCount', { count: current.visibleModels.length }),
-      });
-      const clearAllBtn = headerEl.createEl('button', {
-        cls: 'grimoire-grok-model-picker-selected-clear',
-        text: t('common.clearAll'),
-      });
-      clearAllBtn.setAttribute('aria-label', t('settings.grok.modelPicker.clearSelected'));
-      clearAllBtn.addEventListener('click', () => {
-        void persistVisibleModels([]);
-      });
-
-      const rowsEl = selectedEl.createDiv({ cls: 'grimoire-grok-model-picker-selected-rows' });
-
-      for (const rawId of current.visibleModels) {
-        const enriched = enrichedByRawId.get(rawId);
-        const defaultLabel = enriched
-          ? `${enriched.providerLabel}/${enriched.modelLabel}`
-          : rawId;
-
-        const rowEl = rowsEl.createDiv({ cls: 'grimoire-grok-model-picker-selected-row' });
-        if (enriched && !enriched.isAvailable) {
-          rowEl.classList.add('grimoire-grok-model-picker-selected-row--unavailable');
-        }
-
-        const infoEl = rowEl.createDiv({ cls: 'grimoire-grok-model-picker-selected-info' });
-        const titleEl = infoEl.createDiv({ cls: 'grimoire-grok-model-picker-selected-title' });
-        if (enriched) {
-          titleEl.createSpan({
-            cls: 'grimoire-grok-model-picker-selected-badge',
-            text: enriched.providerLabel,
-          });
-          titleEl.createSpan({
-            cls: 'grimoire-grok-model-picker-selected-name',
-            text: enriched.modelLabel,
-          });
-        } else {
-          titleEl.createSpan({
-            cls: 'grimoire-grok-model-picker-selected-name',
-            text: rawId,
-          });
-        }
-
-        if (enriched && !enriched.isAvailable) {
-          infoEl.createDiv({
-            cls: 'grimoire-grok-model-picker-selected-unavailable',
-            text: t('settings.grok.modelPicker.notReported'),
-          });
-        }
-
-        infoEl.createDiv({
-          cls: 'grimoire-grok-model-picker-selected-id',
-          text: rawId,
-        });
-
-        const controlsEl = rowEl.createDiv({ cls: 'grimoire-grok-model-picker-selected-controls' });
-        const aliasInput = controlsEl.createEl('input', {
-          cls: 'grimoire-grok-model-picker-selected-alias',
-          type: 'text',
-        });
-        aliasInput.placeholder = defaultLabel;
-        aliasInput.value = current.modelAliases[rawId] ?? '';
-        aliasInput.setAttribute('aria-label', t('settings.grok.modelPicker.aliasLabel', { model: defaultLabel }));
-        aliasInput.title = t('settings.grok.modelPicker.aliasTitle');
-
-        const commitAlias = (): void => {
-          const latest = getGrokProviderSettings(settingsBag);
-          const existing = latest.modelAliases[rawId] ?? '';
-          const next = aliasInput.value.trim();
-          if (next === existing) {
-            aliasInput.value = existing;
-            return;
-          }
-
-          const nextAliases = { ...latest.modelAliases };
-          if (next) {
-            nextAliases[rawId] = next;
-          } else {
-            delete nextAliases[rawId];
-          }
-          void persistModelAliases(nextAliases);
+    renderProviderModelPicker(container, {
+      providerName: 'Grok Build',
+      description: t('settings.grok.visibleModels.desc'),
+      suppressAutomaticDiscovery: context.suppressAutomaticDiscovery,
+      refreshOnBrowse: true,
+      getState: () => {
+        const current = getGrokProviderSettings(settingsBag);
+        return {
+          models: buildEnrichedModels(current.discoveredModels, current.visibleModels),
+          discoveredCount: current.discoveredModels.length,
+          visibleModels: current.visibleModels,
+          modelAliases: current.modelAliases,
         };
-
-        aliasInput.addEventListener('blur', commitAlias);
-        aliasInput.addEventListener('keydown', (event) => {
-          if (event.key === 'Enter') {
-            event.preventDefault();
-            aliasInput.blur();
-          } else if (event.key === 'Escape') {
-            event.preventDefault();
-            aliasInput.value = getGrokProviderSettings(settingsBag).modelAliases[rawId] ?? '';
-            aliasInput.blur();
-          }
-        });
-
-        const removeBtn = controlsEl.createEl('button', {
-          cls: 'grimoire-grok-model-picker-selected-remove',
-          text: '×',
-        });
-        removeBtn.setAttribute('aria-label', t('settings.grok.modelPicker.removeModel', { model: defaultLabel }));
-        removeBtn.addEventListener('click', () => {
-          void persistVisibleModels(current.visibleModels.filter((entry) => entry !== rawId));
-        });
-      }
-    };
-
-    const renderProviderSelect = (): void => {
-      const enriched = getEnrichedModels();
-      const providers = new Map<string, { count: number; label: string }>();
-      for (const model of enriched) {
-        const existing = providers.get(model.providerKey);
-        if (existing) {
-          existing.count += 1;
-        } else {
-          providers.set(model.providerKey, { count: 1, label: model.providerLabel });
+      },
+      onSelectionChange: async (ids) => {
+        const current = getGrokProviderSettings(settingsBag);
+        const normalized = normalizeGrokVisibleModels(ids, current.discoveredModels);
+        if (sameStringList(current.visibleModels, normalized)) return;
+        updateGrokProviderSettings(settingsBag, { visibleModels: normalized });
+        await context.plugin.saveSettings();
+        context.refreshModelSelectors();
+      },
+      onAliasChange: async (rawId, alias) => {
+        const modelAliases = { ...getGrokProviderSettings(settingsBag).modelAliases };
+        if (alias) modelAliases[rawId] = alias;
+        else delete modelAliases[rawId];
+        updateGrokProviderSettings(settingsBag, { modelAliases });
+        await context.plugin.saveSettings();
+        context.refreshModelSelectors();
+      },
+      onModelAdded: async (rawModelId) => {
+        try {
+          const loaded = await context.plugin.getGrokExecution().metadata.discoverMetadata({ model: encodeGrokModelId(rawModelId) });
+          if (loaded) context.refreshModelSelectors();
+        } catch {
+          // Optional metadata can be discovered again on the first chat turn.
         }
-      }
-
-      providerSelectEl.empty();
-      providerSelectEl.createEl('option', {
-        text: t('settings.grok.modelPicker.allProviders', { count: enriched.length }),
-        value: ALL_PROVIDERS_KEY,
-      });
-
-      const sortedProviders = Array.from(providers.entries())
-        .sort(([, left], [, right]) => left.label.localeCompare(right.label));
-      for (const [key, { count, label }] of sortedProviders) {
-        providerSelectEl.createEl('option', {
-          text: `${label} (${count})`,
-          value: key,
-        });
-      }
-
-      if (providerFilter !== ALL_PROVIDERS_KEY && !providers.has(providerFilter)) {
-        providerFilter = ALL_PROVIDERS_KEY;
-      }
-      providerSelectEl.value = providerFilter;
-    };
-
-    const renderList = (): void => {
-      listEl.empty();
-      const current = getGrokProviderSettings(settingsBag);
-      const selectedIds = new Set(current.visibleModels);
-      const enriched = getEnrichedModels();
-      const filtered = filterModels(enriched);
-
-      if (filtered.length === 0) {
-        const emptyEl = listEl.createDiv({ cls: 'grimoire-grok-model-picker-empty' });
-        let emptyText = t('settings.grok.modelPicker.noMatch');
-        if (loadingModelCatalog) {
-          emptyText = t('settings.grok.modelPicker.loadingCatalog');
-        } else if (modelCatalogLoadFailed) {
-          emptyText = t('settings.grok.modelPicker.loadFailed');
-        } else if (enriched.length === 0) {
-          emptyText = t('settings.grok.modelPicker.startToLoad');
-        }
-        emptyEl.setText(emptyText);
-        return;
-      }
-
-      for (const model of filtered) {
-        const rowEl = listEl.createEl('label', { cls: 'grimoire-grok-model-picker-row' });
-        const isSelected = selectedIds.has(model.rawId);
-        if (isSelected) {
-          rowEl.classList.add('grimoire-grok-model-picker-row--selected');
-        }
-        rowEl.title = model.rawId;
-
-        const checkboxEl = rowEl.createEl('input', { type: 'checkbox' });
-        checkboxEl.checked = isSelected;
-        checkboxEl.addEventListener('change', () => {
-          const currentVisibleModels = getGrokProviderSettings(settingsBag).visibleModels;
-          const next = checkboxEl.checked
-            ? [...currentVisibleModels, model.rawId]
-            : currentVisibleModels.filter((id) => id !== model.rawId);
-          void (async () => {
-            await persistVisibleModels(next);
-            if (checkboxEl.checked) {
-              await persistModelMetadata(model.rawId);
-            }
-          })();
-        });
-
-        const textEl = rowEl.createDiv({ cls: 'grimoire-grok-model-picker-row-text' });
-
-        const headerEl = textEl.createDiv({ cls: 'grimoire-grok-model-picker-row-header' });
-        headerEl.createSpan({
-          cls: 'grimoire-grok-model-picker-row-name',
-          text: model.modelLabel,
-        });
-        const badgeEl = headerEl.createSpan({
-          cls: 'grimoire-grok-model-picker-row-badge',
-          text: model.providerLabel,
-        });
-        if (!model.isAvailable) {
-          badgeEl.classList.add('grimoire-grok-model-picker-row-badge--unavailable');
-          badgeEl.setText(t('settings.grok.modelPicker.unavailable'));
-          badgeEl.title = t('settings.grok.modelPicker.unavailableTitle');
-        }
-
-        textEl.createDiv({
-          cls: 'grimoire-grok-model-picker-row-meta',
-          text: model.rawId,
-        });
-
-        if (model.description) {
-          textEl.createDiv({
-            cls: 'grimoire-grok-model-picker-row-desc',
-            text: model.description,
-          });
-        }
-
-      }
-    };
-
-    const renderAll = (): void => {
-      renderSummary();
-      renderSelected();
-      renderProviderSelect();
-      renderList();
-    };
-
-    renderAll();
-
-    const loadModelCatalog = async (): Promise<void> => {
-      if (loadingModelCatalog) {
-        return;
-      }
-
-      loadingModelCatalog = true;
-      modelCatalogLoadFailed = false;
-      renderAll();
-
-      try {
+      },
+      onRefresh: async () => {
         const catalog = maybeGetGrokWorkspaceServices(context.plugin)?.modelCatalog;
-        if (catalog) {
-          // The catalog's own answer, not the length of the persisted list: that
-          // list still holds the previous models when a refresh fails, so a
-          // failed refresh looked like a successful one.
-          modelCatalogLoadFailed = await catalog.refreshModels({
-            force: true,
-            plugin: context.plugin,
-            settings: settingsBag,
-          }) === 'failed';
-        } else {
-          modelCatalogLoadFailed = !await context.plugin.getGrokExecution()
-            .metadata.discoverMetadata();
-        }
-        if (!modelCatalogLoadFailed) {
-          context.refreshModelSelectors();
-        }
-      } catch {
-        modelCatalogLoadFailed = true;
-      } finally {
-        loadingModelCatalog = false;
-        renderAll();
-      }
-    };
-
-    catalogEl.addEventListener('toggle', () => {
-      if (catalogEl.open && !context.suppressAutomaticDiscovery) {
-        void loadModelCatalog();
-      }
+        const loaded = catalog
+          ? await catalog.refreshModels({ force: true, plugin: context.plugin, settings: settingsBag }) !== 'failed'
+          : await context.plugin.getGrokExecution().metadata.discoverMetadata();
+        if (loaded) context.refreshModelSelectors();
+        return loaded;
+      },
     });
-    if (catalogEl.open && !context.suppressAutomaticDiscovery) {
-      void loadModelCatalog();
-    }
 
     const advancedContainer = context.renderAdvancedSection(container, {
       count: 6,
@@ -672,8 +280,8 @@ export const grokSettingsTabRenderer: ProviderSettingsTabRenderer = {
 function buildEnrichedModels(
   discoveredModels: GrokDiscoveredModel[],
   visibleModels: string[],
-): EnrichedModel[] {
-  const enriched: EnrichedModel[] = [];
+): ModelPickerModel[] {
+  const enriched: ModelPickerModel[] = [];
   const discoveredIds = new Set<string>();
   const baseModels = buildGrokBaseModels(discoveredModels);
 

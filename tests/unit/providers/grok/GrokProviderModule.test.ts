@@ -100,8 +100,10 @@ describe('Grok provider module', () => {
         .toBe(GROK_PROVIDER_CAPABILITIES.supportsTurnSteer);
       expect(capabilities.commands.discovery !== 'unsupported')
         .toBe(GROK_PROVIDER_CAPABILITIES.supportsProviderCommands);
-      expect(capabilities.input.imageAttachments === 'native')
-        .toBe(GROK_PROVIDER_CAPABILITIES.supportsImageAttachments);
+    });
+
+    it('does not advertise images rejected by the current Grok ACP handshake', () => {
+      expect(capabilities.input.imageAttachments).toBe('unsupported');
     });
 
     it('drops the rewind the runtime it replaced never performed', () => {

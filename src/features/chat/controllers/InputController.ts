@@ -1,7 +1,7 @@
 import { Notice } from 'obsidian';
 
 import type { ChatTabExecution } from '../../../app/chat/ChatTabExecution';
-import { hydrateImages } from '../../../core/attachments/hydrateImages';
+import { hydrateImagesForSend, ImageAttachmentUnavailableError } from '../../../core/attachments/hydrateImages';
 import {
   type BuiltInCommand,
   detectBuiltInCommand,
@@ -313,7 +313,9 @@ export class InputController {
     const originalInput = inputEl.value;
     const content = (contentOverride ?? originalInput).trim();
     const displayContentOverride = options?.displayContentOverride?.trim();
-    const imageOverride = options?.images;
+    const imageOverride = options?.turnRequestOverride
+      ? options.turnRequestOverride.images ?? []
+      : options?.images;
     const hasImages = imageOverride !== undefined
       ? imageOverride.length > 0
       : (imageContextManager?.hasImages() ?? false);
@@ -474,9 +476,7 @@ export class InputController {
     const preparationCancelled = () => state.cancelRequested || state.streamGeneration !== streamGeneration;
     let queryOptions: ChatRuntimeQueryOptions | undefined;
     try {
-      if (plugin.storage?.attachments) {
-        await hydrateImages(imagesForMessage, plugin.storage.attachments);
-      }
+      await hydrateImagesForSend(imagesForMessage, plugin.storage?.attachments);
       const turnSubmissionResult = options?.turnRequestOverride
         ? {
           displayContent: content,
@@ -504,7 +504,7 @@ export class InputController {
       };
     } catch (error) {
       restoreUnsent();
-      if (error instanceof ProjectWorkspaceRoutingError) {
+      if (error instanceof ProjectWorkspaceRoutingError || error instanceof ImageAttachmentUnavailableError) {
         new Notice(error.message);
         return;
       }
@@ -1382,6 +1382,9 @@ export class InputController {
     try {
       const { displayContent, request } = this.toQueuedChatTurn(queuedMessage);
 
+      await hydrateImagesForSend(request.images, this.deps.plugin.storage?.attachments);
+      if (state.cancelRequested || this.pendingSteerMessage !== queuedMessage) return;
+
       const preparedTurn = agentService.prepareTurn(request);
       // The kernel owns the run on the projection path, so the steer goes there.
       // Asked of the runtime instead, it answers `false` for every provider on
@@ -1419,9 +1422,9 @@ export class InputController {
       // is the moment the input actually arrived.
       this.clearPendingSteerState();
       this.updateQueueIndicator();
-    } catch {
+    } catch (error) {
       if (this.restoreQueuedMessageAfterSteerFailure(queuedMessage)) {
-        new Notice(t('chat.ui.queue.steerFailed'));
+        new Notice(error instanceof ImageAttachmentUnavailableError ? error.message : t('chat.ui.queue.steerFailed'));
       }
     }
   }

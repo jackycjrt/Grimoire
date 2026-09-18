@@ -30,6 +30,7 @@ jest.mock('obsidian', () => {
     public heading = false;
     public textComponents: MockTextComponent[] = [];
     public toggleComponents: MockToggleComponent[] = [];
+    public buttonComponents: any[] = [];
 
     constructor(_container: unknown) {
       createdSettings.push(this);
@@ -54,6 +55,20 @@ jest.mock('obsidian', () => {
       const component = createTextComponent();
       this.textComponents.push(component);
       callback(component);
+      return this;
+    }
+
+    addButton(callback: (button: any) => void) {
+      const button = {
+        text: '',
+        disabled: false,
+        onClickCallback: null as (() => Promise<void> | void) | null,
+        setButtonText(value: string) { this.text = value; return this; },
+        setDisabled(value: boolean) { this.disabled = value; return this; },
+        onClick(handler: () => Promise<void> | void) { this.onClickCallback = handler; return this; },
+      };
+      this.buttonComponents.push(button);
+      callback(button);
       return this;
     }
 
@@ -143,6 +158,7 @@ type MockSettingRecord = {
   heading: boolean;
   textComponents: MockTextComponent[];
   toggleComponents: MockToggleComponent[];
+  buttonComponents: any[];
 };
 
 type MockElementRecord = {
@@ -201,6 +217,8 @@ function createElement(): any {
   const classes = new Set<string>();
   const eventListeners = new Map<string, Array<(...args: unknown[]) => void>>();
   const element: any = {
+    ownerDocument: { activeElement: null },
+    contains: jest.fn(() => false),
     value: '',
     checked: false,
     open: false,
@@ -550,7 +568,7 @@ describe('KimicodeSettingsTab', () => {
 
     kimicodeSettingsTabRenderer.render(createContainer(), context);
 
-    const catalogEl = findElement('details', 'grimoire-kimicode-model-picker-catalog');
+    const catalogEl = findElement('details', 'grimoire-model-picker-catalog');
     catalogEl.open = true;
     await catalogEl.dispatchMockEvent('toggle');
 

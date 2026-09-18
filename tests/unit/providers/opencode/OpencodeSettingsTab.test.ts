@@ -30,6 +30,7 @@ jest.mock('obsidian', () => {
     public heading = false;
     public textComponents: MockTextComponent[] = [];
     public toggleComponents: MockToggleComponent[] = [];
+    public buttonComponents: any[] = [];
 
     constructor(_container: unknown) {
       createdSettings.push(this);
@@ -54,6 +55,20 @@ jest.mock('obsidian', () => {
       const component = createTextComponent();
       this.textComponents.push(component);
       callback(component);
+      return this;
+    }
+
+    addButton(callback: (button: any) => void) {
+      const button = {
+        text: '',
+        disabled: false,
+        onClickCallback: null as (() => Promise<void> | void) | null,
+        setButtonText(value: string) { this.text = value; return this; },
+        setDisabled(value: boolean) { this.disabled = value; return this; },
+        onClick(handler: () => Promise<void> | void) { this.onClickCallback = handler; return this; },
+      };
+      this.buttonComponents.push(button);
+      callback(button);
       return this;
     }
 
@@ -143,6 +158,7 @@ type MockSettingRecord = {
   heading: boolean;
   textComponents: MockTextComponent[];
   toggleComponents: MockToggleComponent[];
+  buttonComponents: any[];
 };
 
 type MockElementRecord = {
@@ -201,6 +217,8 @@ function createElement(): any {
   const classes = new Set<string>();
   const eventListeners = new Map<string, Array<(...args: unknown[]) => void>>();
   const element: any = {
+    ownerDocument: { activeElement: null },
+    contains: jest.fn(() => false),
     value: '',
     checked: false,
     open: false,
@@ -543,7 +561,7 @@ describe('OpencodeSettingsTab', () => {
 
     opencodeSettingsTabRenderer.render(createContainer(), context);
 
-    const catalogEl = findElement('details', 'grimoire-opencode-model-picker-catalog');
+    const catalogEl = findElement('details', 'grimoire-model-picker-catalog');
     catalogEl.open = true;
     await catalogEl.dispatchMockEvent('toggle');
 
@@ -582,6 +600,47 @@ describe('OpencodeSettingsTab', () => {
 
     expect(mockDiscoverMetadata).toHaveBeenCalledTimes(1);
     expect(context.refreshModelSelectors).toHaveBeenCalledTimes(1);
+  });
+
+  it('refreshes a populated catalog once, preserves preferences, and allows retry after failure', async () => {
+    const plugin = createPlugin();
+    const settings = plugin.settings.providerConfigs.opencode;
+    const selected = 'vendor/selected';
+    settings.discoveredModels = [{ label: 'Vendor/Selected', rawId: selected }];
+    settings.visibleModels = [selected];
+    settings.modelAliases = { [selected]: 'My model' };
+    const context = createContext(plugin);
+    context.suppressAutomaticDiscovery = true;
+    opencodeSettingsTabRenderer.render(createContainer(), context);
+    const button = findSetting(t('settings.providerTabs.acp.visibleModels.name')).buttonComponents[0];
+    expect(button?.text).toBe('Refresh all models');
+
+    let rejectLoad!: (error: Error) => void;
+    mockDiscoverMetadata.mockImplementationOnce(() => new Promise((_resolve, reject) => { rejectLoad = reject; }));
+    const pending = button.onClickCallback();
+    expect(button.disabled).toBe(true);
+    await button.onClickCallback();
+    expect(mockDiscoverMetadata).toHaveBeenCalledTimes(1);
+    rejectLoad(new Error('CLI unavailable'));
+    await pending;
+    expect(button.disabled).toBe(false);
+    expect(settings.discoveredModels).toEqual([{ label: 'Vendor/Selected', rawId: selected }]);
+    expect(context.refreshModelSelectors).not.toHaveBeenCalled();
+    expect(findElement('summary', 'grimoire-model-picker-catalog-summary').createSpan.mock.results[2].value.setText)
+      .toHaveBeenLastCalledWith('Refresh failed. Try again.');
+
+    mockDiscoverMetadata.mockImplementationOnce(async () => {
+      settings.discoveredModels = [{ label: 'Vendor/New', rawId: 'vendor/new' }];
+      return true;
+    });
+    await button.onClickCallback();
+    expect(mockDiscoverMetadata).toHaveBeenCalledTimes(2);
+    expect(context.refreshModelSelectors).toHaveBeenCalledTimes(1);
+    expect(settings.discoveredModels).toEqual([{ label: 'Vendor/New', rawId: 'vendor/new' }]);
+    expect(settings.visibleModels).toEqual([selected]);
+    expect(settings.modelAliases).toEqual({ [selected]: 'My model' });
+    expect(button.text).toBe('Refresh all models');
+    expect(button.disabled).toBe(false);
   });
 
   it('warms and persists thinking metadata when a model is added to the visible list', async () => {

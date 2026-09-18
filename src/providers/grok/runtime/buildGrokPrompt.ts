@@ -79,21 +79,10 @@ export function buildGrokPromptBlocks(
   conversationHistory: ChatMessage[] = [],
   options: GrokPromptOptions = {},
 ): AcpContentBlock[] {
-  const blocks: AcpContentBlock[] = [
+  if (request.images?.length) {
+    throw new Error('Grok Build does not support image attachments over ACP. Choose a provider with image support.');
+  }
+  return [
     { type: 'text', text: buildGrokPromptText(request, conversationHistory, options) },
   ];
-
-  for (const image of request.images ?? []) {
-    if (!image.data) {
-      continue;
-    }
-
-    blocks.push({
-      data: image.data,
-      mimeType: image.mediaType,
-      type: 'image',
-    });
-  }
-
-  return blocks;
 }

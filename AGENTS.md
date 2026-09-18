@@ -169,6 +169,13 @@ grant.
 Settings surfaces are built with the declarative settings API and must look native: style what
 Grimoire puts *inside* a row, never `.setting-item` and its parts.
 
+Settings model selection uses the shared `src/features/settings/ui/ProviderModelPicker.ts` and
+`src/style/settings/provider-model-picker.css`, based on OpenCode, including its selected-model
+rows and always-visible alias inputs. Reuse this component when adding or changing a provider's
+model shortlist; do not introduce a provider-specific copy or stylesheet. Keep discovery and
+selection semantics in the provider adapter. Read [the model-picker contract](docs/design-system.md#118-settings)
+for required behavior and verification; custom-ID inputs and refresh-only rows are separate controls.
+
 ## Testing Rules
 
 - Tests mirror `src/` under `tests/unit/` and `tests/integration/`.

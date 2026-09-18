@@ -10,6 +10,9 @@ export interface CommandcodeSettings {
   cliPath: string;
   cliPathsByHost: Record<string, string>;
   environmentVariables: string;
+  visibleModels: string[];
+  modelAliases: Record<string, string>;
+  imageAttachmentsAsFiles: boolean;
   reasoningEffortsByModel: Record<string, string[]>;
   discoveredModels: Array<{ rawId: string; label: string; description?: string }>;
 }
@@ -24,6 +27,13 @@ export function decodeCommandcodeSettings(input: unknown): CommandcodeSettings {
         Boolean(entry[0].trim()) && typeof entry[1] === 'string' && Boolean(entry[1].trim())
       ))) : {},
     environmentVariables: typeof record.environmentVariables === 'string' ? record.environmentVariables : '',
+    visibleModels: Array.isArray(record.visibleModels)
+      ? [...new Set(record.visibleModels.filter((id): id is string => typeof id === 'string' && Boolean(id.trim())).map(id => id.trim()))] : [],
+    modelAliases: isRecord(record.modelAliases)
+      ? Object.fromEntries(Object.entries(record.modelAliases)
+        .filter((entry): entry is [string, string] => Boolean(entry[0].trim()) && typeof entry[1] === 'string' && Boolean(entry[1].trim()))
+        .map(([id, alias]) => [id.trim(), alias.trim()])) : {},
+    imageAttachmentsAsFiles: record.imageAttachmentsAsFiles === true,
     reasoningEffortsByModel: isRecord(record.reasoningEffortsByModel)
       ? Object.fromEntries(Object.entries(record.reasoningEffortsByModel).filter((entry): entry is [string, string[]] => (
         Array.isArray(entry[1]) && entry[1].every(value => typeof value === 'string' && /^[a-z][a-z0-9_-]*$/.test(value))
