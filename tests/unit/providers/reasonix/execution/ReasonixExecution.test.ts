@@ -1,8 +1,9 @@
 import trace from '@test/fixtures/provider-traces/reasonix-execution.json';
+import permissions from '@test/fixtures/provider-traces/reasonix-permissions-1.38.10.json';
 
 import { JsonRpcErrorResponse } from '@/providers/acp';
 import type { ManagedAcpClient } from '@/providers/acp/execution/ManagedAcpClient';
-import type { AcpRequestPermissionRequest } from '@/providers/acp/types';
+import type { AcpRequestPermissionRequest, AcpSessionConfigOption } from '@/providers/acp/types';
 import { ReasonixAcpDynamicConfigApplier } from '@/providers/reasonix/execution/ReasonixAcpDynamicConfig';
 import { ReasonixInteractionBridge } from '@/providers/reasonix/execution/ReasonixInteractionBridge';
 import { buildReasonixPermissionPresentation } from '@/providers/reasonix/execution/ReasonixPermissionPresentation';
@@ -42,6 +43,145 @@ describe('Reasonix dynamic configuration', () => {
     });
 
     expect(calls).toEqual(trace.cases.dynamicConfiguration);
+  });
+
+  it.each([
+    ['normal', 'read-only', 'normal'],
+    ['plan', 'read-only', 'plan'],
+    ['full_access', 'danger-full-access', 'normal'],
+  ])('applies the advertised permission preset for %s on fresh and warm sessions', async (modeId, approval, mode) => {
+    const { client, calls } = createClient();
+    const applier = new ReasonixAcpDynamicConfigApplier({ resolve: async () => ({ modeId }) });
+    const input = {
+      client, sessionId: 'native-session', dynamicRef: 'config', signal: new AbortController().signal,
+    };
+
+    await applier.apply({
+      ...input,
+      sessionConfigOptions: [permissions.toolApproval] as AcpSessionConfigOption[],
+    });
+    await applier.apply(input);
+
+    expect(calls).toEqual([
+      `set-config:tool_approval:${approval}`, `set-mode:${mode}`,
+      `set-config:tool_approval:${approval}`, `set-mode:${mode}`,
+    ]);
+  });
+
+  it('uses permission options returned by a model change', async () => {
+    const { client, calls } = createClient();
+    const setConfig = jest.spyOn(client, 'setConfigOption').mockResolvedValueOnce({
+      configOptions: [permissions.toolApproval] as AcpSessionConfigOption[],
+    });
+    const applier = new ReasonixAcpDynamicConfigApplier({
+      resolve: async () => ({ modelId: 'custom-api-z-ai/glm-5.3-flash', modeId: 'normal' }),
+    });
+
+    await applier.apply({
+      client, sessionId: 'native-session', dynamicRef: 'config', signal: new AbortController().signal,
+    });
+
+    expect(setConfig).toHaveBeenLastCalledWith(expect.objectContaining({
+      configId: 'tool_approval', value: 'read-only',
+    }));
+    expect(calls).toEqual(['set-config:tool_approval:read-only', 'set-mode:normal']);
+  });
+
+  it('does not rebuild a session by reselecting the model it already uses', async () => {
+    const { client, calls } = createClient();
+    const modelId = 'custom-api-z-ai/glm-5.3-flash';
+    const applier = new ReasonixAcpDynamicConfigApplier({
+      resolve: async () => ({ modelId, modeId: 'normal' }),
+    });
+    const input = {
+      client, sessionId: 'native-session', dynamicRef: 'config', signal: new AbortController().signal,
+    };
+    await applier.apply({
+      ...input,
+      sessionConfigOptions: [{
+        id: 'model', name: 'Model', type: 'select', currentValue: modelId,
+        options: [{ value: modelId, name: modelId }],
+      }, permissions.toolApproval] as AcpSessionConfigOption[],
+    });
+    await applier.apply(input);
+
+    expect(calls).toEqual([
+      'set-config:tool_approval:read-only', 'set-mode:normal',
+      'set-config:tool_approval:read-only', 'set-mode:normal',
+    ]);
+  });
+
+  it('does not carry permission options into another client or session', async () => {
+    const first = createClient();
+    const second = createClient();
+    const applier = new ReasonixAcpDynamicConfigApplier({ resolve: async () => ({ modeId: 'normal' }) });
+    const input = { sessionId: 'native-session', dynamicRef: 'config', signal: new AbortController().signal };
+    await applier.apply({
+      ...input, client: first.client,
+      sessionConfigOptions: [permissions.toolApproval] as AcpSessionConfigOption[],
+    });
+    await applier.apply({ ...input, client: second.client });
+    await applier.apply({ ...input, client: first.client, sessionId: 'replacement-session' });
+
+    expect(second.calls).toEqual(['set-config:tool_approval:ask', 'set-mode:normal']);
+    expect(first.calls.slice(-2)).toEqual(['set-config:tool_approval:ask', 'set-mode:normal']);
+  });
+
+  it.each(['enabled', 'auto'])('does not reapply unchanged effort on fresh or warm turns (%s)', async currentValue => {
+    const { client, calls } = createClient();
+    const effortOption: AcpSessionConfigOption = {
+      id: 'effort', name: 'Thinking', type: 'select', currentValue,
+      options: [{ value: 'enabled', name: 'Enabled' }, { value: 'auto', name: 'Auto' }],
+    };
+    jest.spyOn(client, 'setConfigOption').mockImplementation(async ({ value }) => {
+      calls.push(`set-effort:${value}`);
+      return { configOptions: [{ ...effortOption, currentValue: String(value) }] };
+    });
+    const applier = new ReasonixAcpDynamicConfigApplier({
+      resolve: async () => ({ effortLevel: 'enabled' }),
+    });
+    const input = {
+      client, sessionId: 'native-session', dynamicRef: 'config', signal: new AbortController().signal,
+    };
+
+    await applier.apply({ ...input, sessionConfigOptions: [effortOption] });
+    await applier.apply(input);
+
+    expect(calls).toEqual(currentValue === 'enabled' ? [] : ['set-effort:enabled']);
+  });
+
+  it('reads effort again after a model change before deciding to skip it', async () => {
+    const { client, calls } = createClient();
+    const effortOption: AcpSessionConfigOption = {
+      id: 'effort', name: 'Thinking', type: 'select', currentValue: 'enabled',
+      options: [{ value: 'enabled', name: 'Enabled' }, { value: 'auto', name: 'Auto' }],
+    };
+    jest.spyOn(client, 'setConfigOption').mockResolvedValueOnce({
+      configOptions: [{ ...effortOption, currentValue: 'auto' }],
+    });
+    const applier = new ReasonixAcpDynamicConfigApplier({
+      resolve: async () => ({ modelId: 'custom-api-z-ai/glm-5.3-flash', effortLevel: 'enabled' }),
+    });
+
+    await applier.apply({
+      client, sessionId: 'native-session', dynamicRef: 'config', signal: new AbortController().signal,
+      sessionConfigOptions: [effortOption],
+    });
+
+    expect(calls).toEqual(['set-config:effort:enabled']);
+  });
+
+  it('refuses Safe mode when only unattended write policies are offered', async () => {
+    const { client, calls } = createClient();
+    const applier = new ReasonixAcpDynamicConfigApplier({ resolve: async () => ({ modeId: 'normal' }) });
+    await expect(applier.apply({
+      client, sessionId: 'native-session', dynamicRef: 'config', signal: new AbortController().signal,
+      sessionConfigOptions: [{
+        ...permissions.toolApproval,
+        options: permissions.toolApproval.options.filter(option => option.value !== 'read-only'),
+      }] as AcpSessionConfigOption[],
+    })).rejects.toThrow('Reasonix does not offer the requested tool approval policy.');
+    expect(calls).toEqual([]);
   });
 
   it('sets the reasoning level after the model, and only when one was picked', async () => {

@@ -148,7 +148,7 @@ export class ReasonixSessionConfigState {
       : null;
     return typeof savedReasonixModel === 'string'
       ? decodeReasonixModelId(savedReasonixModel)
-      : providerSettings.visibleModels[0] ?? null;
+      : this.currentSessionModelId ?? providerSettings.visibleModels[0] ?? null;
   }
 
   /** The model a usage badge is labelled with. */

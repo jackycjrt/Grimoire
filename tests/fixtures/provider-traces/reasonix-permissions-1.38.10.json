@@ -1,0 +1,15 @@
+{
+  "source": "Reasonix v1.38.10 session/new, probed 2026-09-18",
+  "toolApproval": {
+    "id": "tool_approval",
+    "name": "Permissions",
+    "category": "tool_approval",
+    "type": "select",
+    "currentValue": "workspace-write",
+    "options": [
+      { "value": "read-only", "name": "Read only", "description": "Read files; ask before writes and external side effects" },
+      { "value": "workspace-write", "name": "Workspace access", "description": "Write inside the workspace and private session temp directory" },
+      { "value": "danger-full-access", "name": "Full access", "description": "Skip ordinary prompts while explicit deny rules remain active" }
+    ]
+  }
+}

@@ -1,4 +1,7 @@
+import { flattenAcpSessionConfigSelectOptions } from '@/providers/acp/AcpSessionConfig';
 import type { AcpContentPayload } from '@/providers/acp/execution/AcpContentPayload';
+import type { ManagedAcpClient } from '@/providers/acp/execution/ManagedAcpClient';
+import type { AcpSessionConfigOption } from '@/providers/acp/types';
 import {
   mapGrimoireModeToReasonix,
   mapGrimoireModeToReasonixApproval,
@@ -44,10 +47,10 @@ export type ReasonixModeRefusedReporter = (input: {
  *
  * **One Grimoire mode is two calls here.** Reasonix separates what a session is
  * doing (`normal`, `plan`, `goal`, moved with `session/set_mode`) from how much
- * it may do unasked (`tool_approval`: `ask`, `auto`, `yolo`, moved with
- * `session/set_config_option`); Grimoire's toolbar drives both, and `modes.ts`
- * holds the translation. Both were probed on 2026-09-09: `session/set_mode`
- * answers `{}` and pushes a `current_mode_update`, and the config option answers
+ * it may do unasked (`tool_approval`, moved with `session/set_config_option`);
+ * Grimoire's toolbar drives both, and `modes.ts` selects the translation from
+ * the session's advertised permission values. Both calls were probed on
+ * 2026-09-09: `session/set_mode` answers `{}` and pushes a `current_mode_update`, and the config option answers
  * with the session's whole option list.
  *
  * **A posture that will not move fails the turn; a mode that will not move
@@ -71,6 +74,13 @@ export type ReasonixModeRefusedReporter = (input: {
 export class ReasonixAcpDynamicConfigApplier implements ReasonixExecutionDynamicApplier {
   /** The sessions already told about a refusal, so a turn is not the unit. */
   private readonly reportedSessions = new Set<string>();
+  /** Warm turns receive no opening reply; retain options only for this client and session. */
+  private readonly sessionOptions = new WeakMap<ManagedAcpClient, {
+    sessionId: string;
+    approvalValues?: readonly string[];
+    modelId?: string;
+    effortLevel?: string;
+  }>();
 
   constructor(
     private readonly resolver: ReasonixAcpDynamicConfigResolver,
@@ -81,13 +91,18 @@ export class ReasonixAcpDynamicConfigApplier implements ReasonixExecutionDynamic
     if (!input.dynamicRef) return;
     const config = await this.resolver.resolve(input.dynamicRef);
     throwIfAborted(input.signal);
-    if (config.modelId?.trim()) {
-      await input.client.setConfigOption({
+    this.rememberSessionOptions(input, input.sessionConfigOptions);
+    const known = this.sessionOptions.get(input.client);
+    const currentModel = known?.sessionId === input.sessionId ? known.modelId : undefined;
+    // Reasonix rebuilds its controller even when asked for the same model.
+    if (config.modelId?.trim() && config.modelId.trim() !== currentModel) {
+      const response = await input.client.setConfigOption({
         configId: 'model',
         sessionId: input.sessionId,
         type: 'select',
         value: config.modelId.trim(),
       });
+      this.rememberSessionOptions(input, response.configOptions);
     }
     throwIfAborted(input.signal);
     // After the model, because the levels a session takes are the *model's*:
@@ -95,14 +110,18 @@ export class ReasonixAcpDynamicConfigApplier implements ReasonixExecutionDynamic
     // Tolerated rather than strict — an effort the agent will not take leaves
     // the session on whatever it was thinking at, which is a depth, not a
     // permission.
-    if (config.effortLevel?.trim()) {
+    const afterModel = this.sessionOptions.get(input.client);
+    const currentEffort = afterModel?.sessionId === input.sessionId ? afterModel.effortLevel : undefined;
+    // Reselecting unchanged effort rebuilds the controller and loses history too.
+    if (config.effortLevel?.trim() && config.effortLevel.trim() !== currentEffort) {
       try {
-        await input.client.setConfigOption({
+        const response = await input.client.setConfigOption({
           configId: 'effort',
           sessionId: input.sessionId,
           type: 'select',
           value: config.effortLevel.trim(),
         });
+        this.rememberSessionOptions(input, response.configOptions);
       } catch (error) {
         if (input.signal.aborted) {
           throw error;
@@ -120,13 +139,17 @@ export class ReasonixAcpDynamicConfigApplier implements ReasonixExecutionDynamic
     input: Parameters<ReasonixExecutionDynamicApplier['apply']>[0],
     grimoireMode: string,
   ): Promise<void> {
+    const advertised = this.sessionOptions.get(input.client);
     // Not caught: the posture is what separates Safe from Auto-approve, so a
     // turn that could not set it has no permission boundary to run behind.
     await input.client.setConfigOption({
       configId: 'tool_approval',
       sessionId: input.sessionId,
       type: 'select',
-      value: mapGrimoireModeToReasonixApproval(grimoireMode),
+      value: mapGrimoireModeToReasonixApproval(
+        grimoireMode,
+        advertised?.sessionId === input.sessionId ? advertised.approvalValues : undefined,
+      ),
     });
     throwIfAborted(input.signal);
 
@@ -156,6 +179,26 @@ export class ReasonixAcpDynamicConfigApplier implements ReasonixExecutionDynamic
         ...(detail ? { detail } : {}),
       } satisfies AcpContentPayload);
     }
+  }
+
+  private rememberSessionOptions(
+    input: Parameters<ReasonixExecutionDynamicApplier['apply']>[0],
+    options?: readonly AcpSessionConfigOption[],
+  ): void {
+    if (!options) return;
+    const previous = this.sessionOptions.get(input.client);
+    const approval = options.find(option => option.id === 'tool_approval');
+    const model = options.find(option => option.id === 'model');
+    const effort = options.find(option => option.id === 'effort');
+    this.sessionOptions.set(input.client, {
+      ...(previous?.sessionId === input.sessionId ? previous : {}),
+      sessionId: input.sessionId,
+      ...(approval?.type === 'select' ? {
+        approvalValues: flattenAcpSessionConfigSelectOptions(approval.options).map(option => option.value),
+      } : {}),
+      ...(model?.type === 'select' ? { modelId: model.currentValue } : {}),
+      ...(effort?.type === 'select' ? { effortLevel: effort.currentValue } : {}),
+    });
   }
 
   /**

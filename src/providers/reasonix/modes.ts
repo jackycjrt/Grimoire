@@ -3,13 +3,15 @@
  *
  * A session carries a *mode* — `normal`, `plan`, `goal`, listed under `modes`
  * in the `session/new` reply — and, separately, a `tool_approval` config option
- * whose values are `ask`, `auto` and `yolo`. Recorded in
+ * whose legacy values are `ask`, `auto` and `yolo`. Recorded in
  * `tests/fixtures/provider-traces/wire/reasonix-wire.json`, taken from
- * `reasonix v1.38.3` on 2026-09-09.
+ * `reasonix v1.38.3` on 2026-09-09. Version 1.38.10 instead advertises
+ * `read-only`, `workspace-write` and `danger-full-access`; select from the
+ * session's options rather than assuming either vocabulary.
  *
  * Grimoire has three controls and Reasonix has two axes, so each Grimoire mode
  * names a point on both: Safe is `normal` asking before gated tools, Plan is
- * `plan` still asking, and Auto-approve is `normal` on `yolo`. `goal` — keep
+ * `plan` still asking, and Auto-approve is `normal` with full access. `goal` — keep
  * advancing the prompt until complete or blocked — is Reasonix's own and is
  * mapped from, never to: a session that reports it reads as Safe here, because
  * the toolbar has no fourth position to put it in.
@@ -36,14 +38,18 @@ export function mapGrimoireModeToReasonix(mode: string | null | undefined): stri
 }
 
 /** The `tool_approval` posture a Grimoire permission mode asks for. */
-export function mapGrimoireModeToReasonixApproval(mode: string | null | undefined): string {
-  switch (mode) {
-    case 'full_access':
-    case 'yolo':
-      return REASONIX_YOLO_APPROVAL;
-    default:
-      return REASONIX_ASK_APPROVAL;
-  }
+export function mapGrimoireModeToReasonixApproval(
+  mode: string | null | undefined,
+  availableValues?: readonly string[],
+): string {
+  const fullAccess = mode === 'full_access' || mode === 'yolo';
+  const legacy = fullAccess ? REASONIX_YOLO_APPROVAL : REASONIX_ASK_APPROVAL;
+  if (!availableValues) return legacy;
+  const preset = fullAccess ? 'danger-full-access' : 'read-only';
+  const value = [preset, legacy].find(candidate => availableValues.includes(candidate));
+  if (value) return value;
+  // Workspace write is not Safe: it permits edits without asking.
+  throw new Error('Reasonix does not offer the requested tool approval policy.');
 }
 
 /**

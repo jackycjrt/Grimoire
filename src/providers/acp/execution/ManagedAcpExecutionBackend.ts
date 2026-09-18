@@ -678,22 +678,33 @@ class ManagedAcpExecutionSession implements ExecutionSession {
     if (!this.client || !this.nativeSessionRef) {
       throw new ExecutionDispatchError('Managed ACP session is not ready.', true);
     }
-    const applied = await completesWithin(
-      this.context.dynamicApplier.apply({
-        client: this.client,
-        sessionId: this.nativeSessionRef,
-        dynamicRef: invocation.dynamicRef,
-        signal: this.clientAbort?.signal ?? new AbortController().signal,
-        presentContent: payload => run.presentProviderContent(payload),
-        ...(opened?.configOptions ? { sessionConfigOptions: opened.configOptions } : {}),
-        ...(opened?.modes ? { sessionModes: opened.modes } : {}),
-      }),
-      this.context.scheduler,
-      this.context.controlTimeoutMs ?? 2_000,
-    );
-    if (run.isTerminal || generation !== this.clientGeneration) return;
-    if (!applied) {
-      throw new ExecutionDispatchError('Managed ACP dynamic configuration timed out.', true);
+    try {
+      const applied = await withTimeout(
+        this.context.dynamicApplier.apply({
+          client: this.client,
+          sessionId: this.nativeSessionRef,
+          dynamicRef: invocation.dynamicRef,
+          signal: this.clientAbort?.signal ?? new AbortController().signal,
+          presentContent: payload => run.presentProviderContent(payload),
+          ...(opened?.configOptions ? { sessionConfigOptions: opened.configOptions } : {}),
+          ...(opened?.modes ? { sessionModes: opened.modes } : {}),
+        }).then(
+          () => ({ ok: true } as const),
+          (error: unknown) => ({ ok: false, error } as const),
+        ),
+        this.context.scheduler,
+        this.context.controlTimeoutMs ?? 2_000,
+      );
+      if (run.isTerminal || generation !== this.clientGeneration) return;
+      if (!applied) {
+        throw new ExecutionDispatchError('Managed ACP dynamic configuration timed out.', true);
+      }
+      if (!applied.ok) throw applied.error;
+    } catch (error) {
+      if (run.isTerminal || generation !== this.clientGeneration) return;
+      const detail = error instanceof Error ? error.message : String(error);
+      run.presentTurnRefusal(`Could not apply session configuration: ${detail}`);
+      throw error;
     }
   }
 

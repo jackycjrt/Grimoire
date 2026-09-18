@@ -446,7 +446,8 @@ export class ReasonixExecution {
 
   /**
    * What this turn asks the session to be set to: the mode and the model,
-   * sent every turn because the session a turn lands on is decided at dispatch.
+   * resolved every turn because the session is decided at dispatch. The applier
+   * skips a model the session already reports as current.
    */
   private dynamicConfiguration(
     sessionConfig: ReasonixSessionConfigState,
