@@ -46,7 +46,7 @@ It's built for people who already work in Obsidian and want AI help that behaves
 | Local persistent runtime | Yes | Yes | Yes | Yes | Yes | Yes | No | Yes | Yes | Yes | Yes | No |
 | Native history hydration | Yes | Yes | Yes | Yes | Yes | Yes | No | Yes | No | No | No | No |
 | Plan mode | Yes | Yes | Yes | Yes | Yes | Yes | No | Yes | Yes | Yes | Yes | No |
-| Image attachments | Yes | Yes | Yes | Yes | Yes | Yes | No | Yes | Yes | Yes | No | No |
+| Image attachments | Yes | Yes | Yes | No | Yes | Yes | Files | Yes | Yes | Yes | No | Files (opt-in) |
 | Instruction mode | Yes | Yes | Yes | Yes | Yes | Yes | No | Yes | Yes | Yes | Yes | No |
 | Reasoning effort controls | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Yes | No | Yes | Yes (model-specific) |
 | Rewind | No | Yes | No | Yes | No | No | No | No | No | No | No | No |
@@ -168,7 +168,7 @@ Install the official Antigravity CLI from Google, authenticate it locally, then 
 - [Antigravity CLI](https://antigravity.google/product/antigravity-cli)
 - [Gemini CLI migration guide](https://goo.gle/gemini-cli-migration)
 
-Inside Grimoire, Antigravity runs through `agy --print` with optional model selection from `agy models`, and Grimoire folds the active note plus editor, browser, canvas, vault-search, and project-workspace context into that print prompt. This is a best-effort integration because `agy` does not currently expose a strong ACP-compatible runtime to Grimoire. Persistent sessions, native history, images, plan mode, streaming, approval-safe file edits, reliable usage reporting, and auxiliary workflows stay disabled or limited until Antigravity exposes stable runtime surfaces for them.
+Inside Grimoire, Antigravity runs through `agy --print` with optional model selection from `agy models`, and Grimoire folds the active note plus editor, browser, canvas, vault-search, and project-workspace context into that print prompt. Images are supplied as temporary files for the model to read; attach them again for follow-up turns. This is a best-effort integration because `agy` does not currently expose a strong ACP-compatible runtime to Grimoire. Persistent sessions, native history, plan mode, streaming, approval-safe file edits, reliable usage reporting, and auxiliary workflows stay disabled or limited until Antigravity exposes stable runtime surfaces for them.
 
 Known Windows limitation: current Windows `agy` builds can finish successfully while returning empty stdout for `agy models` and `agy --print`. Grimoire uses best-effort recovery from Antigravity logs, transcripts, settings, and a seeded Pro AI model list, but Windows Antigravity support may be less reliable than macOS or Linux until the upstream CLI exposes stable output. If your account shows additional models in Antigravity, add their exact labels under Antigravity settings > Custom models.
 
@@ -187,6 +187,8 @@ Enable Gemini CLI only if your account tier is still supported and you specifica
 ### Qwen Code
 
 Qwen Code is an opt-in ACP provider. It keeps provider-native persistent sessions, resume, and model context; discovers models and modes from the live ACP session; streams messages, tool activity, and plans; and supports image input, provider commands, and file approvals. Grimoire does not hydrate provider-native message history.
+
+Image input requires a vision-capable model and access to it on your account. For a custom vision model, verify that Qwen's model entry declares `generationConfig.modalities.image: true` when its automatic detection does not recognize the model. Otherwise Qwen can replace image input with text placeholders before calling the model. See [Qwen model configuration](https://qwenlm.github.io/qwen-code-docs/en/users/configuration/settings/).
 
 ```bash
 # Linux and macOS (recommended standalone install)
@@ -280,7 +282,11 @@ Reasoning effort is discovered for the selected model from the installed CLI. Th
 
 Grimoire streams answers and tool activity from the CLI's headless JSON output, discovers models with `--list-models`, and saves the native session ID for explicit resume after reload. Authentication, native configuration, skills, MCP and transcripts stay with Command Code. Context usage uses reported input tokens against an estimated or user-supplied context limit; account quotas and prices are not inferred.
 
-**Safe** pauses edits, commands and other non-read tools for a one-time approval in Grimoire. Denying, cancelling or losing the approval connection prevents execution. Safe currently requires the verified Command Code 1.53.0 npm installation and disables native subagents, whose separate loops cannot use this approval bridge. **Auto-approve** runs without Grimoire prompts; native deny and ask rules still apply in both modes. This integration does not expose interactive questions, image attachments, plan controls, slash commands, managed MCP/skills/agents, auxiliary tasks, fork, rewind, or native history import.
+Under **Models → Visible models**, search the live CLI catalog and select the models to show in chat. **Refresh models** updates the catalog while preserving your selection; **Show all models** restores the full catalog. Saved selections that disappear from discovery remain listed so you can remove them.
+
+Enable **Image attachments as files** to send pasted or dropped images through the CLI's file-reading tool. Choose a model that supports images: the catalog does not report this capability. Grimoire keeps the image in `.grimoire/attachments/` and appends its path to the prompt; reading it requires an extra tool call. Missing or unwritable attachments fail the turn instead of being silently omitted.
+
+**Safe** pauses edits, commands and other non-read tools for a one-time approval in Grimoire. Denying, cancelling or losing the approval connection prevents execution. Safe currently requires the verified Command Code 1.53.0 npm installation and disables native subagents, whose separate loops cannot use this approval bridge. **Auto-approve** runs without Grimoire prompts; native deny and ask rules still apply in both modes. This integration does not expose interactive questions, plan controls, slash commands, managed MCP/skills/agents, auxiliary tasks, fork, rewind, or native history import.
 
 - [Command Code headless documentation](https://commandcode.ai/docs/headless)
 
@@ -379,6 +385,8 @@ The **Parallel workers** approval card shows the inherited model and lets you se
 ### Model selector
 
 One picker, grouped by provider and sorted by label: Antigravity, Claude Code, Codex, Command Code, Devin, Gemini CLI (Legacy), Grok Build, Kimi Code, MiMoCode, OpenCode, Qwen Code, and Reasonix. Search runs across labels, descriptions, groups, and model IDs without resizing the menu while you filter. Catalogs load lazily and remember which groups you collapsed. Add custom aliases and context-window overrides in settings. Claude's 1M variants are extra options, not replacements for the base models.
+
+OpenCode, MiMoCode, Kimi Code, Grok Build, and Command Code use the same model selection in settings: selected rows with aliases, a searchable catalog, and **Refresh all models**. Refresh preserves your configured selection and aliases. Provider filtering is shown when the CLI supplies vendor labels.
 
 ### Usage and cost
 

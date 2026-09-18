@@ -6,6 +6,7 @@ import { join } from 'node:path';
 
 import { ownedProcesses } from '@test/helpers/execution/hostProcessTree';
 import { createDurableInMemoryVaultAdapter } from '@test/helpers/inMemoryVaultAdapter';
+import { imageAttachmentRoundTrip } from "@test/integration/app/chat/chatProjectionImageRow";
 import {
   openChatProjection,
   userMessage,
@@ -136,6 +137,10 @@ live('Antigravity chat projection live smoke', () => {
       await pause(100);
     }
   }
+
+  it('image attachments: delivers both pictures and preserves their saved references', async () => {
+    await imageAttachmentRoundTrip(await createHarness(), CONVERSATION_ID);
+  });
 
   it('row A: draws a real answer once and leaves it in the vault', async () => {
     const { column, sessions, tab } = await createHarness();

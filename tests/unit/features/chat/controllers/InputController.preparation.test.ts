@@ -1,6 +1,7 @@
 import '@/providers';
 
 import { createMockDeps } from '@test/helpers/inputControllerHarness';
+import { Notice } from 'obsidian';
 
 import { InputController } from '@/features/chat/controllers/InputController';
 
@@ -91,6 +92,89 @@ test('an initialization exception restores text and images', async () => {
   expect(manager.setImages).toHaveBeenCalledWith(images);
   expect(deps.state.isStreaming).toBe(false);
   expect(p.send).not.toHaveBeenCalled();
+});
+
+test('a missing saved image refuses dispatch and preserves the draft', async () => {
+  const deps = createMockDeps();
+  const p = projection();
+  deps.getProjectionExecution = () => p as never;
+  const images = [{ id: 'image-1', name: 'missing.png', mediaType: 'image/png' as const,
+    data: '', hash: 'a'.repeat(64), size: 3, source: 'paste' as const }];
+  const manager = deps.getImageContextManager()!;
+  jest.spyOn(manager, 'getAttachedImages').mockReturnValue(images);
+  Object.assign(deps.plugin, { storage: { attachments: { read: jest.fn().mockResolvedValue(null) } } });
+  deps.getInputEl().value = 'Describe my picture';
+
+  await new InputController(deps).sendMessage();
+
+  expect(p.send).not.toHaveBeenCalled();
+  expect(deps.getInputEl().value).toBe('Describe my picture');
+  expect(manager.setImages).toHaveBeenCalledWith(images);
+  expect(Notice).toHaveBeenCalledWith(expect.stringContaining('missing.png'));
+  expect(deps.state.isStreaming).toBe(false);
+});
+
+test('a queued request hydrates its own images before dispatch', async () => {
+  const deps = createMockDeps();
+  const p = projection();
+  deps.getProjectionExecution = () => p as never;
+  const images = [{ id: 'image-1', name: 'saved.png', mediaType: 'image/png' as const,
+    data: '', hash: 'a'.repeat(64), size: 3, source: 'paste' as const }];
+  Object.assign(deps.plugin, { storage: { attachments: {
+    read: jest.fn().mockResolvedValue(Uint8Array.from([1, 2, 3]).buffer),
+  } } });
+
+  await new InputController(deps).sendMessage({ content: 'Queued picture',
+    turnRequestOverride: { text: 'Queued picture', images } });
+
+  expect(p.send).toHaveBeenCalledWith(expect.objectContaining({
+    images: [expect.objectContaining({ data: 'AQID' })],
+  }), expect.objectContaining({ images: [expect.objectContaining({ data: 'AQID' })] }), expect.anything());
+});
+
+test('a queued text request cannot borrow images from the newer composer draft', async () => {
+  const deps = createMockDeps();
+  const p = projection();
+  deps.getProjectionExecution = () => p as never;
+  const draftImages = [{ id: 'draft-image', name: 'draft.png', data: 'AQID',
+    mediaType: 'image/png' as const, size: 3, source: 'paste' as const }];
+  jest.spyOn(deps.getImageContextManager()!, 'getAttachedImages').mockReturnValue(draftImages);
+
+  await new InputController(deps).sendMessage({ content: 'Earlier text',
+    turnRequestOverride: { text: 'Earlier text' } });
+
+  expect(p.send).toHaveBeenCalledWith(expect.objectContaining({ images: undefined }),
+    expect.objectContaining({ images: undefined }), expect.anything());
+  expect(deps.getImageContextManager()!.clearImages).not.toHaveBeenCalled();
+});
+
+test.each([true, false])('steering requires saved image bytes (available=%s)', async available => {
+  jest.mocked(Notice).mockClear();
+  const deps = createMockDeps();
+  const service = deps.getAgentService!()!;
+  jest.spyOn(service, 'getCapabilities').mockReturnValue({
+    ...service.getCapabilities(), supportsTurnSteer: true,
+  });
+  const steer = jest.fn().mockResolvedValue(true);
+  deps.getProjectionExecution = () => ({ ...projection(), steer }) as never;
+  const images = [{ id: 'image-1', name: 'saved.png', mediaType: 'image/png' as const,
+    data: '', hash: 'a'.repeat(64), size: 3, source: 'paste' as const }];
+  Object.assign(deps.plugin, { storage: { attachments: {
+    read: jest.fn().mockResolvedValue(available ? Uint8Array.from([1, 2, 3]).buffer : null),
+  } } });
+  deps.state.isStreaming = true;
+  deps.state.queue.enqueue({ content: 'Look at this', images, editorContext: null, canvasContext: null });
+  const controller = new InputController(deps);
+
+  await (controller as unknown as { steerQueuedMessage(): Promise<void> }).steerQueuedMessage();
+
+  const expectedCall = [expect.objectContaining({
+    request: expect.objectContaining({ images: [expect.objectContaining({ data: 'AQID' })] }),
+  }), expect.objectContaining({ images: [expect.objectContaining({ data: 'AQID' })] })];
+  const missingNotice = [expect.stringContaining('saved.png')];
+  expect(steer.mock.calls).toEqual(available ? [expectedCall] : []);
+  expect(deps.state.queue.items.map(item => item.images)).toEqual(available ? [] : [images]);
+  expect(jest.mocked(Notice).mock.calls).toEqual(available ? [] : [missingNotice]);
 });
 
 test('a failed start preserves a newer draft and queues the original request', async () => {

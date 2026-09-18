@@ -127,7 +127,7 @@ export default defineConfig([
       // in the shared body, one copy for nine providers, and the `it` stays in
       // each provider's file so the matrix's rows remain readable there.
       'jest/expect-expect': ['error', {
-        assertFunctionNames: ['expect', 'surfaceRows.*'],
+        assertFunctionNames: ['expect', 'surfaceRows.*', 'imageAttachmentRoundTrip'],
       }],
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',

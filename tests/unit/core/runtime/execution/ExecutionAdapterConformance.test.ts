@@ -495,7 +495,9 @@ describe('execution adapter over the registry', () => {
       // A live tab already reads the descriptor and has no button; a tab with
       // no service yet still reads the record. Moving the gating finishes the
       // removal.
-      grok: { supportsRewind: false },
+      // The 1.0.34 handshake also explicitly refuses image input; see the
+      // cross-provider attachment verification recorded for #198.
+      grok: { supportsRewind: false, supportsImageAttachments: false },
     };
 
     it.each(modules)('$manifest.id projects to its live record field for field', module => {

@@ -4,6 +4,7 @@ import { Setting } from 'obsidian';
 import { renderEnvironmentSettingsSection } from '../../../features/settings/ui/EnvironmentSettingsSection';
 import { McpSettingsManager } from '../../../features/settings/ui/McpSettingsManager';
 import { renderProviderDisabledNotice } from '../../../features/settings/ui/ProviderDisabledNotice';
+import { type ModelPickerModel, renderProviderModelPicker } from '../../../features/settings/ui/ProviderModelPicker';
 import { ProviderSkillSettings } from '../../../features/settings/ui/ProviderSkillSettings';
 import { t } from '../../../i18n/i18n';
 import type {
@@ -26,17 +27,6 @@ import {
   updateKimicodeProviderSettings,
 } from '../settings';
 import { KimicodeAgentSettings } from './KimicodeAgentSettings';
-
-const ALL_PROVIDERS_KEY = 'all';
-
-interface EnrichedModel {
-  description: string;
-  isAvailable: boolean;
-  modelLabel: string;
-  providerKey: string;
-  providerLabel: string;
-  rawId: string;
-}
 
 export const kimicodeSettingsTabRenderer: ProviderSettingsTabRenderer = {
   render(container, context) {
@@ -155,425 +145,49 @@ export const kimicodeSettingsTabRenderer: ProviderSettingsTabRenderer = {
       updateCliPathValidation(currentValue, text.inputEl);
     });
 
-    new Setting(container).setName(t('settings.models')).setHeading();
-
-    new Setting(container)
-      .setName(t('settings.providerTabs.acp.visibleModels.name'))
-      .setDesc(t('settings.providerTabs.acp.visibleModels.desc', { provider: 'Kimi Code' }));
-
-    const pickerEl = container.createDiv({ cls: 'grimoire-kimicode-model-picker' });
-
-    let searchQuery = '';
-    let providerFilter = ALL_PROVIDERS_KEY;
-
-    const summaryEl = pickerEl.createDiv({ cls: 'grimoire-kimicode-model-picker-summary' });
-    const selectedEl = pickerEl.createDiv({ cls: 'grimoire-kimicode-model-picker-selected' });
-    const catalogEl = pickerEl.createEl('details', { cls: 'grimoire-kimicode-model-picker-catalog' });
-    catalogEl.open = getKimicodeProviderSettings(settingsBag).visibleModels.length === 0;
-    const catalogSummaryEl = catalogEl.createEl('summary', {
-      cls: 'grimoire-kimicode-model-picker-catalog-summary',
-    });
-    catalogSummaryEl.createSpan({
-      cls: 'grimoire-kimicode-model-picker-catalog-caret',
-      text: '▸',
-    });
-    catalogSummaryEl.createSpan({
-      cls: 'grimoire-kimicode-model-picker-catalog-title',
-      text: t('settings.providerModelPicker.browseModels'),
-    });
-    const catalogSummaryCountEl = catalogSummaryEl.createSpan({
-      cls: 'grimoire-kimicode-model-picker-catalog-count',
-    });
-
-    const controlsEl = catalogEl.createDiv({ cls: 'grimoire-kimicode-model-picker-controls' });
-
-    const searchInput = controlsEl.createEl('input', {
-      cls: 'grimoire-kimicode-model-picker-search',
-      type: 'search',
-    });
-    searchInput.placeholder = t('settings.providerModelPicker.searchPlaceholder');
-    searchInput.addEventListener('input', () => {
-      searchQuery = searchInput.value.trim().toLowerCase();
-      renderList();
-    });
-
-    const providerSelectEl = controlsEl.createEl('select', {
-      cls: 'grimoire-kimicode-model-picker-provider',
-    });
-    providerSelectEl.addEventListener('change', () => {
-      providerFilter = providerSelectEl.value;
-      renderList();
-    });
-
-    const listEl = catalogEl.createDiv({ cls: 'grimoire-kimicode-model-picker-list' });
-    let loadingModelCatalog = false;
-    let modelCatalogLoadFailed = false;
-
-    const getEnrichedModels = (): EnrichedModel[] => {
-      const current = getKimicodeProviderSettings(settingsBag);
-      return buildEnrichedModels(current.discoveredModels, current.visibleModels);
-    };
-
-    const filterModels = (models: EnrichedModel[]): EnrichedModel[] => {
-      return models.filter((model) => {
-        if (providerFilter !== ALL_PROVIDERS_KEY && model.providerKey !== providerFilter) {
-          return false;
-        }
-
-        if (!searchQuery) {
-          return true;
-        }
-
-        return (
-          model.rawId.toLowerCase().includes(searchQuery)
-          || model.modelLabel.toLowerCase().includes(searchQuery)
-          || model.providerLabel.toLowerCase().includes(searchQuery)
-          || model.description.toLowerCase().includes(searchQuery)
-        );
-      });
-    };
-
-    const persistVisibleModels = async (visibleModels: string[]): Promise<void> => {
-      const currentVisibleModels = getKimicodeProviderSettings(settingsBag).visibleModels;
-      const normalized = normalizeKimicodeVisibleModels(
-        visibleModels,
-        getKimicodeProviderSettings(settingsBag).discoveredModels,
-      );
-      if (sameStringList(currentVisibleModels, normalized)) {
-        return;
-      }
-
-      updateKimicodeProviderSettings(settingsBag, { visibleModels: normalized });
-      await context.plugin.saveSettings();
-      renderAll();
-      context.refreshModelSelectors();
-    };
-
-    const persistModelMetadata = async (rawId: string): Promise<void> => {
-      try {
-        // Opportunistic: a metadata session that cannot open leaves the
-        // question for the first chat turn, which asks it anyway.
-        const loaded = await context.plugin.getKimicodeExecution()
-          .metadata.discoverMetadata({ rawModelId: rawId });
-        if (loaded) {
-          context.refreshModelSelectors();
-        }
-      } catch {
-        // Including a plugin whose kernel has not started: the settings tab
-        // opens either way.
-      }
-    };
-
-    const persistModelAliases = async (modelAliases: Record<string, string>): Promise<void> => {
-      updateKimicodeProviderSettings(settingsBag, { modelAliases });
-      await context.plugin.saveSettings();
-      renderSelected();
-      context.refreshModelSelectors();
-    };
-
-    const renderSummary = (): void => {
-      summaryEl.empty();
-      const current = getKimicodeProviderSettings(settingsBag);
-      const enriched = getEnrichedModels();
-      const providerCount = new Set(enriched.map((model) => model.providerKey)).size;
-      const providerWord = t(providerCount === 1
-        ? 'settings.providerModelPicker.providerSingular'
-        : 'settings.providerModelPicker.providerPlural');
-
-      summaryEl.createSpan({ text: `${t('settings.providerModelPicker.visibleLabel')} ` });
-      summaryEl.createSpan({
-        cls: 'grimoire-kimicode-model-picker-summary-value',
-        text: String(current.visibleModels.length),
-      });
-      summaryEl.createSpan({
-        text: ` ${t('settings.providerModelPicker.summaryDiscovered', {
-          total: current.discoveredModels.length,
-          count: providerCount,
-          providerWord,
-        })}`,
-      });
-
-      let catalogSummary = t('settings.providerModelPicker.noDiscovered');
-      if (loadingModelCatalog) {
-        catalogSummary = t('settings.providerModelPicker.loadingModels');
-      } else if (current.discoveredModels.length > 0) {
-        catalogSummary = t('settings.providerModelPicker.availableCount', {
-          count: current.discoveredModels.length,
-        });
-      }
-      catalogSummaryCountEl.setText(catalogSummary);
-    };
-
-    const renderSelected = (): void => {
-      selectedEl.empty();
-      const current = getKimicodeProviderSettings(settingsBag);
-      if (current.visibleModels.length === 0) {
-        selectedEl.toggleClass('grimoire-hidden', true);
-        return;
-      }
-
-      selectedEl.toggleClass('grimoire-hidden', false);
-      const enrichedByRawId = new Map(
-        getEnrichedModels().map((model) => [model.rawId, model] as const),
-      );
-
-      const headerEl = selectedEl.createDiv({ cls: 'grimoire-kimicode-model-picker-selected-header' });
-      headerEl.createSpan({
-        cls: 'grimoire-kimicode-model-picker-selected-label',
-        text: t('settings.providerModelPicker.selectedCount', { count: current.visibleModels.length }),
-      });
-      const clearAllBtn = headerEl.createEl('button', {
-        cls: 'grimoire-kimicode-model-picker-selected-clear',
-        text: t('common.clearAll'),
-      });
-      clearAllBtn.setAttribute('aria-label', t('settings.providerModelPicker.clearSelected'));
-      clearAllBtn.addEventListener('click', () => {
-        void persistVisibleModels([]);
-      });
-
-      const rowsEl = selectedEl.createDiv({ cls: 'grimoire-kimicode-model-picker-selected-rows' });
-
-      for (const rawId of current.visibleModels) {
-        const enriched = enrichedByRawId.get(rawId);
-        const defaultLabel = enriched
-          ? `${enriched.providerLabel}/${enriched.modelLabel}`
-          : rawId;
-
-        const rowEl = rowsEl.createDiv({ cls: 'grimoire-kimicode-model-picker-selected-row' });
-        if (enriched && !enriched.isAvailable) {
-          rowEl.classList.add('grimoire-kimicode-model-picker-selected-row--unavailable');
-        }
-
-        const infoEl = rowEl.createDiv({ cls: 'grimoire-kimicode-model-picker-selected-info' });
-        const titleEl = infoEl.createDiv({ cls: 'grimoire-kimicode-model-picker-selected-title' });
-        if (enriched) {
-          titleEl.createSpan({
-            cls: 'grimoire-kimicode-model-picker-selected-badge',
-            text: enriched.providerLabel,
-          });
-          titleEl.createSpan({
-            cls: 'grimoire-kimicode-model-picker-selected-name',
-            text: enriched.modelLabel,
-          });
-        } else {
-          titleEl.createSpan({
-            cls: 'grimoire-kimicode-model-picker-selected-name',
-            text: rawId,
-          });
-        }
-
-        if (enriched && !enriched.isAvailable) {
-          infoEl.createDiv({
-            cls: 'grimoire-kimicode-model-picker-selected-unavailable',
-            text: t('settings.providerModelPicker.notReported', { provider: 'Kimi Code' }),
-          });
-        }
-
-        infoEl.createDiv({
-          cls: 'grimoire-kimicode-model-picker-selected-id',
-          text: rawId,
-        });
-
-        const controlsEl = rowEl.createDiv({ cls: 'grimoire-kimicode-model-picker-selected-controls' });
-        const aliasInput = controlsEl.createEl('input', {
-          cls: 'grimoire-kimicode-model-picker-selected-alias',
-          type: 'text',
-        });
-        aliasInput.placeholder = defaultLabel;
-        aliasInput.value = current.modelAliases[rawId] ?? '';
-        aliasInput.setAttribute('aria-label', t('settings.providerModelPicker.aliasLabel', { model: defaultLabel }));
-        aliasInput.title = t('settings.providerModelPicker.aliasTitle');
-
-        const commitAlias = (): void => {
-          const latest = getKimicodeProviderSettings(settingsBag);
-          const existing = latest.modelAliases[rawId] ?? '';
-          const next = aliasInput.value.trim();
-          if (next === existing) {
-            aliasInput.value = existing;
-            return;
-          }
-
-          const nextAliases = { ...latest.modelAliases };
-          if (next) {
-            nextAliases[rawId] = next;
-          } else {
-            delete nextAliases[rawId];
-          }
-          void persistModelAliases(nextAliases);
+    renderProviderModelPicker(container, {
+      providerName: 'Kimi Code',
+      description: t('settings.providerTabs.acp.visibleModels.desc', { provider: 'Kimi Code' }),
+      suppressAutomaticDiscovery: context.suppressAutomaticDiscovery,
+      getState: () => {
+        const current = getKimicodeProviderSettings(settingsBag);
+        return {
+          models: buildEnrichedModels(current.discoveredModels, current.visibleModels),
+          discoveredCount: current.discoveredModels.length,
+          visibleModels: current.visibleModels,
+          modelAliases: current.modelAliases,
         };
-
-        aliasInput.addEventListener('blur', commitAlias);
-        aliasInput.addEventListener('keydown', (event) => {
-          if (event.key === 'Enter') {
-            event.preventDefault();
-            aliasInput.blur();
-          } else if (event.key === 'Escape') {
-            event.preventDefault();
-            aliasInput.value = getKimicodeProviderSettings(settingsBag).modelAliases[rawId] ?? '';
-            aliasInput.blur();
-          }
-        });
-
-        const removeBtn = controlsEl.createEl('button', {
-          cls: 'grimoire-kimicode-model-picker-selected-remove',
-          text: '×',
-        });
-        removeBtn.setAttribute('aria-label', t('settings.providerModelPicker.removeModel', { model: defaultLabel }));
-        removeBtn.addEventListener('click', () => {
-          void persistVisibleModels(current.visibleModels.filter((entry) => entry !== rawId));
-        });
-      }
-    };
-
-    const renderProviderSelect = (): void => {
-      const enriched = getEnrichedModels();
-      const providers = new Map<string, { count: number; label: string }>();
-      for (const model of enriched) {
-        const existing = providers.get(model.providerKey);
-        if (existing) {
-          existing.count += 1;
-        } else {
-          providers.set(model.providerKey, { count: 1, label: model.providerLabel });
+      },
+      onSelectionChange: async (ids) => {
+        const current = getKimicodeProviderSettings(settingsBag);
+        const normalized = normalizeKimicodeVisibleModels(ids, current.discoveredModels);
+        if (sameStringList(current.visibleModels, normalized)) return;
+        updateKimicodeProviderSettings(settingsBag, { visibleModels: normalized });
+        await context.plugin.saveSettings();
+        context.refreshModelSelectors();
+      },
+      onAliasChange: async (rawId, alias) => {
+        const modelAliases = { ...getKimicodeProviderSettings(settingsBag).modelAliases };
+        if (alias) modelAliases[rawId] = alias;
+        else delete modelAliases[rawId];
+        updateKimicodeProviderSettings(settingsBag, { modelAliases });
+        await context.plugin.saveSettings();
+        context.refreshModelSelectors();
+      },
+      onModelAdded: async (rawModelId) => {
+        try {
+          const loaded = await context.plugin.getKimicodeExecution().metadata.discoverMetadata({ rawModelId });
+          if (loaded) context.refreshModelSelectors();
+        } catch {
+          // Optional metadata can be discovered again on the first chat turn.
         }
-      }
-
-      providerSelectEl.empty();
-      providerSelectEl.createEl('option', {
-        text: t('settings.providerModelPicker.allProviders', { count: enriched.length }),
-        value: ALL_PROVIDERS_KEY,
-      });
-
-      const sortedProviders = Array.from(providers.entries())
-        .sort(([, left], [, right]) => left.label.localeCompare(right.label));
-      for (const [key, { count, label }] of sortedProviders) {
-        providerSelectEl.createEl('option', {
-          text: `${label} (${count})`,
-          value: key,
-        });
-      }
-
-      if (providerFilter !== ALL_PROVIDERS_KEY && !providers.has(providerFilter)) {
-        providerFilter = ALL_PROVIDERS_KEY;
-      }
-      providerSelectEl.value = providerFilter;
-    };
-
-    const renderList = (): void => {
-      listEl.empty();
-      const current = getKimicodeProviderSettings(settingsBag);
-      const selectedIds = new Set(current.visibleModels);
-      const enriched = getEnrichedModels();
-      const filtered = filterModels(enriched);
-
-      if (filtered.length === 0) {
-        const emptyEl = listEl.createDiv({ cls: 'grimoire-kimicode-model-picker-empty' });
-        let emptyText = t('settings.providerModelPicker.noMatch');
-        if (loadingModelCatalog) {
-          emptyText = t('settings.providerModelPicker.loadingCatalog', { provider: 'Kimi Code' });
-        } else if (modelCatalogLoadFailed) {
-          emptyText = t('settings.providerModelPicker.loadFailed', { provider: 'Kimi Code' });
-        } else if (enriched.length === 0) {
-          emptyText = t('settings.providerModelPicker.startToLoad', { provider: 'Kimi Code' });
-        }
-        emptyEl.setText(emptyText);
-        return;
-      }
-
-      for (const model of filtered) {
-        const rowEl = listEl.createEl('label', { cls: 'grimoire-kimicode-model-picker-row' });
-        const isSelected = selectedIds.has(model.rawId);
-        if (isSelected) {
-          rowEl.classList.add('grimoire-kimicode-model-picker-row--selected');
-        }
-        rowEl.title = model.rawId;
-
-        const checkboxEl = rowEl.createEl('input', { type: 'checkbox' });
-        checkboxEl.checked = isSelected;
-        checkboxEl.addEventListener('change', () => {
-          const currentVisibleModels = getKimicodeProviderSettings(settingsBag).visibleModels;
-          const next = checkboxEl.checked
-            ? [...currentVisibleModels, model.rawId]
-            : currentVisibleModels.filter((id) => id !== model.rawId);
-          void (async () => {
-            await persistVisibleModels(next);
-            if (checkboxEl.checked) {
-              await persistModelMetadata(model.rawId);
-            }
-          })();
-        });
-
-        const textEl = rowEl.createDiv({ cls: 'grimoire-kimicode-model-picker-row-text' });
-
-        const headerEl = textEl.createDiv({ cls: 'grimoire-kimicode-model-picker-row-header' });
-        headerEl.createSpan({
-          cls: 'grimoire-kimicode-model-picker-row-name',
-          text: model.modelLabel,
-        });
-        const badgeEl = headerEl.createSpan({
-          cls: 'grimoire-kimicode-model-picker-row-badge',
-          text: model.providerLabel,
-        });
-        if (!model.isAvailable) {
-          badgeEl.classList.add('grimoire-kimicode-model-picker-row-badge--unavailable');
-          badgeEl.setText(t('settings.providerModelPicker.unavailable'));
-          badgeEl.title = t('settings.providerModelPicker.unavailableTitle', { provider: 'Kimi Code' });
-        }
-
-        textEl.createDiv({
-          cls: 'grimoire-kimicode-model-picker-row-meta',
-          text: model.rawId,
-        });
-
-        if (model.description) {
-          textEl.createDiv({
-            cls: 'grimoire-kimicode-model-picker-row-desc',
-            text: model.description,
-          });
-        }
-
-      }
-    };
-
-    const renderAll = (): void => {
-      renderSummary();
-      renderSelected();
-      renderProviderSelect();
-      renderList();
-    };
-
-    renderAll();
-
-    const loadModelCatalog = async (): Promise<void> => {
-      if (loadingModelCatalog || getKimicodeProviderSettings(settingsBag).discoveredModels.length > 0) {
-        return;
-      }
-
-      loadingModelCatalog = true;
-      modelCatalogLoadFailed = false;
-      renderAll();
-
-      try {
+      },
+      onRefresh: async () => {
         const loaded = await context.plugin.getKimicodeExecution().metadata.discoverMetadata();
-        modelCatalogLoadFailed = !loaded || getKimicodeProviderSettings(settingsBag).discoveredModels.length === 0;
-        if (!modelCatalogLoadFailed) {
-          context.refreshModelSelectors();
-        }
-      } catch {
-        modelCatalogLoadFailed = true;
-      } finally {
-        loadingModelCatalog = false;
-        renderAll();
-      }
-    };
-
-    catalogEl.addEventListener('toggle', () => {
-      if (catalogEl.open && !context.suppressAutomaticDiscovery) {
-        void loadModelCatalog();
-      }
+        if (loaded) context.refreshModelSelectors();
+        return loaded && getKimicodeProviderSettings(settingsBag).discoveredModels.length > 0;
+      },
     });
-    if (catalogEl.open && !context.suppressAutomaticDiscovery) {
-      void loadModelCatalog();
-    }
 
     const advancedContainer = context.renderAdvancedSection(container, {
       count: 6,
@@ -671,8 +285,8 @@ export const kimicodeSettingsTabRenderer: ProviderSettingsTabRenderer = {
 function buildEnrichedModels(
   discoveredModels: KimicodeDiscoveredModel[],
   visibleModels: string[],
-): EnrichedModel[] {
-  const enriched: EnrichedModel[] = [];
+): ModelPickerModel[] {
+  const enriched: ModelPickerModel[] = [];
   const discoveredIds = new Set<string>();
   const baseModels = buildKimicodeBaseModels(discoveredModels);
 

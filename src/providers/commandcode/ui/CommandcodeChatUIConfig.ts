@@ -10,9 +10,13 @@ const owns = (model: string) => model === 'commandcode' || model.startsWith(COMM
 export const commandcodeChatUIConfig: ProviderChatUIConfig = {
   getProviderIcon: () => COMMANDCODE_ICON,
   getModelOptions: settings => {
-    const models = getCommandcodeSettings(settings).discoveredModels;
+    const { discoveredModels, visibleModels, modelAliases } = getCommandcodeSettings(settings);
+    const byId = new Map(discoveredModels.map(model => [model.rawId, model]));
+    const models = visibleModels.length ? visibleModels.map(rawId => byId.get(rawId) ?? {
+      rawId, label: rawId, description: 'Not reported by the latest Command Code catalog',
+    }) : discoveredModels;
     return models.length ? models.map(model => ({ value: `${COMMANDCODE_MODEL_PREFIX}${model.rawId}`,
-      label: model.label, description: model.description }))
+      label: modelAliases[model.rawId] || model.label, description: model.description }))
       : [{ value: 'commandcode', label: 'Command Code', description: 'Use the CLI default model' }];
   },
   ownsModel: owns,

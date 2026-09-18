@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 import { createDurableInMemoryVaultAdapter } from '@test/helpers/inMemoryVaultAdapter';
+import { imageAttachmentRoundTrip } from "@test/integration/app/chat/chatProjectionImageRow";
 import {
   openChatProjection,
   userMessage,
@@ -185,6 +186,10 @@ live('Kimi Code chat projection live smoke', () => {
     running.push(release);
     return { harness, release, runtime, vault };
   }
+
+  it('image attachments: delivers both pictures and preserves their saved references', async () => {
+    await imageAttachmentRoundTrip((await createHarness()).harness, CONVERSATION_ID, process.env.GRIMOIRE_KIMICODE_MODEL);
+  });
 
   it('row A: draws one answer, once, and leaves it in the vault', async () => {
     const { harness } = await createHarness();

@@ -3593,7 +3593,9 @@ describe('InputController - Message Queue', () => {
     it('should send message with only images (empty text)', async () => {
       const imageContextManager = createMockImageContextManager();
       (imageContextManager.hasImages).mockReturnValue(true);
-      (imageContextManager.getAttachedImages).mockReturnValue([{ id: 'img1', name: 'test.png' }]);
+      (imageContextManager.getAttachedImages).mockReturnValue([{
+        id: 'img1', name: 'test.png', data: 'AQID', mediaType: 'image/png', size: 3, source: 'paste',
+      }]);
 
       deps = createSendableDeps({
         getImageContextManager: () => imageContextManager as any,

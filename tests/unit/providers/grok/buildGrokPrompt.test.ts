@@ -119,8 +119,8 @@ describe('buildGrokPromptText', () => {
 });
 
 describe('buildGrokPromptBlocks', () => {
-  it('includes image attachments after the main text block', () => {
-    const blocks = buildGrokPromptBlocks({
+  it('refuses saved image requests instead of silently sending text', () => {
+    expect(() => buildGrokPromptBlocks({
       images: [{
         data: 'base64-image',
         id: 'img-1',
@@ -130,11 +130,6 @@ describe('buildGrokPromptBlocks', () => {
         source: 'file',
       }],
       text: 'Inspect this image',
-    });
-
-    expect(blocks).toEqual([
-      { type: 'text', text: 'Inspect this image' },
-      { type: 'image', mimeType: 'image/png', data: 'base64-image' },
-    ]);
+    })).toThrow('Grok Build does not support image attachments over ACP');
   });
 });

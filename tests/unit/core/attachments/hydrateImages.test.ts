@@ -2,6 +2,8 @@ import type { AttachmentStore } from '@/core/attachments/AttachmentStore';
 import {
   hydrateImageAttachments,
   hydrateImages,
+  hydrateImagesForSend,
+  ImageAttachmentUnavailableError,
 } from '@/core/attachments/hydrateImages';
 import type { ChatMessage } from '@/core/types';
 
@@ -90,5 +92,24 @@ describe('hydrateImages', () => {
 
     await expect(hydrateImages(undefined, store)).resolves.toBeUndefined();
     expect(store.read).not.toHaveBeenCalled();
+  });
+});
+
+describe('hydrateImagesForSend', () => {
+  it('refuses the whole batch when one stored attachment is missing', async () => {
+    const store = { read: jest.fn().mockResolvedValue(null) } as unknown as AttachmentStore;
+    const images = [
+      ...messageWithImage({ data: 'AQID' }).images!,
+      ...messageWithImage({ hash: HASH }).images!,
+    ];
+    await expect(hydrateImagesForSend(images, store)).rejects.toBeInstanceOf(ImageAttachmentUnavailableError);
+  });
+
+  it('accepts inline bytes without a store', async () => {
+    await expect(hydrateImagesForSend(messageWithImage({ data: 'AQID' }).images)).resolves.toBeUndefined();
+  });
+
+  it('refuses missing bytes even when no store is available', async () => {
+    await expect(hydrateImagesForSend(messageWithImage({}).images)).rejects.toThrow('shot.webp');
   });
 });

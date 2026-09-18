@@ -4,8 +4,16 @@ User-facing changes by release.
 
 ## Unreleased
 
+### Added
+
+- Command Code image attachments through vault file references, enabled in provider settings for models that can read images (#198).
+- A searchable Command Code model selection in settings. The CLI catalog stays dynamic; refresh preserves the models chosen for the chat picker (#114).
+- One model selection design for OpenCode, MiMoCode, Kimi Code, Grok Build and Command Code: selected rows with aliases, a searchable catalog, and Refresh all models. Command Code aliases are shown in chat and survive refresh (#114).
+
 ### Fixed
 
+- Missing saved images now stop a send with a visible explanation and preserve the draft. Queued sends and steering hydrate their own attachments before provider dispatch (#198).
+- Queued text messages no longer borrow image attachments from a newer composer draft. Grok Build no longer advertises image input unsupported by its current ACP handshake; saved image requests receive an explicit error (#198).
 - Reasonix 1.38.10 can start turns with its new permission presets while older CLI versions remain supported. Configuration failures now show their actual cause instead of suggesting a missing session (#197).
 - Reasonix keeps the current session model when none was explicitly selected and avoids reapplying an unchanged model or thinking level, which could discard conversation context between turns.
 

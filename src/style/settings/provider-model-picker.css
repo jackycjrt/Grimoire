@@ -1,5 +1,5 @@
 /*
- * OpenCode model picker.
+ * Provider model picker.
  *
  * Which of a provider's models reach the chat picker, as one list rather than
  * two tinted cards. It was a panel for what is chosen and a second panel for
@@ -8,14 +8,14 @@
  * section, a row that is only a row, and mono for the ids.
  */
 
-.grimoire-opencode-model-picker {
+.grimoire-model-picker {
   display: flex;
   flex-direction: column;
   gap: var(--grimoire-space-12);
   margin-top: var(--grimoire-space-8);
 }
 
-.grimoire-opencode-model-picker-summary {
+.grimoire-model-picker-summary {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -24,7 +24,7 @@
   font-size: var(--grimoire-text-s);
 }
 
-.grimoire-opencode-model-picker-summary-value {
+.grimoire-model-picker-summary-value {
   color: var(--grimoire-ink);
   font-family: var(--grimoire-mono);
   font-size: var(--grimoire-text-xs);
@@ -32,7 +32,7 @@
 }
 
 /* What is chosen. */
-.grimoire-opencode-model-picker-selected {
+.grimoire-model-picker-selected {
   display: flex;
   flex-direction: column;
   gap: var(--grimoire-space-6);
@@ -43,7 +43,7 @@
   background: transparent;
 }
 
-.grimoire-opencode-model-picker-selected-header {
+.grimoire-model-picker-selected-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -51,7 +51,7 @@
   padding: 0 var(--grimoire-space-8);
 }
 
-.grimoire-opencode-model-picker-selected-label {
+.grimoire-model-picker-selected-label {
   color: var(--grimoire-ink-faint);
   font-family: var(--grimoire-mono);
   font-size: var(--grimoire-text-2xs);
@@ -60,7 +60,7 @@
   text-transform: uppercase;
 }
 
-button.grimoire-opencode-model-picker-selected-clear {
+button.grimoire-model-picker-selected-clear {
   box-sizing: border-box;
   height: var(--grimoire-hit-s);
   padding: 0 var(--grimoire-space-8);
@@ -75,18 +75,18 @@ button.grimoire-opencode-model-picker-selected-clear {
   transition: border-color var(--grimoire-duration) var(--grimoire-ease), color var(--grimoire-duration) var(--grimoire-ease);
 }
 
-.grimoire-opencode-model-picker-selected-clear:hover {
+.grimoire-model-picker-selected-clear:hover {
   border-color: var(--grimoire-line-3);
   background: transparent;
   color: var(--grimoire-ink);
 }
 
-.grimoire-opencode-model-picker-selected-rows {
+.grimoire-model-picker-selected-rows {
   display: flex;
   flex-direction: column;
 }
 
-.grimoire-opencode-model-picker-selected-row {
+.grimoire-model-picker-selected-row {
   display: flex;
   align-items: center;
   min-height: var(--grimoire-list-row-h);
@@ -98,17 +98,17 @@ button.grimoire-opencode-model-picker-selected-clear {
   font-size: var(--grimoire-text-s);
 }
 
-.grimoire-opencode-model-picker-selected-row:hover {
+.grimoire-model-picker-selected-row:hover {
   background: var(--grimoire-hover);
 }
 
 /* A model the provider no longer offers still shows, so it can be removed. */
-.grimoire-opencode-model-picker-selected-row--unavailable {
+.grimoire-model-picker-selected-row--unavailable {
   border-style: none;
   color: var(--grimoire-ink-muted);
 }
 
-.grimoire-opencode-model-picker-selected-info {
+.grimoire-model-picker-selected-info {
   display: flex;
   flex: 1;
   flex-direction: column;
@@ -116,7 +116,7 @@ button.grimoire-opencode-model-picker-selected-clear {
   gap: var(--grimoire-space-2);
 }
 
-.grimoire-opencode-model-picker-selected-title {
+.grimoire-model-picker-selected-title {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -124,7 +124,7 @@ button.grimoire-opencode-model-picker-selected-clear {
   gap: var(--grimoire-space-8);
 }
 
-.grimoire-opencode-model-picker-selected-badge {
+.grimoire-model-picker-selected-badge {
   padding: 0;
   border-radius: 0;
   background: none;
@@ -135,7 +135,7 @@ button.grimoire-opencode-model-picker-selected-clear {
   text-transform: uppercase;
 }
 
-.grimoire-opencode-model-picker-selected-name {
+.grimoire-model-picker-selected-name {
   overflow: hidden;
   color: var(--grimoire-ink);
   font-weight: var(--grimoire-weight-normal);
@@ -143,7 +143,7 @@ button.grimoire-opencode-model-picker-selected-clear {
   white-space: nowrap;
 }
 
-.grimoire-opencode-model-picker-selected-id {
+.grimoire-model-picker-selected-id {
   overflow: hidden;
   color: var(--grimoire-ink-faint);
   font-family: var(--grimoire-mono);
@@ -153,20 +153,20 @@ button.grimoire-opencode-model-picker-selected-clear {
 }
 
 /* Why it cannot be used, in words rather than a red chip. */
-.grimoire-opencode-model-picker-selected-unavailable {
+.grimoire-model-picker-selected-unavailable {
   color: var(--grimoire-error);
   font-size: var(--grimoire-text-s);
   font-style: normal;
 }
 
-.grimoire-opencode-model-picker-selected-controls {
+.grimoire-model-picker-selected-controls {
   display: flex;
   flex-shrink: 0;
   align-items: center;
   gap: var(--grimoire-space-6);
 }
 
-input.grimoire-opencode-model-picker-selected-alias {
+input.grimoire-model-picker-selected-alias {
   box-sizing: border-box;
   width: 180px;
   height: var(--grimoire-field-h);
@@ -179,13 +179,13 @@ input.grimoire-opencode-model-picker-selected-alias {
   font-size: var(--grimoire-text-s);
 }
 
-.grimoire-opencode-model-picker-selected-alias:focus {
+.grimoire-model-picker-selected-alias:focus {
   border-color: var(--grimoire-accent);
   box-shadow: var(--grimoire-focus-ring);
   outline: none;
 }
 
-button.grimoire-opencode-model-picker-selected-remove {
+button.grimoire-model-picker-selected-remove {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -204,13 +204,13 @@ button.grimoire-opencode-model-picker-selected-remove {
   transition: background var(--grimoire-duration) var(--grimoire-ease), color var(--grimoire-duration) var(--grimoire-ease);
 }
 
-.grimoire-opencode-model-picker-selected-remove:hover {
+.grimoire-model-picker-selected-remove:hover {
   background: var(--grimoire-hover);
   color: var(--grimoire-ink);
 }
 
 /* What could be chosen. */
-.grimoire-opencode-model-picker-catalog {
+.grimoire-model-picker-catalog {
   display: flex;
   flex-direction: column;
   gap: var(--grimoire-space-8);
@@ -221,7 +221,7 @@ button.grimoire-opencode-model-picker-selected-remove {
   background: transparent;
 }
 
-.grimoire-opencode-model-picker-catalog-summary {
+.grimoire-model-picker-catalog-summary {
   display: flex;
   align-items: center;
   min-height: var(--grimoire-hit-l);
@@ -233,15 +233,15 @@ button.grimoire-opencode-model-picker-selected-remove {
   user-select: none;
 }
 
-.grimoire-opencode-model-picker-catalog-summary:hover {
+.grimoire-model-picker-catalog-summary:hover {
   background: var(--grimoire-hover);
 }
 
-.grimoire-opencode-model-picker-catalog-summary::-webkit-details-marker {
+.grimoire-model-picker-catalog-summary::-webkit-details-marker {
   display: none;
 }
 
-.grimoire-opencode-model-picker-catalog-caret {
+.grimoire-model-picker-catalog-caret {
   display: inline-flex;
   justify-content: center;
   width: var(--grimoire-icon-m);
@@ -251,18 +251,18 @@ button.grimoire-opencode-model-picker-selected-remove {
   transition: transform var(--grimoire-duration) var(--grimoire-ease);
 }
 
-.grimoire-opencode-model-picker-catalog[open] .grimoire-opencode-model-picker-catalog-caret {
+.grimoire-model-picker-catalog[open] .grimoire-model-picker-catalog-caret {
   transform: rotate(90deg);
   color: var(--grimoire-ink-muted);
 }
 
-.grimoire-opencode-model-picker-catalog-title {
+.grimoire-model-picker-catalog-title {
   color: var(--grimoire-ink);
   font-size: var(--grimoire-text-m);
   font-weight: var(--grimoire-weight-medium);
 }
 
-.grimoire-opencode-model-picker-catalog-count {
+.grimoire-model-picker-catalog-count {
   margin-left: auto;
   color: var(--grimoire-ink-faint);
   font-family: var(--grimoire-mono);
@@ -270,7 +270,7 @@ button.grimoire-opencode-model-picker-selected-remove {
   font-variant-numeric: tabular-nums;
 }
 
-.grimoire-opencode-model-picker-controls {
+.grimoire-model-picker-controls {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -278,7 +278,7 @@ button.grimoire-opencode-model-picker-selected-remove {
   padding: 0 var(--grimoire-space-8);
 }
 
-input.grimoire-opencode-model-picker-search {
+input.grimoire-model-picker-search {
   box-sizing: border-box;
   flex: 1 1 180px;
   min-width: 140px;
@@ -292,17 +292,17 @@ input.grimoire-opencode-model-picker-search {
   font-size: var(--grimoire-text-s);
 }
 
-.grimoire-opencode-model-picker-search::placeholder {
+.grimoire-model-picker-search::placeholder {
   color: var(--grimoire-ink-faint);
 }
 
-.grimoire-opencode-model-picker-search:focus {
+.grimoire-model-picker-search:focus {
   border-color: var(--grimoire-accent);
   box-shadow: var(--grimoire-focus-ring);
   outline: none;
 }
 
-.grimoire-opencode-model-picker-provider {
+.grimoire-model-picker-provider {
   box-sizing: border-box;
   height: var(--grimoire-hit-l);
   padding: 0 var(--grimoire-space-24) 0 var(--grimoire-space-10);
@@ -322,7 +322,7 @@ input.grimoire-opencode-model-picker-search {
   background-repeat: no-repeat;
 }
 
-.grimoire-opencode-model-picker-provider:focus {
+.grimoire-model-picker-provider:focus {
   border-color: var(--grimoire-accent);
   box-shadow: var(--grimoire-focus-ring);
   outline: none;
@@ -333,7 +333,7 @@ input.grimoire-opencode-model-picker-search {
  * already says where it begins, and a second frame around a scroller is the
  * third border the eye has to cross to read a model's name.
  */
-.grimoire-opencode-model-picker-list {
+.grimoire-model-picker-list {
   display: flex;
   flex-direction: column;
   max-height: 360px;
@@ -344,7 +344,7 @@ input.grimoire-opencode-model-picker-search {
   scrollbar-width: thin;
 }
 
-.grimoire-opencode-model-picker-row {
+.grimoire-model-picker-row {
   display: flex;
   align-items: center;
   min-height: var(--grimoire-list-row-h);
@@ -357,11 +357,11 @@ input.grimoire-opencode-model-picker-search {
   transition: background var(--grimoire-duration) var(--grimoire-ease);
 }
 
-.grimoire-opencode-model-picker-row:hover {
+.grimoire-model-picker-row:hover {
   background: var(--grimoire-hover);
 }
 
-.grimoire-opencode-model-picker-row--selected {
+.grimoire-model-picker-row--selected {
   background: transparent;
 }
 
@@ -370,7 +370,7 @@ input.grimoire-opencode-model-picker-search {
  * and this list needs a 14px square that agrees with every other checkbox in
  * the plugin.
  */
-.grimoire-opencode-model-picker-row input[type="checkbox"] {
+.grimoire-model-picker-row input[type="checkbox"] {
   position: relative;
   box-sizing: border-box;
   flex: 0 0 auto;
@@ -385,12 +385,12 @@ input.grimoire-opencode-model-picker-search {
   appearance: none;
 }
 
-.grimoire-opencode-model-picker-row input[type="checkbox"]:checked {
+.grimoire-model-picker-row input[type="checkbox"]:checked {
   border-color: var(--grimoire-accent);
   background: var(--grimoire-accent);
 }
 
-.grimoire-opencode-model-picker-row input[type="checkbox"]:checked::after {
+.grimoire-model-picker-row input[type="checkbox"]:checked::after {
   position: absolute;
   top: 1px;
   left: 3px;
@@ -402,12 +402,12 @@ input.grimoire-opencode-model-picker-search {
   transform: rotate(45deg);
 }
 
-.grimoire-opencode-model-picker-row input[type="checkbox"]:focus-visible {
+.grimoire-model-picker-row input[type="checkbox"]:focus-visible {
   box-shadow: var(--grimoire-focus-ring);
   outline: none;
 }
 
-.grimoire-opencode-model-picker-row-text {
+.grimoire-model-picker-row-text {
   display: flex;
   flex: 1;
   align-items: baseline;
@@ -415,7 +415,7 @@ input.grimoire-opencode-model-picker-search {
   gap: var(--grimoire-space-8);
 }
 
-.grimoire-opencode-model-picker-row-header {
+.grimoire-model-picker-row-header {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
@@ -423,7 +423,7 @@ input.grimoire-opencode-model-picker-search {
   gap: var(--grimoire-space-8);
 }
 
-.grimoire-opencode-model-picker-row-name {
+.grimoire-model-picker-row-name {
   overflow: hidden;
   color: var(--grimoire-ink);
   font-family: var(--grimoire-face);
@@ -433,7 +433,7 @@ input.grimoire-opencode-model-picker-search {
   white-space: nowrap;
 }
 
-.grimoire-opencode-model-picker-row-badge {
+.grimoire-model-picker-row-badge {
   padding: 0;
   border-radius: 0;
   background: none;
@@ -444,12 +444,12 @@ input.grimoire-opencode-model-picker-search {
   text-transform: uppercase;
 }
 
-.grimoire-opencode-model-picker-row-badge--unavailable {
+.grimoire-model-picker-row-badge--unavailable {
   background: none;
   color: var(--grimoire-error);
 }
 
-.grimoire-opencode-model-picker-row-meta {
+.grimoire-model-picker-row-meta {
   flex: 1;
   overflow: hidden;
   color: var(--grimoire-ink-faint);
@@ -459,7 +459,7 @@ input.grimoire-opencode-model-picker-search {
   white-space: nowrap;
 }
 
-.grimoire-opencode-model-picker-row-desc {
+.grimoire-model-picker-row-desc {
   flex: 0 1 auto;
   overflow: hidden;
   color: var(--grimoire-ink-muted);
@@ -468,7 +468,7 @@ input.grimoire-opencode-model-picker-search {
   white-space: nowrap;
 }
 
-.grimoire-opencode-model-picker-empty {
+.grimoire-model-picker-empty {
   padding: var(--grimoire-space-20) var(--grimoire-space-8);
   color: var(--grimoire-ink-faint);
   font-size: var(--grimoire-text-s);
@@ -476,8 +476,8 @@ input.grimoire-opencode-model-picker-search {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .grimoire-opencode-model-picker-catalog-caret,
-  .grimoire-opencode-model-picker-row {
+  .grimoire-model-picker-catalog-caret,
+  .grimoire-model-picker-row {
     transition: none;
   }
 }

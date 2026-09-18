@@ -533,6 +533,32 @@ and what does it cost" was a question the composer could not answer.
 
 ### 11.8 Settings
 
+OpenCode, MiMoCode, Kimi Code, Grok Build and Command Code use one `ProviderModelPicker` and one
+`provider-model-picker.css`, based on the OpenCode layout on screen `2f`. A native **Visible models**
+row holds **Refresh all models** above the count, selected rows and collapsible catalog. Each selected
+row has a provider label when known, model name, native ID, alias field and remove action. The alias
+field is always visible. The catalog keeps the same search field, provider filter and checkbox rows
+across adapters; Command Code omits the provider filter because its CLI returns opaque IDs without
+vendor metadata. Unknown vendors are not counted as zero providers in the summary. An ID identical
+to the model name is not repeated in selected or catalog rows.
+
+Discovery and preference storage remain provider-owned. Refresh keeps configured selections and
+aliases, disables the button while loading and announces failures without removing the existing
+list. Keyboard selection preserves focus; a refresh also preserves an unfinished alias and its caret.
+The drawing shows OpenCode and Command Code with the same selected-row layout. Other providers'
+custom-ID inputs and refresh-only rows serve different functions and do not use this selection UI.
+
+**Future changes.** Reuse `src/features/settings/ui/ProviderModelPicker.ts` and
+`src/style/settings/provider-model-picker.css` for every settings model shortlist. Change the shared
+component when the common layout changes; add provider behavior through its adapter. Do not fork
+the selected rows, hide alias inputs behind another interaction, or add provider-specific picker CSS.
+For an intentional exception, document the native CLI limitation here and update screen `2f`.
+
+Before accepting a picker change, verify search and any vendor filter together, selection and alias
+persistence, refresh success and failure, missing selected models, and keyboard focus during refresh
+(including an unfinished alias and its caret). Run the shared picker tests and the affected provider's
+settings tests, then inspect the rendered settings in Obsidian against screen `2f`.
+
 Command Code follows the provider card and native settings rows shown on screen `2f`; its mark is
 also included in `2g`. The provider page adds setup instructions, headless permission limits, a
 host-specific CLI path and the shared environment editor. It introduces no new styling. Its
@@ -542,6 +568,12 @@ waits for the answer, and cancellation dismisses the card. There is no persisten
 Native deny and ask rules still apply in both modes. Plan controls are hidden. The existing effort picker shows CLI default plus the selected
 model's discovered levels; it is hidden when the CLI reports no adjustable effort or metadata is
 unavailable. These are capability differences from the Claude example in the drawing.
+
+Command Code's **Show all models** clears its explicit shortlist and returns to the dynamic catalog;
+its alias fields work in both modes. The ACP providers retain their existing **Clear all** semantics.
+Missing selected models remain visible and removable. A native **Image attachments as files** toggle
+starts off and explains the need for a model that can read images and an extra tool call. Screen `2f`
+includes that toggle below the OpenCode example; it uses existing native settings controls.
 
 Obsidian's declarative settings API, rendering native `.setting-item` rows. Grimoire styles the
 content it puts *inside* a row — never `.setting-item`, `.setting-item-info`, `.setting-item-name`,

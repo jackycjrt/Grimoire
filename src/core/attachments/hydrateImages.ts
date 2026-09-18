@@ -1,6 +1,23 @@
 import type { ChatMessage, ImageAttachment } from '../types';
 import type { AttachmentStore } from './AttachmentStore';
 
+export class ImageAttachmentUnavailableError extends Error {
+  constructor(name: string) {
+    super(`Image attachment "${name}" is unavailable. Remove it or attach it again before sending.`);
+    this.name = 'ImageAttachmentUnavailableError';
+  }
+}
+
+/** History may open with missing files; a new request must include every attachment. */
+export async function hydrateImagesForSend(
+  images: ImageAttachment[] | undefined,
+  store?: AttachmentStore,
+): Promise<void> {
+  if (store) await hydrateImages(images, store);
+  const missing = images?.find(image => !image.data);
+  if (missing) throw new ImageAttachmentUnavailableError(missing.name);
+}
+
 /**
  * Refills the in-memory bytes of attachments whose data was left out of
  * session metadata.

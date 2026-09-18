@@ -46,6 +46,9 @@ live('Devin live smoke', () => {
       ...overrides,
     };
     updateDevinProviderSettings(settings, { enabled: true });
+    if (process.env.GRIMOIRE_DEVIN_MODEL) {
+      settings.savedProviderModel = { devin: process.env.GRIMOIRE_DEVIN_MODEL };
+    }
     if (typeof overrides.permissionMode === 'string') {
       // Both halves, because the toolbar writes both and the projection prefers
       // whichever this provider last saved.

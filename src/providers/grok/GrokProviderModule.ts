@@ -155,7 +155,8 @@ const grokCapabilities: ProviderCapabilityDescriptor = {
     reattachment: false,
   },
   input: {
-    imageAttachments: 'native',
+    // Grok 1.0.34 reports promptCapabilities.image: false.
+    imageAttachments: 'unsupported',
     instructionMode: 'native',
   },
   interactions: {
@@ -480,4 +481,3 @@ function normalizeStringMap(value: unknown): Record<string, string> {
       .map(([host, entry]) => [host, (entry as string).trim()]),
   );
 }
-

@@ -7,12 +7,14 @@ import type { ExecutionLifecycleRegistry } from '@/core/execution/ExecutionLifec
 import { ProviderSettingsCoordinator } from '@/core/providers/ProviderSettingsCoordinator';
 import type { BoundConversation } from '@/core/runtime/execution/ExecutionChatRuntimeAdapter';
 import { ExecutionChatRuntimeAdapter } from '@/core/runtime/execution/ExecutionChatRuntimeAdapter';
+import type { ImageAttachment } from '@/core/types';
 import type GrimoirePlugin from '@/main';
 import type { ProviderSettingsTabRenderer } from '@/providers/shared/providerHostContracts';
 import { createWorkspaceContextSlots } from '@/providers/shared/workspaceContextSlots';
 import { getVaultPath } from '@/utils/path';
 
 import { commandcodeProviderModule } from '../CommandcodeProviderModule';
+import { attachCommandcodeImages } from '../runtime/CommandcodeImageAttachments';
 import { type CommandcodeInvocation, type CommandcodeProcessRunner, NodeCommandcodeProcessRunner } from '../runtime/CommandcodeProcess';
 import { buildCommandcodePrompt } from '../runtime/CommandcodePrompt';
 import { commandcodeEnvironment, decodeCommandcodeModel, getCommandcodeSettings, resolveCommandcodeCli } from '../settings';
@@ -23,7 +25,7 @@ import { CommandcodeExecutionBackend } from './CommandcodeExecutionBackend';
 
 export class CommandcodeExecution {
   private readonly approvals = new CommandcodeApprovals();
-  private readonly requests = new Map<string, { prompt: string; model?: string; effort?: string; sessionId?: string; mode: string }>();
+  private readonly requests = new Map<string, { prompt: string; images?: ImageAttachment[]; model?: string; effort?: string; sessionId?: string; mode: string }>();
   private readonly workspaceHolder = new ProviderWorkspaceHolder(commandcodeProviderModule.workspace, () => {
     const services = () => this.plugin.getApplicationRuntimeOrNull()?.workspaceServicesFor('commandcode') ?? null;
     const slots = createWorkspaceContextSlots({ plugin: this.plugin, providerId: 'commandcode',
@@ -78,7 +80,9 @@ export class CommandcodeExecution {
         conversation = next;
       },
       prepareTurn: request => {
-        if (request.images?.length) throw new Error('Command Code image attachments are not supported.');
+        if (request.images?.length && !getCommandcodeSettings(this.plugin.settings).imageAttachmentsAsFiles) {
+          throw new Error('Enable "Image attachments as files" in Command Code settings and select a model that can read images.');
+        }
         const prompt = buildCommandcodePrompt(request);
         return { prompt, persistedContent: prompt, request, isCompact: false,
           mcpMentions: request.enabledMcpServers ?? new Set<string>() };
@@ -87,7 +91,7 @@ export class CommandcodeExecution {
         const ref = randomUUID();
         const settings = ProviderSettingsCoordinator.getProviderSettingsSnapshot(this.plugin.settings, 'commandcode');
         const model = options?.model ?? settings.model;
-        this.requests.set(ref, { prompt: turn.prompt,
+        this.requests.set(ref, { prompt: turn.prompt, images: turn.request.images,
           model: typeof model === 'string' ? decodeCommandcodeModel(model) : undefined,
           effort: typeof settings.effortLevel === 'string' && settings.effortLevel !== 'default' ? settings.effortLevel : undefined,
           sessionId: presenter.sessionId ?? conversation?.sessionId ?? undefined,
@@ -105,7 +109,7 @@ export class CommandcodeExecution {
     return runtime;
   }
 
-  private resolveInvocation(ref: string): CommandcodeInvocation {
+  private async resolveInvocation(ref: string): Promise<CommandcodeInvocation> {
     const request = this.requests.get(ref);
     this.requests.delete(ref);
     if (!request) throw new Error('Unknown Command Code request.');
@@ -117,8 +121,10 @@ export class CommandcodeExecution {
       || !getCommandcodeSettings(this.plugin.settings).reasoningEffortsByModel[request.model]?.includes(request.effort))) {
       throw new Error('The selected reasoning effort is unavailable for this Command Code model. Select the model again to refresh its options.');
     }
+    const prompt = request.images?.length ? await attachCommandcodeImages(request.prompt, request.images, cwd,
+      this.plugin.storage.attachments, getCommandcodeSettings(this.plugin.settings).imageAttachmentsAsFiles) : request.prompt;
     return { command, cwd, environment: commandcodeEnvironment(this.plugin.settings, command),
-      prompt: request.prompt, model: request.model, effort: request.effort, sessionId: request.sessionId, permissionMode: request.mode };
+      prompt, model: request.model, effort: request.effort, sessionId: request.sessionId, permissionMode: request.mode };
   }
 }
 
