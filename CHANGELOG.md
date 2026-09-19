@@ -2,7 +2,7 @@
 
 User-facing changes by release.
 
-## 2.0.2 - Unreleased
+## 2.0.2 - 2026-09-19
 
 ### Fixed
 
