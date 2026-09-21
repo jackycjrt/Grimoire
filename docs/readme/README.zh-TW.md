@@ -27,7 +27,7 @@
   <sub>真實筆記與根據筆記連結展開的對話。</sub>
 </p>
 
-Grimoire 將 agentic CLI 助手帶入 Obsidian。Codex、Claude Code、Antigravity CLI、Gemini CLI (Legacy)、OpenCode、MiMoCode、Kimi Code、Grok Build、Qwen Code、Devin、Reasonix 和 Command Code 都在同一個側邊欄中執行：讀取筆記、編輯檔案、執行命令、呼叫工具，並把 session history 保存在真實的 vault context 中。Grimoire 不經過自家伺服器：沒有 telemetry、沒有 hosted backend，也沒有夾在你和 provider 之間的 proxy。
+Grimoire 將 agentic CLI 助手帶入 Obsidian。Codex、Claude Code、Antigravity CLI、Gemini CLI (Legacy)、OpenCode、MiMoCode、Kimi Code、Grok Build、Qwen Code、Devin、Pi、Reasonix 和 Command Code 都在同一個側邊欄中執行：讀取筆記、編輯檔案、執行命令、呼叫工具，並把 session history 保存在真實的 vault context 中。Grimoire 不經過自家伺服器：沒有 telemetry、沒有 hosted backend，也沒有夾在你和 provider 之間的 proxy。
 
 它面向已經在 Obsidian 中工作的人：你可以使用本地 context、本地檔案、明確選擇的 provider，並在介面中直接看到 usage 和 cost。
 
@@ -36,25 +36,25 @@ Grimoire 將 agentic CLI 助手帶入 Obsidian。Codex、Claude Code、Antigravi
 ## 為什麼選擇 Grimoire
 
 - 在筆記中直接使用你已經信任的 CLI 代理。
-- 從 composer 切換 provider。Codex、Claude Code、Antigravity CLI、Gemini CLI (Legacy)、OpenCode、MiMoCode、Kimi Code、Grok Build、Qwen Code、Devin、Reasonix 和 Command Code 共用一個 model picker。
+- 從 composer 切換 provider。Codex、Claude Code、Antigravity CLI、Gemini CLI (Legacy)、OpenCode、MiMoCode、Kimi Code、Grok Build、Qwen Code、Devin、Pi、Reasonix 和 Command Code 共用一個 model picker。
 - 讓每一次 turn 都基於 vault context。可以 mention 筆記、資料夾和 MCP tools，不需要手動複製路徑。
 - 在選擇模型的位置直接看到 cost 和 limits。
 - 保持 local-first。Grimoire 不收集 telemetry，不 proxy prompts，也不執行 backend。
 
 ## 各 provider 能做什麼
 
-| 功能 | Codex | Claude Code | OpenCode | Grok Build | MiMoCode | Kimi Code | Antigravity CLI | Gemini CLI (Legacy) | Qwen Code | Devin | Reasonix | Command Code |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 本地持續執行環境 | 支援 | 支援 | 支援 | 支援 | 支援 | 支援 | 不支援 | 支援 | 支援 | 支援 | 支援 | 不支援 |
-| 原生歷史恢復 | 支援 | 支援 | 支援 | 支援 | 支援 | 支援 | 不支援 | 支援 | 不支援 | 不支援 | 不支援 | 不支援 |
-| 計畫模式 | 支援 | 支援 | 支援 | 支援 | 支援 | 支援 | 不支援 | 支援 | 支援 | 支援 | 支援 | 不支援 |
-| 圖片附件 | 支援 | 支援 | 支援 | 支援 | 支援 | 支援 | 不支援 | 支援 | 支援 | 支援 | 不支援 | 不支援 |
-| 指令模式 | 支援 | 支援 | 支援 | 支援 | 支援 | 支援 | 不支援 | 支援 | 支援 | 支援 | 支援 | 不支援 |
-| 推理強度控制 | 支援 | 支援 | 支援 | 支援 | 支援 | 支援 | 支援 | 支援 | 支援 | 不支援 | 支援 | 支援（依模型而定） |
-| 回溯 | 不支援 | 支援 | 不支援 | 支援 | 不支援 | 不支援 | 不支援 | 不支援 | 不支援 | 不支援 | 不支援 | 不支援 |
-| 分支 | 支援 | 支援 | 不支援 | 支援 | 不支援 | 不支援 | 不支援 | 不支援 | 不支援 | 不支援 | 不支援 | 不支援 |
-| 提供者斜線命令 | 不支援 | 支援 | 支援 | 支援 | 支援 | 支援 | 不支援 | 支援 | 支援 | 支援 | 支援 | 不支援 |
-| Grimoire 管理的 MCP 介面 | 不支援 | 支援 | 支援 | 支援 | 支援 | 支援 | 不支援 | 支援 | 支援 | 支援 | 支援 | 不支援 |
+| 功能 | Codex | Claude Code | OpenCode | Grok Build | MiMoCode | Kimi Code | Antigravity CLI | Gemini CLI (Legacy) | Qwen Code | Devin | Reasonix | Command Code | Pi |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 本地持續執行環境 | 支援 | 支援 | 支援 | 支援 | 支援 | 支援 | 不支援 | 支援 | 支援 | 支援 | 支援 | 不支援 | 支援 |
+| 原生歷史恢復 | 支援 | 支援 | 支援 | 支援 | 支援 | 支援 | 不支援 | 支援 | 不支援 | 不支援 | 不支援 | 不支援 | 支援 |
+| 計畫模式 | 支援 | 支援 | 支援 | 支援 | 支援 | 支援 | 不支援 | 支援 | 支援 | 支援 | 支援 | 不支援 | 不支援 |
+| 圖片附件 | 支援 | 支援 | 支援 | 不支援 | 支援 | 支援 | 檔案 | 支援 | 支援 | 支援 | 檔案（需啟用） | 檔案（需啟用） | 支援 |
+| 指令模式 | 支援 | 支援 | 支援 | 支援 | 支援 | 支援 | 不支援 | 支援 | 支援 | 支援 | 支援 | 不支援 | 不支援 |
+| 推理強度控制 | 支援 | 支援 | 支援 | 支援 | 支援 | 支援 | 支援 | 支援 | 支援 | 不支援 | 支援 | 是（依模型而定） | 是（依模型而定） |
+| 回溯 | 不支援 | 支援 | 不支援 | 支援 | 不支援 | 不支援 | 不支援 | 不支援 | 不支援 | 不支援 | 不支援 | 不支援 | 不支援 |
+| 分支 | 支援 | 支援 | 不支援 | 支援 | 不支援 | 不支援 | 不支援 | 不支援 | 不支援 | 不支援 | 不支援 | 不支援 | 不支援 |
+| 提供者斜線命令 | 不支援 | 支援 | 支援 | 支援 | 支援 | 支援 | 不支援 | 支援 | 支援 | 支援 | 支援 | 不支援 | 支援 |
+| Grimoire 管理的 MCP 介面 | 不支援 | 支援 | 支援 | 支援 | 支援 | 支援 | 不支援 | 支援 | 支援 | 支援 | 支援 | 不支援 | 不支援 |
 
 ## 安裝
 
@@ -168,7 +168,7 @@ agy
 - [Antigravity CLI](https://antigravity.google/product/antigravity-cli)
 - [Gemini CLI migration guide](https://goo.gle/gemini-cli-migration)
 
-在 Grimoire 中，Antigravity 透過 `agy --print` 執行，並可從 `agy models` 選擇模型。這是 best-effort integration，因為 `agy` 目前沒有向 Grimoire 暴露足夠強的 ACP-compatible runtime。在 Antigravity 提供穩定 runtime surfaces 之前，persistent sessions、native history、images、plan mode、streaming、approval-safe file edits、reliable usage reporting 和 auxiliary workflows 都會保持關閉或受限。
+在 Grimoire 中，Antigravity 透過 `agy --print` 執行，並可從 `agy models` 選擇模型。這是 best-effort integration，因為 `agy` 目前沒有向 Grimoire 暴露足夠強的 ACP-compatible runtime。在 Antigravity 提供穩定 runtime surfaces 之前，persistent sessions、native history、plan mode、streaming、approval-safe file edits、reliable usage reporting 和 auxiliary workflows 都會保持關閉或受限。 圖片以暫存檔傳遞，後續訊息需要重新附加。
 
 Windows note: current Windows `agy` builds can finish successfully while returning empty stdout for `agy models` and `agy --print`. Grimoire uses best-effort recovery from Antigravity logs, transcripts, settings, and a seeded Pro AI model list, but Windows Antigravity support may be less reliable than macOS or Linux. If your account shows additional models in Antigravity, add their exact labels under Antigravity settings > Custom models.
 
@@ -263,11 +263,51 @@ Reasonix 不只請求權限，也會提問：它的 `ask` tool 經由同一通�
 
 關於 Safe 模式有一點要知道：`ask` 只擋下 Reasonix 判定為需要授權的 tool，而不是全部 tool，因此它認為 read-only 的 shell command 會直接執行而不詢問。Grimoire 會對 Reasonix 透過協定進行的每一次檔案寫入進行確認，這正是讓 vault 待在一個問題之後的機制。如果某個 session 完全不該寫入，請使用 Plan。
 
-Reasonix 的設定放在 `~/.reasonix/config.toml`，API keys 依該檔案給出的名稱從環境變數讀取。Vault skills 從 `.reasonix/skills` 與 `.agents/skills` 讀取。Grimoire 在 `.grimoire/mcp/reasonix.json` 維護獨立的專案 MCP 清單，並注入 ACP session。用量來自 Reasonix 自身的 status notification；只有當你的 model provider 有價格時才會顯示 cost。圖片附件、fork 與 rewind 都不支援。
+Reasonix 的設定放在 `~/.reasonix/config.toml`，API keys 依該檔案給出的名稱從環境變數讀取。Vault skills 從 `.reasonix/skills` 與 `.agents/skills` 讀取。Grimoire 在 `.grimoire/mcp/reasonix.json` 維護獨立的專案 MCP 清單，並注入 ACP session。用量來自 Reasonix 自身的 status notification；只有當你的 model provider 有價格時才會顯示 cost。fork 與 rewind 都不支援。
+
+啟用 **Image attachments as files** 後，圖片會透過 `.grimoire/attachments/` 中的檔案傳遞。需要支援圖片的模型與檔案讀取工具；讀取會增加一次工具呼叫。檔案遺失或無法寫入時，傳送會失敗。此選項預設關閉。
+
+### Pi
+
+請分別安裝這兩個工具。轉接器需要 **Node.js 22+** 與 **Pi 0.80.4+**。
+
+1. 依照[官方說明](https://pi.dev/docs/latest)安裝 Pi。macOS 和 Linux：
+
+   ```bash
+   curl -fsSL https://pi.dev/install.sh | sh
+   ```
+
+   也可以使用 npm：
+
+   ```bash
+   npm install -g --ignore-scripts @earendil-works/pi-coding-agent
+   ```
+
+2. 依照[全域安裝說明](https://github.com/svkozak/pi-acp#global-install)安裝轉接器：
+
+   ```bash
+   npm install -g pi-acp
+   ```
+
+3. 在終端機開啟 Pi 設定，設定模型供應商或 API 金鑰：
+
+   ```bash
+   pi-acp --terminal-login
+   ```
+
+4. 重新啟動 Obsidian，在 **設定 → Grimoire → 供應商**中啟用 **Pi**，然後點選 **Refresh all models**。`pi` 和 `pi-acp` 必須能透過 `PATH` 找到。若自動偵測失敗，請在 **Adapter path** 填入 `pi-acp` 的絕對路徑；必要時在 Pi 的 **Environment variables** 加入 `PI_ACP_PI_COMMAND=/absolute/path/to/pi`。
+
+Grimoire 會自行啟動轉接器，無須設定 Zed，也不需要另外執行轉接器伺服器。
+
+這兩個執行檔仍是外部相依項目。Grimoire 從 Pi 取得模型與推理強度，串流顯示回答及工具活動，原生傳遞圖片，並恢復已儲存的工作階段。共用的模型選擇器在重新整理後保留已選模型和別名。
+
+**推理強度限制（pi-acp 0.0.33）：** 選單只提供轉接器能實際套用到所選模型的等級。例如 Pi 為 GLM-5.3 提供 `low`、`high` 和 `max`，但轉接器拒絕 `max`，所以 Grimoire 提供 `low`、`high` 和 **Pi default**。`xhigh` 不能取代 `max`。上游 [PR #73](https://github.com/svkozak/pi-acp/pull/73) 提議新增 `max`；[PR #125](https://github.com/svkozak/pi-acp/pull/125) 提議取得所選模型實際支援的等級。截至 2026-09-21，兩者仍未合併，提出的修正不包含在已驗證的轉接器版本中。
+
+Pi 自行管理工具權限，可以不經詢問就讀取、寫入檔案或執行命令。Grimoire 會顯示擴充功能發出的權限請求，但不提供 Safe 或 Plan 模式。MCP、技能與提示詞範本在 Pi 中設定。檔案從磁碟讀取；轉接器不提供編輯器中的未儲存文字、帳戶配額或上下文使用量。已使用 Pi 0.86.1 與 pi-acp 0.0.33 驗證。
 
 ### Command Code
 
-Command Code 可在尚未發布的 2.0 版本中選擇啟用。請在終端機安裝並登入，再到設定 → Grimoire → 供應商啟用：
+Command Code 可選擇啟用。請在終端機安裝並登入，再到設定 → Grimoire → 供應商啟用：
 
 ```bash
 npm i -g command-code
@@ -278,7 +318,9 @@ command-code login
 
 Grimoire 從 CLI 的無介面 JSON 輸出串流顯示回答與工具活動，透過 `--list-models` 探索模型，並儲存原生工作階段 ID，以便重新載入後明確恢復。驗證、原生設定、技能、MCP 與對話記錄仍由 Command Code 管理。上下文用量將回報的輸入 token 數與估計或使用者指定的上限比較，不推測帳戶配額或價格。
 
-**Safe** 會暫停編輯、命令及其他非唯讀工具，等待 Grimoire 中的一次性核准。拒絕、取消或核准連線中斷皆會阻止執行。目前 Safe 需要經過驗證的 Command Code 1.53.0 npm 安裝，並停用原生子代理，因為它們的獨立迴圈無法使用這個核准機制。**Auto-approve** 不顯示 Grimoire 確認提示；原生拒絕與詢問規則在兩種模式下仍然生效。此整合不提供互動式提問、圖片附件、計畫控制、斜線命令、受管理的 MCP/技能/代理、輔助任務、分支、回溯或原生歷史匯入。
+啟用 **Image attachments as files** 後，圖片會透過 `.grimoire/attachments/` 中的檔案傳遞。需要支援圖片的模型與檔案讀取工具；讀取會增加一次工具呼叫。檔案遺失或無法寫入時，傳送會失敗。此選項預設關閉。
+
+**Safe** 會暫停編輯、命令及其他非唯讀工具，等待 Grimoire 中的一次性核准。拒絕、取消或核准連線中斷皆會阻止執行。目前 Safe 需要經過驗證的 Command Code 1.53.0 npm 安裝，並停用原生子代理，因為它們的獨立迴圈無法使用這個核准機制。**Auto-approve** 不顯示 Grimoire 確認提示；原生拒絕與詢問規則在兩種模式下仍然生效。此整合不提供互動式提問、計畫控制、斜線命令、受管理的 MCP/技能/代理、輔助任務、分支、回溯或原生歷史匯入。
 
 - [Command Code 無介面執行文件](https://commandcode.ai/docs/headless)
 
@@ -376,7 +418,9 @@ Grok 4.5 目前是 Grok Build 的預設模型。Grimoire 從已驗證的 Grok CL
 
 ### 模型選擇器
 
-一個 picker，按 provider 分組，並按 label 排序：Antigravity、Claude Code、Codex、Command Code、Devin、Gemini CLI (Legacy)、Grok Build、Kimi Code、MiMoCode、OpenCode、Qwen Code 和 Reasonix。Search 會匹配 labels、descriptions、groups 和 model IDs。Catalogs 會 lazy load，並記住你摺疊過的 groups。你可以在 settings 中新增 custom aliases 和 context-window overrides。Claude 的 1M variants 是額外 options，不會替代 base models。
+一個 picker，按 provider 分組，並按 label 排序：Antigravity、Claude Code、Codex、Command Code、Devin、Gemini CLI (Legacy)、Grok Build、Kimi Code、MiMoCode、OpenCode、Pi、Qwen Code 和 Reasonix。Search 會匹配 labels、descriptions、groups 和 model IDs。Catalogs 會 lazy load，並記住你摺疊過的 groups。你可以在 settings 中新增 custom aliases 和 context-window overrides。Claude 的 1M variants 是額外 options，不會替代 base models。
+
+OpenCode、MiMoCode、Kimi Code、Grok Build、Command Code 和 Pi 在設定中使用同一個模型選擇器：含別名的已選列、可搜尋的目錄與 **Refresh all models**。重新整理會保留選擇與別名；CLI 提供供應商名稱時也會顯示供應商篩選器。
 
 ### 用量與費用
 
@@ -391,6 +435,7 @@ Model selector 旁邊的 badge 會持續顯示目前 provider 的 usage；model 
 | Qwen Code | 僅在 Qwen Code 回傳時的 ACP token 和 cost metadata |
 | Devin | ACP 回報的 session credit 總額，換算為每月支出 |
 | Reasonix | 來自自有 status notification 的每輪 cost，前提是所設定的 model provider 有價格 |
+| Pi | pi-acp 轉接器未提供 |
 | OpenCode | 從 ACP 和 session cost metadata 聚合的 monthly spend |
 | MiMoCode | 從 ACP 和 session cost metadata 聚合的 monthly spend |
 | Kimi Code | 從 ACP 和 session cost metadata 聚合的 monthly spend |
@@ -509,7 +554,7 @@ Obsidian Community plugins 是推薦的使用者安裝方式。GitHub Releases �
 
 ## 開發計畫
 
-目前 Grimoire 隨 Codex、Claude Code、Antigravity CLI、Gemini CLI (Legacy)、OpenCode、MiMoCode、Kimi Code、Grok Build、Qwen Code、Devin、Reasonix 和 Command Code 一起發布。
+目前 Grimoire 隨 Codex、Claude Code、Antigravity CLI、Gemini CLI (Legacy)、OpenCode、MiMoCode、Kimi Code、Grok Build、Qwen Code、Devin、Pi、Reasonix 和 Command Code 一起發布。
 
 下一步計畫：GitHub Copilot CLI、其他 ACP-compatible providers，以及當 runtime 足夠穩定可嵌入 Obsidian 時的 local model CLIs。Implementation notes 位於 [docs/provider-roadmap.md](../provider-roadmap.md)。
 

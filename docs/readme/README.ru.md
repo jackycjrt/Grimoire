@@ -27,7 +27,7 @@
   <sub>Настоящая заметка и диалог, опирающийся на её ссылки.</sub>
 </p>
 
-Grimoire встраивает agentic CLI-ассистентов в Obsidian. Codex, Claude Code, Antigravity CLI, Gemini CLI (Legacy), OpenCode, MiMoCode, Kimi Code, Grok Build, Qwen Code, Devin, Reasonix и Command Code живут в одной боковой панели: читают заметки, редактируют файлы, запускают команды, вызывают инструменты и сохраняют историю сессий рядом с вашим настоящим vault. Всё работает без сервера Grimoire: нет telemetry, hosted backend и proxy между вами и провайдером.
+Grimoire встраивает agentic CLI-ассистентов в Obsidian. Codex, Claude Code, Antigravity CLI, Gemini CLI (Legacy), OpenCode, MiMoCode, Kimi Code, Grok Build, Qwen Code, Devin, Pi, Reasonix и Command Code живут в одной боковой панели: читают заметки, редактируют файлы, запускают команды, вызывают инструменты и сохраняют историю сессий рядом с вашим настоящим vault. Всё работает без сервера Grimoire: нет telemetry, hosted backend и proxy между вами и провайдером.
 
 Grimoire сделан для тех, кто уже работает в Obsidian и хочет, чтобы AI-помощник ощущался частью vault: локальный контекст, локальные файлы, осознанный выбор провайдера и usage/cost прямо в интерфейсе.
 
@@ -36,25 +36,25 @@ Grimoire сделан для тех, кто уже работает в Obsidian 
 ## Зачем Grimoire
 
 - Используйте CLI-агентов, которым уже доверяете, прямо внутри заметок.
-- Переключайте провайдеров из composer. Codex, Claude Code, Antigravity CLI, Gemini CLI (Legacy), OpenCode, MiMoCode, Kimi Code, Grok Build, Qwen Code, Devin, Reasonix и Command Code используют один model picker.
+- Переключайте провайдеров из composer. Codex, Claude Code, Antigravity CLI, Gemini CLI (Legacy), OpenCode, MiMoCode, Kimi Code, Grok Build, Qwen Code, Devin, Pi, Reasonix и Command Code используют один model picker.
 - Привязывайте каждый turn к vault-контексту. Упоминайте заметки, папки и MCP tools без ручного копирования путей.
 - Видьте cost и limits рядом с выбором модели, именно там, где принимается решение.
 - Оставайтесь local-first. Grimoire не собирает telemetry, не проксирует prompts и не запускает backend.
 
 ## Что умеют провайдеры
 
-| Возможность | Codex | Claude Code | OpenCode | Grok Build | MiMoCode | Kimi Code | Antigravity CLI | Gemini CLI (Legacy) | Qwen Code | Devin | Reasonix | Command Code |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Локальная постоянная среда выполнения | Да | Да | Да | Да | Да | Да | Нет | Да | Да | Да | Да | Нет |
-| Восстановление нативной истории | Да | Да | Да | Да | Да | Да | Нет | Да | Нет | Нет | Нет | Нет |
-| Режим планирования | Да | Да | Да | Да | Да | Да | Нет | Да | Да | Да | Да | Нет |
-| Вложения изображений | Да | Да | Да | Да | Да | Да | Нет | Да | Да | Да | Нет | Нет |
-| Режим инструкций | Да | Да | Да | Да | Да | Да | Нет | Да | Да | Да | Да | Нет |
-| Настройка глубины рассуждений | Да | Да | Да | Да | Да | Да | Да | Да | Да | Нет | Да | Да (зависит от модели) |
-| Откат | Нет | Да | Нет | Да | Нет | Нет | Нет | Нет | Нет | Нет | Нет | Нет |
-| Ветвление | Да | Да | Нет | Да | Нет | Нет | Нет | Нет | Нет | Нет | Нет | Нет |
-| Slash-команды провайдера | Нет | Да | Да | Да | Да | Да | Нет | Да | Да | Да | Да | Нет |
-| Управление MCP через Grimoire | Нет | Да | Да | Да | Да | Да | Нет | Да | Да | Да | Да | Нет |
+| Возможность | Codex | Claude Code | OpenCode | Grok Build | MiMoCode | Kimi Code | Antigravity CLI | Gemini CLI (Legacy) | Qwen Code | Devin | Reasonix | Command Code | Pi |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Локальная постоянная среда выполнения | Да | Да | Да | Да | Да | Да | Нет | Да | Да | Да | Да | Нет | Да |
+| Восстановление нативной истории | Да | Да | Да | Да | Да | Да | Нет | Да | Нет | Нет | Нет | Нет | Да |
+| Режим планирования | Да | Да | Да | Да | Да | Да | Нет | Да | Да | Да | Да | Нет | Нет |
+| Вложения изображений | Да | Да | Да | Нет | Да | Да | Файлы | Да | Да | Да | Файлы (по выбору) | Файлы (по выбору) | Да |
+| Режим инструкций | Да | Да | Да | Да | Да | Да | Нет | Да | Да | Да | Да | Нет | Нет |
+| Настройка глубины рассуждений | Да | Да | Да | Да | Да | Да | Да | Да | Да | Нет | Да | Да (зависит от модели) | Да (зависит от модели) |
+| Откат | Нет | Да | Нет | Да | Нет | Нет | Нет | Нет | Нет | Нет | Нет | Нет | Нет |
+| Ветвление | Да | Да | Нет | Да | Нет | Нет | Нет | Нет | Нет | Нет | Нет | Нет | Нет |
+| Slash-команды провайдера | Нет | Да | Да | Да | Да | Да | Нет | Да | Да | Да | Да | Нет | Да |
+| Управление MCP через Grimoire | Нет | Да | Да | Да | Да | Да | Нет | Да | Да | Да | Да | Нет | Нет |
 
 ## Установка
 
@@ -170,7 +170,7 @@ agy
 - [Antigravity CLI](https://antigravity.google/product/antigravity-cli)
 - [Gemini CLI migration guide](https://goo.gle/gemini-cli-migration)
 
-Внутри Grimoire Antigravity работает через `agy --print`, с optional model selection из `agy models`; Grimoire добавляет в print prompt активную заметку, editor/browser/canvas context, vault search и project workspace context. Это best-effort integration, потому что `agy` пока не предоставляет Grimoire сильный ACP-compatible runtime. Persistent sessions, native history, images, plan mode, streaming, approval-safe file edits, reliable usage reporting и auxiliary workflows остаются выключенными или ограниченными, пока Antigravity не предоставит стабильные runtime surfaces.
+Внутри Grimoire Antigravity работает через `agy --print`, с optional model selection из `agy models`; Grimoire добавляет в print prompt активную заметку, editor/browser/canvas context, vault search и project workspace context. Это best-effort integration, потому что `agy` пока не предоставляет Grimoire сильный ACP-compatible runtime. Persistent sessions, native history, plan mode, streaming, approval-safe file edits, reliable usage reporting и auxiliary workflows остаются выключенными или ограниченными, пока Antigravity не предоставит стабильные runtime surfaces. Изображения передаются как временные файлы; в последующих сообщениях их нужно прикреплять заново.
 
 `agy --print` не предоставляет Grimoire hooks для подтверждения file edits. Поэтому ради безопасности Antigravity в общем Safe/normal mode заблокирован в Grimoire; переключайте Antigravity toolbar в Auto-approve только если готовы, что AGY может редактировать файлы без Grimoire prompts.
 
@@ -267,11 +267,51 @@ Reasoning effort это не фиксированный список, а пик�
 
 Про режим Safe стоит знать одно. `ask` закрывает те инструменты, которые Reasonix относит к требующим разрешения, а не все: shell-команда, признанная read-only, выполняется без вопроса. Grimoire спрашивает про каждую запись файла, которую Reasonix делает по протоколу, и именно это держит vault за вопросом. Если сессия не должна писать вообще ничего, используйте Plan.
 
-Reasonix хранит конфигурацию в `~/.reasonix/config.toml` и читает API-ключи из окружения под именами, которые указаны в этом файле. Навыки vault читаются из `.reasonix/skills` и `.agents/skills`. Grimoire ведёт отдельный список MCP в `.grimoire/mcp/reasonix.json` и передаёт его в ACP-сессию. Расход берётся из собственных status-уведомлений Reasonix, а стоимость появляется, только если у вашего провайдера моделей есть цена. Вложения-изображения, fork и rewind не поддерживаются.
+Reasonix хранит конфигурацию в `~/.reasonix/config.toml` и читает API-ключи из окружения под именами, которые указаны в этом файле. Навыки vault читаются из `.reasonix/skills` и `.agents/skills`. Grimoire ведёт отдельный список MCP в `.grimoire/mcp/reasonix.json` и передаёт его в ACP-сессию. Расход берётся из собственных status-уведомлений Reasonix, а стоимость появляется, только если у вашего провайдера моделей есть цена. Fork и rewind не поддерживаются.
+
+Включите **Image attachments as files**, чтобы передавать изображения через файлы в `.grimoire/attachments/`. Нужны модель с поддержкой изображений и инструмент чтения файлов; чтение требует дополнительного вызова инструмента. Если файл отсутствует или его нельзя записать, отправка завершается ошибкой. По умолчанию эта возможность выключена.
+
+### Pi
+
+Установите оба инструмента отдельно. Адаптеру нужны **Node.js 22+** и **Pi 0.80.4+**.
+
+1. Установите Pi по [официальной инструкции](https://pi.dev/docs/latest). Для macOS и Linux:
+
+   ```bash
+   curl -fsSL https://pi.dev/install.sh | sh
+   ```
+
+   Другой способ — через npm:
+
+   ```bash
+   npm install -g --ignore-scripts @earendil-works/pi-coding-agent
+   ```
+
+2. Установите адаптер по [инструкции глобальной установки](https://github.com/svkozak/pi-acp#global-install):
+
+   ```bash
+   npm install -g pi-acp
+   ```
+
+3. Откройте настройку Pi в терминале и настройте провайдера моделей или API-ключи:
+
+   ```bash
+   pi-acp --terminal-login
+   ```
+
+4. Перезапустите Obsidian, включите **Pi** в **Настройки → Grimoire → Провайдеры** и нажмите **Refresh all models**. Команды `pi` и `pi-acp` должны быть доступны в `PATH`. Если они не обнаружены, укажите абсолютный путь к `pi-acp` в **Adapter path**, а при необходимости добавьте `PI_ACP_PI_COMMAND=/absolute/path/to/pi` в **Environment variables** настроек Pi.
+
+Grimoire сам запускает адаптер; настройка Zed или отдельный сервер адаптера не нужны.
+
+Оба исполняемых файла остаются внешними зависимостями. Grimoire получает модели и уровни рассуждений из Pi, отображает поток ответов и действий инструментов, передаёт изображения нативно и возобновляет сохранённые сессии. Общий список моделей сохраняет выбранные модели и их псевдонимы при обновлении.
+
+**Ограничение уровней рассуждений (pi-acp 0.0.33):** меню предлагает только уровни, которые адаптер действительно применяет к выбранной модели. Например, Pi поддерживает `low`, `high` и `max` для GLM-5.3, но адаптер отклоняет `max`, поэтому в Grimoire доступны `low`, `high` и **Pi default**. `xhigh` не заменяет `max`. В upstream [PR #73](https://github.com/svkozak/pi-acp/pull/73) предлагается добавить `max`, а [PR #125](https://github.com/svkozak/pi-acp/pull/125) — получать реальные уровни выбранной модели. На 2026-09-21 оба PR открыты и не слиты; предложенные исправления не входят в проверенный релиз адаптера.
+
+Разрешениями инструментов управляет Pi: он может читать, записывать файлы и выполнять команды без запроса. Grimoire показывает запросы разрешений от расширений, но не предлагает режимы Safe или Plan. MCP, навыки и шаблоны запросов настраиваются в Pi. Файлы читаются с диска; адаптер не предоставляет несохранённый текст редактора, квоты аккаунта и заполнение контекста. Проверено с Pi 0.86.1 и pi-acp 0.0.33.
 
 ### Command Code
 
-Command Code включается отдельно в разрабатываемой версии 2.0. Установите его и войдите в аккаунт через терминал, затем включите в Настройки → Grimoire → Провайдеры:
+Command Code включается отдельно. Установите его и войдите в аккаунт через терминал, затем включите в Настройки → Grimoire → Провайдеры:
 
 ```bash
 npm i -g command-code
@@ -282,7 +322,9 @@ command-code login
 
 Grimoire отображает поток ответов и действий инструментов из JSON-вывода CLI без интерфейса, получает модели через `--list-models` и сохраняет нативный ID сессии для явного возобновления после перезагрузки. Авторизация, конфигурация, навыки, MCP и журналы диалогов остаются у Command Code. Заполнение контекста рассчитывается по сообщённым входным токенам относительно оценочного или заданного пользователем лимита; квоты аккаунта и цены не вычисляются предположительно.
 
-**Safe** приостанавливает правки, команды и другие инструменты, не ограниченные чтением, до разового разрешения в Grimoire. Отказ, отмена или потеря соединения с механизмом разрешений предотвращают выполнение. Сейчас Safe требует проверенную npm-установку Command Code 1.53.0 и отключает нативных субагентов: их отдельные циклы не могут использовать этот механизм. **Auto-approve** работает без запросов Grimoire; нативные правила запрета и подтверждения действуют в обоих режимах. Интеграция не предоставляет интерактивные вопросы, изображения, управление планом, slash-команды, управляемые MCP/навыки/агентов, вспомогательные задачи, ветвление, откат и импорт нативной истории.
+Включите **Image attachments as files**, чтобы передавать изображения через файлы в `.grimoire/attachments/`. Нужны модель с поддержкой изображений и инструмент чтения файлов; чтение требует дополнительного вызова инструмента. Если файл отсутствует или его нельзя записать, отправка завершается ошибкой. По умолчанию эта возможность выключена.
+
+**Safe** приостанавливает правки, команды и другие инструменты, не ограниченные чтением, до разового разрешения в Grimoire. Отказ, отмена или потеря соединения с механизмом разрешений предотвращают выполнение. Сейчас Safe требует проверенную npm-установку Command Code 1.53.0 и отключает нативных субагентов: их отдельные циклы не могут использовать этот механизм. **Auto-approve** работает без запросов Grimoire; нативные правила запрета и подтверждения действуют в обоих режимах. Интеграция не предоставляет интерактивные вопросы, управление планом, slash-команды, управляемые MCP/навыки/агентов, вспомогательные задачи, ветвление, откат и импорт нативной истории.
 
 - [Документация Command Code о режиме без интерфейса](https://commandcode.ai/docs/headless)
 
@@ -388,7 +430,9 @@ grok
 
 ### Выбор модели
 
-Один picker, сгруппированный по провайдерам и отсортированный по label: Antigravity, Claude Code, Codex, Command Code, Devin, Gemini CLI (Legacy), Grok Build, Kimi Code, MiMoCode, OpenCode, Qwen Code и Reasonix. Search работает по labels, descriptions, groups и model IDs. Catalogs загружаются lazily и запоминают, какие groups вы свернули. В settings можно добавить custom aliases и context-window overrides. Claude 1M variants — дополнительные options, а не замена базовых моделей.
+Один picker, сгруппированный по провайдерам и отсортированный по label: Antigravity, Claude Code, Codex, Command Code, Devin, Gemini CLI (Legacy), Grok Build, Kimi Code, MiMoCode, OpenCode, Pi, Qwen Code и Reasonix. Search работает по labels, descriptions, groups и model IDs. Catalogs загружаются lazily и запоминают, какие groups вы свернули. В settings можно добавить custom aliases и context-window overrides. Claude 1M variants — дополнительные options, а не замена базовых моделей.
+
+OpenCode, MiMoCode, Kimi Code, Grok Build, Command Code и Pi используют общий выбор моделей в настройках: выбранные строки с псевдонимами, поиск по каталогу и **Refresh all models**. Обновление сохраняет выбор и псевдонимы; фильтр провайдеров появляется, когда CLI сообщает названия поставщиков.
 
 ### Использование и стоимость
 
@@ -403,6 +447,7 @@ Badge рядом с model selector показывает usage активного
 | Qwen Code | ACP token и cost metadata, только когда Qwen Code их отдаёт |
 | Devin | Сумма кредитов сессии из ACP, как расход за месяц |
 | Reasonix | Стоимость хода из собственных status-уведомлений, если у настроенного провайдера моделей есть цена |
+| Pi | Не сообщается адаптером pi-acp |
 | OpenCode | Monthly spend, агрегированный из ACP и session cost metadata |
 | MiMoCode | Monthly spend, агрегированный из ACP и session cost metadata |
 | Kimi Code | Monthly spend, агрегированный из ACP и session cost metadata |
@@ -523,7 +568,7 @@ Obsidian Community plugins — рекомендуемый способ уста�
 
 ## Планы развития
 
-Сейчас Grimoire поставляется с Codex, Claude Code, Antigravity CLI, Gemini CLI (Legacy), OpenCode, MiMoCode, Kimi Code, Grok Build, Qwen Code, Devin, Reasonix и Command Code.
+Сейчас Grimoire поставляется с Codex, Claude Code, Antigravity CLI, Gemini CLI (Legacy), OpenCode, MiMoCode, Kimi Code, Grok Build, Qwen Code, Devin, Pi, Reasonix и Command Code.
 
 Следующие в списке: GitHub Copilot CLI, другие ACP-compatible providers и local model CLIs, когда их runtime станет достаточно стабильным для embedding в Obsidian. Implementation notes находятся в [docs/provider-roadmap.md](../provider-roadmap.md).
 

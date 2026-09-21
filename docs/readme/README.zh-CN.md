@@ -27,32 +27,32 @@
   <sub>真实笔记与基于笔记链接的对话。</sub>
 </p>
 
-Grimoire 将智能体 CLI 助手带入 Obsidian。Codex、Claude Code、Antigravity CLI、Gemini CLI（旧版）、OpenCode、MiMoCode、Kimi Code、Grok Build、Qwen Code、Devin、Reasonix 和 Command Code 都位于同一个侧边栏中；它们可以读取笔记、编辑文件、执行命令、调用工具，并将会话历史保存在你的真实仓库中。任何内容都不会经由 Grimoire 服务器传输：没有遥测、没有托管后端，也没有处在中间的代理服务器。
+Grimoire 将智能体 CLI 助手带入 Obsidian。Codex、Claude Code、Antigravity CLI、Gemini CLI（旧版）、OpenCode、MiMoCode、Kimi Code、Grok Build、Qwen Code、Devin、Pi、Reasonix 和 Command Code 都位于同一个侧边栏中；它们可以读取笔记、编辑文件、执行命令、调用工具，并将会话历史保存在你的真实仓库中。任何内容都不会经由 Grimoire 服务器传输：没有遥测、没有托管后端，也没有处在中间的代理服务器。
 
 Grimoire 面向已经使用 Obsidian 工作，并希望 AI 助手像仓库的一部分那样运作的用户：上下文留在本地、文件留在本地、供应商由你明确选择，用量也真正可见。
 
 ## 为什么选择 Grimoire
 
 - 在笔记里直接使用你已经信任的 CLI 代理。
-- 直接从输入区切换供应商。Codex、Claude Code、Antigravity CLI、Gemini CLI（旧版）、OpenCode、MiMoCode、Kimi Code、Grok Build、Qwen Code、Devin、Reasonix 和 Command Code 共用一个模型选择器。
+- 直接从输入区切换供应商。Codex、Claude Code、Antigravity CLI、Gemini CLI（旧版）、OpenCode、MiMoCode、Kimi Code、Grok Build、Qwen Code、Devin、Pi、Reasonix 和 Command Code 共用一个模型选择器。
 - 让每轮对话都以你的仓库为依据。可以提及笔记、文件夹和 MCP 工具，无需手动粘贴路径。
 - 在模型选择器旁查看费用和限制——也就是你作出模型选择的位置。
 - 坚持本地优先。Grimoire 不收集遥测数据、不代理转发提示词，也不运行后端服务。
 
 ## 各供应商支持的功能
 
-| 功能 | Codex | Claude Code | OpenCode | Grok Build | MiMoCode | Kimi Code | Antigravity CLI | Gemini CLI (Legacy) | Qwen Code | Devin | Reasonix | Command Code |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 本地持久运行环境 | 支持 | 支持 | 支持 | 支持 | 支持 | 支持 | 不支持 | 支持 | 支持 | 支持 | 支持 | 不支持 |
-| 原生历史恢复 | 支持 | 支持 | 支持 | 支持 | 支持 | 支持 | 不支持 | 支持 | 不支持 | 不支持 | 不支持 | 不支持 |
-| 计划模式 | 支持 | 支持 | 支持 | 支持 | 支持 | 支持 | 不支持 | 支持 | 支持 | 支持 | 支持 | 不支持 |
-| 图片附件 | 支持 | 支持 | 支持 | 支持 | 支持 | 支持 | 不支持 | 支持 | 支持 | 支持 | 不支持 | 不支持 |
-| 指令模式 | 支持 | 支持 | 支持 | 支持 | 支持 | 支持 | 不支持 | 支持 | 支持 | 支持 | 支持 | 不支持 |
-| 推理强度控制 | 支持 | 支持 | 支持 | 支持 | 支持 | 支持 | 支持 | 支持 | 支持 | 不支持 | 支持 | 支持（取决于模型） |
-| 回退 | 不支持 | 支持 | 不支持 | 支持 | 不支持 | 不支持 | 不支持 | 不支持 | 不支持 | 不支持 | 不支持 | 不支持 |
-| 分支 | 支持 | 支持 | 不支持 | 支持 | 不支持 | 不支持 | 不支持 | 不支持 | 不支持 | 不支持 | 不支持 | 不支持 |
-| 供应商斜杠命令 | 不支持 | 支持 | 支持 | 支持 | 支持 | 支持 | 不支持 | 支持 | 支持 | 支持 | 支持 | 不支持 |
-| Grimoire 管理的 MCP 界面 | 不支持 | 支持 | 支持 | 支持 | 支持 | 支持 | 不支持 | 支持 | 支持 | 支持 | 支持 | 不支持 |
+| 功能 | Codex | Claude Code | OpenCode | Grok Build | MiMoCode | Kimi Code | Antigravity CLI | Gemini CLI (Legacy) | Qwen Code | Devin | Reasonix | Command Code | Pi |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 本地持久运行环境 | 支持 | 支持 | 支持 | 支持 | 支持 | 支持 | 不支持 | 支持 | 支持 | 支持 | 支持 | 不支持 | 支持 |
+| 原生历史恢复 | 支持 | 支持 | 支持 | 支持 | 支持 | 支持 | 不支持 | 支持 | 不支持 | 不支持 | 不支持 | 不支持 | 支持 |
+| 计划模式 | 支持 | 支持 | 支持 | 支持 | 支持 | 支持 | 不支持 | 支持 | 支持 | 支持 | 支持 | 不支持 | 不支持 |
+| 图片附件 | 支持 | 支持 | 支持 | 不支持 | 支持 | 支持 | 文件 | 支持 | 支持 | 支持 | 文件（需启用） | 文件（需启用） | 支持 |
+| 指令模式 | 支持 | 支持 | 支持 | 支持 | 支持 | 支持 | 不支持 | 支持 | 支持 | 支持 | 支持 | 不支持 | 不支持 |
+| 推理强度控制 | 支持 | 支持 | 支持 | 支持 | 支持 | 支持 | 支持 | 支持 | 支持 | 不支持 | 支持 | 是（取决于模型） | 是（取决于模型） |
+| 回退 | 不支持 | 支持 | 不支持 | 支持 | 不支持 | 不支持 | 不支持 | 不支持 | 不支持 | 不支持 | 不支持 | 不支持 | 不支持 |
+| 分支 | 支持 | 支持 | 不支持 | 支持 | 不支持 | 不支持 | 不支持 | 不支持 | 不支持 | 不支持 | 不支持 | 不支持 | 不支持 |
+| 供应商斜杠命令 | 不支持 | 支持 | 支持 | 支持 | 支持 | 支持 | 不支持 | 支持 | 支持 | 支持 | 支持 | 不支持 | 支持 |
+| Grimoire 管理的 MCP 界面 | 不支持 | 支持 | 支持 | 支持 | 支持 | 支持 | 不支持 | 支持 | 支持 | 支持 | 支持 | 不支持 | 不支持 |
 
 ## 安装
 
@@ -168,7 +168,7 @@ agy
 - [Antigravity CLI](https://antigravity.google/product/antigravity-cli)
 - [Gemini CLI 迁移指南](https://goo.gle/gemini-cli-migration)
 
-在 Grimoire 中，Antigravity 通过 `agy --print` 运行，并可选择使用 `agy models` 中的模型；Grimoire 会将当前笔记，以及编辑器、浏览器、画布、仓库搜索和项目工作区上下文合并到这条 `--print` 提示词中。由于 `agy` 目前没有向 Grimoire 提供能力完备、兼容 ACP 的运行时，本集成只能在现有条件下尽力工作。在 Antigravity 提供稳定的运行时接口之前，持久会话、原生历史记录、图片、规划模式、流式输出、具备安全授权的文件编辑、可靠的用量报告和辅助工作流都会保持关闭或受到限制。
+在 Grimoire 中，Antigravity 通过 `agy --print` 运行，并可选择使用 `agy models` 中的模型；Grimoire 会将当前笔记，以及编辑器、浏览器、画布、仓库搜索和项目工作区上下文合并到这条 `--print` 提示词中。由于 `agy` 目前没有向 Grimoire 提供能力完备、兼容 ACP 的运行时，本集成只能在现有条件下尽力工作。在 Antigravity 提供稳定的运行时接口之前，持久会话、原生历史记录、规划模式、流式输出、具备安全授权的文件编辑、可靠的用量报告和辅助工作流都会保持关闭或受到限制。 图片以临时文件传递，后续消息需要重新附加。
 
 **已知的 Windows 限制：**当前 Windows 版 `agy` 可能在命令成功结束时，仍为 `agy models` 和 `agy --print` 返回空的标准输出。Grimoire 会尽力从 Antigravity 的日志、会话记录、设置和预置的 Pro AI 模型列表中恢复结果；在上游 CLI 提供稳定输出之前，Antigravity 在 Windows 上的可靠性可能低于 macOS 或 Linux。如果你的账户在 Antigravity 中显示了其他模型，请将其准确标签添加到“Antigravity 设置 → 自定义模型”。
 
@@ -266,11 +266,51 @@ Reasonix 不只请求权限，也会提问：它的 `ask` 工具经由同一通�
 
 关于 Safe 模式有一点需要知道：`ask` 只拦截 Reasonix 判定为需要授权的工具，而不是全部工具，因此它认为只读的 shell 命令会直接执行而不询问。Grimoire 会对 Reasonix 通过协议进行的每一次文件写入进行确认，这正是让仓库处在一个问题之后的机制。如果某个会话完全不应写入，请使用 Plan。
 
-Reasonix 的配置保存在 `~/.reasonix/config.toml`，API 密钥按该文件给出的名称从环境变量读取。仓库技能从 `.reasonix/skills` 和 `.agents/skills` 读取。Grimoire 在 `.grimoire/mcp/reasonix.json` 中维护独立的项目 MCP 列表，并注入到 ACP 会话。用量来自 Reasonix 自身的状态通知；只有当你的模型供应商有价格时才会显示费用。图片附件、分叉与回退均不支持。
+Reasonix 的配置保存在 `~/.reasonix/config.toml`，API 密钥按该文件给出的名称从环境变量读取。仓库技能从 `.reasonix/skills` 和 `.agents/skills` 读取。Grimoire 在 `.grimoire/mcp/reasonix.json` 中维护独立的项目 MCP 列表，并注入到 ACP 会话。用量来自 Reasonix 自身的状态通知；只有当你的模型供应商有价格时才会显示费用。分叉与回退均不支持。
+
+启用 **Image attachments as files** 后，图片通过 `.grimoire/attachments/` 中的文件传递。需要支持图片的模型和文件读取工具；读取会增加一次工具调用。文件丢失或无法写入时，发送会失败。此选项默认关闭。
+
+### Pi
+
+请分别安装这两个工具。适配器要求 **Node.js 22+** 和 **Pi 0.80.4+**。
+
+1. 按照[官方说明](https://pi.dev/docs/latest)安装 Pi。macOS 和 Linux：
+
+   ```bash
+   curl -fsSL https://pi.dev/install.sh | sh
+   ```
+
+   也可以使用 npm：
+
+   ```bash
+   npm install -g --ignore-scripts @earendil-works/pi-coding-agent
+   ```
+
+2. 按照[全局安装说明](https://github.com/svkozak/pi-acp#global-install)安装适配器：
+
+   ```bash
+   npm install -g pi-acp
+   ```
+
+3. 在终端打开 Pi 设置，配置模型供应商或 API 密钥：
+
+   ```bash
+   pi-acp --terminal-login
+   ```
+
+4. 重启 Obsidian，在 **设置 → Grimoire → 供应商**中启用 **Pi**，然后点击 **Refresh all models**。`pi` 和 `pi-acp` 必须能通过 `PATH` 找到。如果自动检测失败，请在 **Adapter path** 中填写 `pi-acp` 的绝对路径；必要时在 Pi 的 **Environment variables** 中添加 `PI_ACP_PI_COMMAND=/absolute/path/to/pi`。
+
+Grimoire 会自行启动适配器，无需配置 Zed，也无需单独运行适配器服务器。
+
+这两个可执行文件仍是外部依赖。Grimoire 从 Pi 获取模型和推理强度，流式显示回答及工具活动，原生传递图片，并恢复已保存的会话。共用的模型选择器在刷新后保留已选模型和别名。
+
+**推理强度限制（pi-acp 0.0.33）：** 菜单只提供适配器能实际应用于所选模型的级别。例如 Pi 为 GLM-5.3 提供 `low`、`high` 和 `max`，但适配器拒绝 `max`，因此 Grimoire 提供 `low`、`high` 和 **Pi default**。`xhigh` 不能替代 `max`。上游 [PR #73](https://github.com/svkozak/pi-acp/pull/73) 提议添加 `max`；[PR #125](https://github.com/svkozak/pi-acp/pull/125) 提议获取所选模型实际支持的级别。截至 2026-09-21，两者仍未合并，所提修复不包含在已验证的适配器版本中。
+
+Pi 自行管理工具权限，可以不经询问就读取、写入文件或运行命令。Grimoire 会显示扩展发出的权限请求，但不提供 Safe 或 Plan 模式。MCP、技能和提示词模板在 Pi 中配置。文件从磁盘读取；适配器不提供编辑器中的未保存文本、账户配额或上下文占用率。已使用 Pi 0.86.1 和 pi-acp 0.0.33 验证。
 
 ### Command Code
 
-Command Code 可在尚未发布的 2.0 构建中按需启用。在终端安装并登录后，到设置 → Grimoire → 供应商中启用：
+Command Code 可按需启用。在终端安装并登录后，到设置 → Grimoire → 供应商中启用：
 
 ```bash
 npm i -g command-code
@@ -281,7 +321,9 @@ command-code login
 
 Grimoire 从 CLI 的无界面 JSON 输出中流式显示回答和工具活动，通过 `--list-models` 发现模型，并保存原生会话 ID，以便重新加载后明确恢复。认证、原生配置、技能、MCP 和对话记录仍由 Command Code 管理。上下文用量将报告的输入令牌数与估算或用户指定的上下文上限比较，不推测账户配额和价格。
 
-**Safe** 会暂停编辑、命令及其他非只读工具，等待 Grimoire 中的一次性批准。拒绝、取消或批准连接中断均会阻止执行。目前 Safe 要求经过验证的 Command Code 1.53.0 npm 安装，并禁用原生子代理，因为其独立循环无法使用此批准机制。**Auto-approve** 不显示 Grimoire 确认提示；原生拒绝和询问规则在两种模式中仍然生效。此集成不提供交互式提问、图片附件、计划控制、斜杠命令、托管的 MCP/技能/代理、辅助任务、分支、回退或原生历史导入。
+启用 **Image attachments as files** 后，图片通过 `.grimoire/attachments/` 中的文件传递。需要支持图片的模型和文件读取工具；读取会增加一次工具调用。文件丢失或无法写入时，发送会失败。此选项默认关闭。
+
+**Safe** 会暂停编辑、命令及其他非只读工具，等待 Grimoire 中的一次性批准。拒绝、取消或批准连接中断均会阻止执行。目前 Safe 要求经过验证的 Command Code 1.53.0 npm 安装，并禁用原生子代理，因为其独立循环无法使用此批准机制。**Auto-approve** 不显示 Grimoire 确认提示；原生拒绝和询问规则在两种模式中仍然生效。此集成不提供交互式提问、计划控制、斜杠命令、托管的 MCP/技能/代理、辅助任务、分支、回退或原生历史导入。
 
 - [Command Code 无界面运行文档](https://commandcode.ai/docs/headless)
 
@@ -379,7 +421,9 @@ Grok 4.5 目前是驱动 Grok Build 的默认模型。Grimoire 从已认证的 G
 
 ### 模型选择器
 
-所有模型共用一个选择器，按供应商分组并按名称排序：Antigravity、Claude Code、Codex、Command Code、Devin、Gemini CLI（旧版）、Grok Build、Kimi Code、MiMoCode、OpenCode、Qwen Code 和 Reasonix。搜索会匹配名称、描述、分组和模型 ID，并且在筛选时不会改变菜单尺寸。模型目录按需加载，并会记住你折叠过的分组。你可以在设置中添加自定义别名和上下文窗口覆盖值。Claude 的 1M 上下文变体是额外选项，不会替代基础模型。
+所有模型共用一个选择器，按供应商分组并按名称排序：Antigravity、Claude Code、Codex、Command Code、Devin、Gemini CLI（旧版）、Grok Build、Kimi Code、MiMoCode、OpenCode、Pi、Qwen Code 和 Reasonix。搜索会匹配名称、描述、分组和模型 ID，并且在筛选时不会改变菜单尺寸。模型目录按需加载，并会记住你折叠过的分组。你可以在设置中添加自定义别名和上下文窗口覆盖值。Claude 的 1M 上下文变体是额外选项，不会替代基础模型。
+
+OpenCode、MiMoCode、Kimi Code、Grok Build、Command Code 和 Pi 在设置中使用同一个模型选择器：带别名的已选行、可搜索的目录和 **Refresh all models**。刷新会保留选择和别名；CLI 提供供应商名称时还会显示供应商筛选器。
 
 ### 用量与费用
 
@@ -394,6 +438,7 @@ Grok 4.5 目前是驱动 Grok Build 的默认模型。Grimoire 从已认证的 G
 | Qwen Code | Qwen Code 返回的 ACP 令牌与费用元数据 |
 | Devin | ACP 报告的会话积分总额，按月度支出显示 |
 | Reasonix | 来自其自有状态通知的单轮费用，前提是所配置的模型供应商有价格 |
+| Pi | pi-acp 适配器未提供 |
 | OpenCode | 从 ACP 与会话费用元数据汇总的月度支出 |
 | MiMoCode | 从 ACP 与会话费用元数据汇总的月度支出 |
 | Kimi Code | 从 ACP 与会话费用元数据汇总的月度支出 |
@@ -516,7 +561,7 @@ Obsidian 社区插件市场是推荐的安装方式。GitHub Releases 仍会提�
 
 ## 开发计划
 
-目前 Grimoire 随 Codex、Claude Code、Antigravity CLI、Gemini CLI（旧版）、OpenCode、MiMoCode、Kimi Code、Grok Build、Qwen Code、Devin、Reasonix 和 Command Code 一同发布。
+目前 Grimoire 随 Codex、Claude Code、Antigravity CLI、Gemini CLI（旧版）、OpenCode、MiMoCode、Kimi Code、Grok Build、Qwen Code、Devin、Pi、Reasonix 和 Command Code 一同发布。
 
 下一步计划包括 GitHub Copilot CLI、其他 ACP 兼容供应商，以及运行时足够稳定、可嵌入 Obsidian 的本地模型 CLI。实现说明位于 [provider-roadmap.md](../provider-roadmap.md)。
 

@@ -27,32 +27,32 @@
   <sub>A real vault note and a conversation grounded in its links.</sub>
 </p>
 
-Grimoire brings agentic CLI assistants into Obsidian. Codex, Claude Code, Antigravity CLI, Gemini CLI (Legacy), OpenCode, MiMoCode, Kimi Code, Grok Build, Qwen Code, Devin, Reasonix, and Command Code all live in one side panel, where they read your notes, edit files, run commands, call tools, and keep session history against your real vault. Nothing routes through a Grimoire server. There's no telemetry, no hosted backend, and no proxy sitting in the middle.
+Grimoire brings agentic CLI assistants into Obsidian. Codex, Claude Code, Antigravity CLI, Gemini CLI (Legacy), OpenCode, MiMoCode, Kimi Code, Grok Build, Qwen Code, Devin, Pi, Reasonix, and Command Code all live in one side panel, where they read your notes, edit files, run commands, call tools, and keep session history against your real vault. Nothing routes through a Grimoire server. There's no telemetry, no hosted backend, and no proxy sitting in the middle.
 
 It's built for people who already work in Obsidian and want AI help that behaves like part of the vault: local context, local files, a provider you pick on purpose, and usage you can actually see.
 
 ## Why Grimoire
 
 - Use the CLI agents you already trust, right inside your notes.
-- Switch providers from the composer. Codex, Claude Code, Antigravity CLI, legacy Gemini CLI, OpenCode, MiMoCode, Kimi Code, Grok Build, Qwen Code, Devin, Reasonix, and Command Code share one model picker.
+- Switch providers from the composer. Codex, Claude Code, Antigravity CLI, legacy Gemini CLI, OpenCode, MiMoCode, Kimi Code, Grok Build, Qwen Code, Devin, Pi, Reasonix, and Command Code share one model picker.
 - Ground every turn in your vault. Mention notes, folders, and MCP tools instead of pasting paths by hand.
 - See cost and limits next to the model selector, where you're making the decision anyway.
 - Stay local-first. Grimoire doesn't collect telemetry, proxy prompts, or run a backend.
 
 ## What each provider can do
 
-| Capability | Codex | Claude Code | OpenCode | Grok Build | MiMoCode | Kimi Code | Antigravity CLI | Gemini CLI (Legacy) | Qwen Code | Devin | Reasonix | Command Code |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Local persistent runtime | Yes | Yes | Yes | Yes | Yes | Yes | No | Yes | Yes | Yes | Yes | No |
-| Native history hydration | Yes | Yes | Yes | Yes | Yes | Yes | No | Yes | No | No | No | No |
-| Plan mode | Yes | Yes | Yes | Yes | Yes | Yes | No | Yes | Yes | Yes | Yes | No |
-| Image attachments | Yes | Yes | Yes | No | Yes | Yes | Files | Yes | Yes | Yes | Files (opt-in) | Files (opt-in) |
-| Instruction mode | Yes | Yes | Yes | Yes | Yes | Yes | No | Yes | Yes | Yes | Yes | No |
-| Reasoning effort controls | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Yes | No | Yes | Yes (model-specific) |
-| Rewind | No | Yes | No | Yes | No | No | No | No | No | No | No | No |
-| Fork | Yes | Yes | No | Yes | No | No | No | No | No | No | No | No |
-| Provider slash commands | No | Yes | Yes | Yes | Yes | Yes | No | Yes | Yes | Yes | Yes | No |
-| Grimoire-managed MCP UI | No | Yes | Yes | Yes | Yes | Yes | No | Yes | Yes | Yes | Yes | No |
+| Capability | Codex | Claude Code | OpenCode | Grok Build | MiMoCode | Kimi Code | Antigravity CLI | Gemini CLI (Legacy) | Qwen Code | Devin | Reasonix | Command Code | Pi |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Local persistent runtime | Yes | Yes | Yes | Yes | Yes | Yes | No | Yes | Yes | Yes | Yes | No | Yes |
+| Native history hydration | Yes | Yes | Yes | Yes | Yes | Yes | No | Yes | No | No | No | No | Yes |
+| Plan mode | Yes | Yes | Yes | Yes | Yes | Yes | No | Yes | Yes | Yes | Yes | No | No |
+| Image attachments | Yes | Yes | Yes | No | Yes | Yes | Files | Yes | Yes | Yes | Files (opt-in) | Files (opt-in) | Yes |
+| Instruction mode | Yes | Yes | Yes | Yes | Yes | Yes | No | Yes | Yes | Yes | Yes | No | No |
+| Reasoning effort controls | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Yes | Yes | No | Yes | Yes (model-specific) | Yes (model-specific) |
+| Rewind | No | Yes | No | Yes | No | No | No | No | No | No | No | No | No |
+| Fork | Yes | Yes | No | Yes | No | No | No | No | No | No | No | No | No |
+| Provider slash commands | No | Yes | Yes | Yes | Yes | Yes | No | Yes | Yes | Yes | Yes | No | Yes |
+| Grimoire-managed MCP UI | No | Yes | Yes | Yes | Yes | Yes | No | Yes | Yes | Yes | Yes | No | No |
 
 ## Installation
 
@@ -277,7 +277,13 @@ Enable **Image attachments as files** in Reasonix settings to use pasted or drop
 
 Install both tools separately. The adapter requires **Node.js 22+** and **Pi 0.80.4+**.
 
-1. Install Pi using the [official Pi installation instructions](https://pi.dev/). With npm:
+1. Install Pi using the [official Pi installation instructions](https://pi.dev/docs/latest). On macOS and Linux:
+
+   ```bash
+   curl -fsSL https://pi.dev/install.sh | sh
+   ```
+
+   Alternatively, with npm:
 
    ```bash
    npm install -g --ignore-scripts @earendil-works/pi-coding-agent
@@ -322,7 +328,7 @@ context occupancy are not supplied by the adapter. Tested with Pi 0.86.1 and pi-
 
 ### Command Code
 
-Command Code is opt-in in the unreleased 2.0 build. Install and authenticate in a terminal, then enable it under Settings → Grimoire → Providers:
+Command Code is opt-in. Install and authenticate in a terminal, then enable it under Settings → Grimoire → Providers:
 
 ```bash
 npm i -g command-code
@@ -333,7 +339,7 @@ Reasoning effort is discovered for the selected model from the installed CLI. Th
 
 Grimoire streams answers and tool activity from the CLI's headless JSON output, discovers models with `--list-models`, and saves the native session ID for explicit resume after reload. Authentication, native configuration, skills, MCP and transcripts stay with Command Code. Context usage uses reported input tokens against an estimated or user-supplied context limit; account quotas and prices are not inferred.
 
-Under **Models → Visible models**, search the live CLI catalog and select the models to show in chat. **Refresh models** updates the catalog while preserving your selection; **Show all models** restores the full catalog. Saved selections that disappear from discovery remain listed so you can remove them.
+Under **Models → Visible models**, search the live CLI catalog and select the models to show in chat. **Refresh all models** updates the catalog while preserving your selection; **Show all models** restores the full catalog. Saved selections that disappear from discovery remain listed so you can remove them.
 
 Enable **Image attachments as files** to send pasted or dropped images through the CLI's file-reading tool. Choose a model that supports images: the catalog does not report this capability. Grimoire keeps the image in `.grimoire/attachments/` and appends its path to the prompt; reading it requires an extra tool call. Missing or unwritable attachments fail the turn instead of being silently omitted.
 
@@ -452,6 +458,7 @@ A badge next to the model selector keeps the active provider's usage in view, wi
 | Qwen Code | ACP token and cost metadata when Qwen Code reports it |
 | Devin | Session credit total reported over ACP, as monthly spend |
 | Reasonix | Per-turn cost from its own status notifications, when the configured model provider has a price |
+| Pi | Not reported by pi-acp |
 | OpenCode | Monthly spend aggregated from ACP and session cost metadata |
 | MiMoCode | Monthly spend aggregated from ACP and session cost metadata |
 | Kimi Code | Monthly spend aggregated from ACP and session cost metadata |
@@ -574,7 +581,7 @@ Obsidian Community plugins are the recommended user install path. GitHub Release
 
 ## Roadmap
 
-The current source integrates Codex, Claude Code, Antigravity CLI, Gemini CLI (Legacy), OpenCode, MiMoCode, Kimi Code, Grok Build, Qwen Code, Devin, Reasonix, and Command Code.
+The current source integrates Codex, Claude Code, Antigravity CLI, Gemini CLI (Legacy), OpenCode, MiMoCode, Kimi Code, Grok Build, Qwen Code, Devin, Pi, Reasonix, and Command Code.
 
 Next on the list: GitHub Copilot CLI, other ACP-compatible providers, and local model CLIs once their runtime is stable enough to embed in Obsidian. Implementation notes live in [docs/provider-roadmap.md](docs/provider-roadmap.md).
 
