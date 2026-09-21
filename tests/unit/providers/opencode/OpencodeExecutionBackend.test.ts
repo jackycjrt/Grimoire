@@ -464,6 +464,33 @@ describe('OpencodeExecutionBackend', () => {
     ]).toEqual(trace.cases.restartConfiguration);
   });
 
+  it('lets go of the idle agent process and reloads the native session on the next turn', async () => {
+    const first = new FakeManagedAcpClient('native-session');
+    const second = new FakeManagedAcpClient('native-session');
+    const fixture = createFixture({ clients: [first, second] });
+    const session = await createSession(fixture.backend);
+
+    const firstEvents = collectEvents(session.createRun(request('1', 'first')));
+    await waitFor(() => first.promptRequests.length === 1);
+    first.emit(agentText('native-session', 'first'));
+    first.completePrompt({ stopReason: 'end_turn' });
+    expectTerminal(await firstEvents, 'succeeded', 'completed');
+
+    // Idle: the process goes, the session and its native reference stay.
+    await session.suspend?.();
+    expect(first.closeCalls).toBe(1);
+    expect(session.getSnapshot().nativeSessionRef).toBe('native-session');
+
+    const secondEvents = collectEvents(session.createRun(request('2', 'second')));
+    await waitFor(() => second.promptRequests.length === 1);
+    second.emit(agentText('native-session', 'second'));
+    second.completePrompt({ stopReason: 'end_turn' });
+    expectTerminal(await secondEvents, 'succeeded', 'completed');
+
+    expect(fixture.factory.inputs).toHaveLength(2);
+    expect(second.loadRequests.map(load => load.sessionId)).toEqual(['native-session']);
+  });
+
   it('round-trips a durable ACP approval and resolves retries idempotently', async () => {
     const fixture = createFixture();
     const session = await createSession(fixture.backend);
@@ -680,6 +707,24 @@ describe('OpencodeExecutionBackend', () => {
     fixture.client.closeOutcome = 'unconfirmed';
 
     await expect(fixture.backend.dispose()).rejects.toThrow('termination was not confirmed');
+  });
+
+  it('retries idle suspension until the retained process is confirmed closed', async () => {
+    const fixture = createFixture();
+    const session = await createSession(fixture.backend);
+    const events = collectEvents(session.createRun(request('1')));
+    await waitFor(() => fixture.client.promptRequests.length === 1);
+    await expect(session.suspend?.()).resolves.toBe(false);
+    expect(fixture.client.closeCalls).toBe(0);
+    fixture.client.emit(agentText('native-session', 'done'));
+    fixture.client.completePrompt({ stopReason: 'end_turn' });
+    expectTerminal(await events, 'succeeded', 'completed');
+    fixture.client.closeOutcomes = ['unconfirmed', 'confirmed'];
+
+    await expect(session.suspend?.()).resolves.toBe(false);
+    await expect(session.suspend?.()).resolves.toBe(true);
+    expect(fixture.client.closeCalls).toBe(2);
+    expect(session.getSnapshot().nativeSessionRef).toBe('native-session');
   });
 
   it('quarantines an unconfirmed client and admits no second process tree', async () => {

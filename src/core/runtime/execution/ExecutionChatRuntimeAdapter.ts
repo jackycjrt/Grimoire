@@ -985,7 +985,10 @@ export class ExecutionChatRuntimeAdapter {
         dispatchCancellation(this.context, active.runId, active.stream);
         await this.awaitTerminal(active.stream);
       }
-      await this.context.registry.disposeSession(executionSessionId);
+      // Forced, because the id is dropped above and nothing retries: a refusal
+      // here — a run past the wait, an approval nobody will answer now — left
+      // the session and its provider process running with no owner, for days.
+      await this.context.registry.disposeSession(executionSessionId, { force: true });
     } catch (error) {
       // Total by contract. `ChatRuntime.cleanup()` returns void, so every
       // caller discards what this returns — a rejection from anywhere in here,
@@ -999,8 +1002,8 @@ export class ExecutionChatRuntimeAdapter {
    * Waits for the run to settle, with a bound.
    *
    * Unbounded would make closing a tab depend on a provider answering, which is
-   * exactly the coupling cancellation is meant to break. On timeout the session
-   * is left to the shutdown path, which terminalizes before disposing.
+   * exactly the coupling cancellation is meant to break. On timeout the caller
+   * forces session disposal, terminalizing any run still awaiting cancellation.
    */
   private async awaitTerminal(stream: ExecutionRunStream): Promise<void> {
     const deadline = (this.ports.now?.() ?? Date.now()) + CLEANUP_TERMINAL_WAIT_MS;
@@ -1112,7 +1115,8 @@ export class ExecutionChatRuntimeAdapter {
       if (active) {
         await this.awaitTerminal(active.stream);
       }
-      await this.context.registry.disposeSession(executionSessionId);
+      // Forced for the same reason `cleanup()` forces: the id is already gone.
+      await this.context.registry.disposeSession(executionSessionId, { force: true });
     })().catch(error => this.ports.reportCleanupFailure?.(error));
   }
 

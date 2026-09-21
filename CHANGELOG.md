@@ -2,6 +2,16 @@
 
 User-facing changes by release.
 
+## 2.0.4 - Unreleased
+
+### Fixed
+
+- Idle provider processes are released when the last tab leaves a conversation. An admitted turn continues in the background and releases its process after its result is saved; native background tasks remain protected. Adapter-owned sessions also force cleanup when cancellation outlasts the bounded wait (#216).
+
+### Added
+
+- Advanced → "Idle process timeout": a conversation with no turn running lets its provider process go after this many minutes (default 30) and resumes it on the next turn. Set 0 to keep processes for as long as their tab is open (#216).
+
 ## 2.0.3 - 2026-09-21
 
 ### Added

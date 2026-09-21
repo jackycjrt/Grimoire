@@ -1092,6 +1092,19 @@ class ManagedAcpExecutionSession implements ExecutionSession {
     }
   }
 
+  /**
+   * Closes the agent process, keeping the session and its native reference.
+   *
+   * The next turn's `ensureClient` launches again and `ensureSessionBinding`
+   * loads `nativeSessionRef`, which is the path a reload already takes.
+   * Declined while a turn is still going.
+   */
+  async suspend(): Promise<boolean> {
+    if (this.disposed) return true;
+    if (this.activeRun && !this.activeRun.isTerminal) return false;
+    return await this.closeClient() === 'confirmed';
+  }
+
   dispose(): Promise<void> {
     if (this.disposeTask) return this.disposeTask;
     this.disposed = true;
