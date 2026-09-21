@@ -2,6 +2,16 @@
 
 User-facing changes by release.
 
+## 2.0.3 - 2026-09-21
+
+### Added
+
+- Pi provider through separately installed Pi and pi-acp, with model selection, native images and session resume (#207). pi-acp 0.0.33 does not support `max` effort; see the README.
+
+### Fixed
+
+- Reasonix image attachments can be sent as vault file references when enabled in provider settings (#206).
+
 ## 2.0.2 - 2026-09-19
 
 ### Fixed
