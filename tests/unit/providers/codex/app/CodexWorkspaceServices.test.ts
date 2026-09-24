@@ -177,6 +177,40 @@ describe('createCodexWorkspaceServices', () => {
     ]);
   });
 
+  it.each(['empty', 'rejected'])('paces %s catalog retries while keeping persisted models', async (failure) => {
+    const clock = jest.spyOn(Date, 'now').mockReturnValue(1_000);
+    const oldModels = [{ id: 'gpt-5.6-sol', label: 'GPT-5.6-Sol' }];
+    const list = jest.spyOn(CodexModelListingService.prototype, 'listModels');
+    if (failure === 'empty') {
+      list.mockResolvedValue([]);
+    } else {
+      list.mockRejectedValue(new Error('CLI unavailable'));
+    }
+    const settings = { providerConfigs: { codex: { enabled: true, discoveredModels: oldModels } } };
+    const plugin = { app: { vault: { adapter: { basePath: '/repo' } } }, settings };
+    const services = await createCodexWorkspaceServices(
+      plugin as any, createStubAdapter() as any, createStubAdapter() as any,
+    );
+    const refresh = (force = false) => services.modelCatalog.refreshModels({
+      plugin: plugin as any, settings, force,
+    });
+
+    expect(await refresh()).toBe('failed');
+    clock.mockReturnValue(2_000);
+    expect(await refresh()).toBe('skipped');
+    expect(list).toHaveBeenCalledTimes(1);
+    clock.mockReturnValue(1_000 + 10 * 60_000);
+    expect(await refresh()).toBe('failed');
+    expect(await refresh()).toBe('skipped');
+    expect(list).toHaveBeenCalledTimes(2);
+    expect(settings.providerConfigs.codex.discoveredModels).toEqual(oldModels);
+
+    list.mockResolvedValue([{ id: 'gpt-6-astra', label: 'GPT-6-Astra' }]);
+    expect(await refresh(true)).toBe('refreshed');
+    expect(list).toHaveBeenCalledTimes(3);
+    expect(codexChatUIConfig.getModelOptions(settings).map(model => model.value)).toEqual(['gpt-6-astra']);
+  });
+
   it('rechecks persisted models on first use after startup when the CLI resolver arrives later', async () => {
     const listModelsSpy = jest
       .spyOn(CodexModelListingService.prototype, 'listModels')

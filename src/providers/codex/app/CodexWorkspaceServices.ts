@@ -87,7 +87,6 @@ function createCodexModelCatalog(plugin: GrimoirePlugin): ProviderModelCatalog {
       try {
         modelListingService.invalidate();
         const models = await modelListingService.listModels();
-        lastCatalogCheckAt = Date.now();
         if (models.length === 0) {
           plugin.recordDebugLog?.({
             data: { providerId: 'codex' },
@@ -129,7 +128,10 @@ function createCodexModelCatalog(plugin: GrimoirePlugin): ProviderModelCatalog {
           level: 'warn',
           scope: 'provider.codex',
         });
-        throw error;
+        return 'failed';
+      } finally {
+        // Failed probes cost a CLI spawn too; only an explicit refresh retries early.
+        lastCatalogCheckAt = Date.now();
       }
         },
       });
