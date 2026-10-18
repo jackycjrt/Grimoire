@@ -2,6 +2,18 @@
 
 User-facing changes by release.
 
+## 2.0.10 - 2026-10-18
+
+### Fixed
+
+- OpenCode V2 model discovery uses saved Console credentials, restoring eligible OpenCode Go and paid OpenCode models without creating metadata chat sessions. Restart Grimoire after updating, then click **Refresh all models** in its OpenCode settings (#253, #254).
+- Keep OpenCode native question replies and cancellation compatible with client 2.0.24 (#252).
+- Update dependencies to resolve security advisories (#250).
+
+### Improved
+
+- Update the Claude Agent SDK to 0.3.291 and the MCP SDK to 1.31.0 (#239, #248, #250).
+
 ## 2.0.9 - 2026-10-03
 
 ### Fixed
