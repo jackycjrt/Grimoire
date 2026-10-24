@@ -26,6 +26,7 @@ jest.mock('@/core/commands/builtInCommands', () => ({
 function createMockInput(): any {
   return {
     value: '',
+    ownerDocument: createMockEl().ownerDocument,
     selectionStart: 0,
     selectionEnd: 0,
     focus: jest.fn(),

@@ -17,6 +17,7 @@ jest.mock('@/core/commands/builtInCommands', () => ({
 function createMockInput(): any {
   return {
     value: '',
+    ownerDocument: createMockEl().ownerDocument,
     selectionStart: 0,
     selectionEnd: 0,
     focus: jest.fn(),
@@ -286,13 +287,51 @@ describe('SlashCommandDropdown', () => {
   });
 
   describe('race condition handling', () => {
-    it('should discard stale results when newer request is made', async () => {
+    it.each([
+      { search: 'rev', key: 'Enter', expected: '/rev' },
+      { search: 'add', key: 'Tab', expected: '/add-dir ' },
+    ])('filters built-ins before discovery finishes for /$search', ({ search, key, expected }) => {
+      const pending = new Promise<ProviderCommandEntry[]>(() => {});
+      const d = new SlashCommandDropdown(containerEl, inputEl, callbacks, {
+        providerConfig: CLAUDE_CONFIG, getProviderEntries: () => pending,
+      });
+      inputEl.value = '/';
+      inputEl.selectionStart = 1;
+      d.handleInputChange();
+      inputEl.value = `/${search}`;
+      inputEl.selectionStart = inputEl.value.length;
+      d.handleInputChange();
+      d.handleKeydown({ key, preventDefault: jest.fn() } as unknown as KeyboardEvent);
+      expect(inputEl.value).toBe(expected);
+      d.destroy();
+    });
+
+    it.each([{ entries: [] }, { entries: [makeEntry('aaa-command')] }])('preserves the selected built-in when discovery returns $entries', async ({ entries }) => {
+      let resolveEntries!: (entries: ProviderCommandEntry[]) => void;
+      const pending = new Promise<ProviderCommandEntry[]>(resolve => { resolveEntries = resolve; });
+      const d = new SlashCommandDropdown(containerEl, inputEl, callbacks, {
+        providerConfig: CLAUDE_CONFIG, getProviderEntries: () => pending,
+      });
+      inputEl.value = '/';
+      inputEl.selectionStart = 1;
+      d.handleInputChange();
+      const clearIndex = getRenderedCommandNames(containerEl).indexOf('clear');
+      expect(clearIndex).toBeGreaterThanOrEqual(0);
+      for (let index = 0; index < clearIndex; index++) {
+        d.handleKeydown({ key: 'ArrowDown', preventDefault: jest.fn() } as unknown as KeyboardEvent);
+      }
+      resolveEntries(entries);
+      await new Promise(resolve => window.setTimeout(resolve, 0));
+      d.handleKeydown({ key: 'Enter', preventDefault: jest.fn() } as unknown as KeyboardEvent);
+      expect(inputEl.value).toBe('/clear ');
+      d.destroy();
+    });
+
+    it('shares discovery across keystrokes and filters using the latest input', async () => {
       let resolveFirst: (value: ProviderCommandEntry[]) => void;
       const firstPromise = new Promise<ProviderCommandEntry[]>(resolve => { resolveFirst = resolve; });
 
-      const getProviderEntries = jest.fn()
-        .mockReturnValueOnce(firstPromise)
-        .mockResolvedValueOnce([makeEntry('new-command', 'New')]);
+      const getProviderEntries = jest.fn().mockReturnValue(firstPromise);
 
       const d = new SlashCommandDropdown(
         containerEl, inputEl, callbacks,
@@ -303,24 +342,163 @@ describe('SlashCommandDropdown', () => {
       inputEl.selectionStart = 1;
       d.handleInputChange();
 
-      inputEl.value = '/n';
-      inputEl.selectionStart = 2;
+      inputEl.value = '/rev';
+      inputEl.selectionStart = 4;
       d.handleInputChange();
       await new Promise(resolve => window.setTimeout(resolve, 10));
 
       resolveFirst!(PROVIDER_ENTRIES);
       await new Promise(resolve => window.setTimeout(resolve, 10));
 
+      const names = getRenderedCommandNames(containerEl);
+      expect(getProviderEntries).toHaveBeenCalledTimes(1);
+      expect(names).toContain('review');
+      expect(names).not.toContain('commit');
+
+      d.handleKeydown({ key: 'Tab', preventDefault: jest.fn() } as unknown as KeyboardEvent);
+      expect(inputEl.value).toBe('/review ');
+
+      d.destroy();
+    });
+
+    it('does not reopen a dismissed menu when discovery finishes', async () => {
+      let resolveEntries!: (entries: ProviderCommandEntry[]) => void;
+      const pending = new Promise<ProviderCommandEntry[]>(resolve => { resolveEntries = resolve; });
+      const d = new SlashCommandDropdown(containerEl, inputEl, callbacks, {
+        providerConfig: CLAUDE_CONFIG, getProviderEntries: () => pending,
+      });
       inputEl.value = '/';
       inputEl.selectionStart = 1;
       d.handleInputChange();
+      expect(d.isVisible()).toBe(true);
+      d.hide();
+      resolveEntries(PROVIDER_ENTRIES);
       await new Promise(resolve => window.setTimeout(resolve, 10));
-
-      const names = getRenderedCommandNames(containerEl);
-      expect(names).toContain('new-command');
-      expect(names).not.toContain('commit');
-
+      expect(d.isVisible()).toBe(false);
       d.destroy();
+    });
+
+    it('does not recreate a destroyed menu when discovery finishes', async () => {
+      let resolveEntries!: (entries: ProviderCommandEntry[]) => void;
+      const pending = new Promise<ProviderCommandEntry[]>(resolve => { resolveEntries = resolve; });
+      const d = new SlashCommandDropdown(containerEl, inputEl, callbacks, {
+        providerConfig: CLAUDE_CONFIG, getProviderEntries: () => pending,
+      });
+      inputEl.value = '/';
+      inputEl.selectionStart = 1;
+      d.handleInputChange();
+      await Promise.resolve();
+      d.destroy();
+      resolveEntries(PROVIDER_ENTRIES);
+      await new Promise(resolve => window.setTimeout(resolve, 10));
+      expect(d.isVisible()).toBe(false);
+      expect(containerEl.querySelector('.grimoire-slash-dropdown')).toBeNull();
+    });
+
+    it('does not cache results from the previous provider after a switch', async () => {
+      let resolveOld!: (entries: ProviderCommandEntry[]) => void;
+      const pending = new Promise<ProviderCommandEntry[]>(resolve => { resolveOld = resolve; });
+      const d = new SlashCommandDropdown(containerEl, inputEl, callbacks, {
+        providerConfig: CLAUDE_CONFIG, getProviderEntries: () => pending,
+      });
+      inputEl.value = '/';
+      inputEl.selectionStart = 1;
+      d.handleInputChange();
+      await Promise.resolve();
+      d.setProviderCatalog(CLAUDE_CONFIG, async () => [makeEntry('new-command')]);
+      d.handleInputChange();
+      await new Promise(resolve => window.setTimeout(resolve, 10));
+      resolveOld(PROVIDER_ENTRIES);
+      await new Promise(resolve => window.setTimeout(resolve, 10));
+      d.handleInputChange();
+      await new Promise(resolve => window.setTimeout(resolve, 10));
+      expect(getRenderedCommandNames(containerEl)).toContain('new-command');
+      expect(getRenderedCommandNames(containerEl)).not.toContain('commit');
+      d.destroy();
+    });
+  });
+
+  describe('discovery failure recovery', () => {
+    it('shares a failed lookup safely and retries on a later input', async () => {
+      const getEntries = jest.fn().mockRejectedValueOnce(new Error('Discovery failed'))
+        .mockResolvedValue(PROVIDER_ENTRIES);
+      const d = new SlashCommandDropdown(containerEl, inputEl, callbacks, {
+        providerConfig: CLAUDE_CONFIG, getProviderEntries: getEntries,
+      });
+      inputEl.value = '/';
+      inputEl.selectionStart = 1;
+      d.handleInputChange();
+      inputEl.value = '/rev';
+      inputEl.selectionStart = 4;
+      d.handleInputChange();
+      await new Promise(resolve => window.setTimeout(resolve, 10));
+      expect(getEntries).toHaveBeenCalledTimes(1);
+      d.handleInputChange();
+      await new Promise(resolve => window.setTimeout(resolve, 10));
+      expect(getEntries).toHaveBeenCalledTimes(2);
+      expect(getRenderedCommandNames(containerEl)).toContain('review');
+      d.destroy();
+    });
+  });
+
+  describe('IME input', () => {
+    it('waits until composition ends before looking up skills', async () => {
+      const getEntries = jest.fn().mockResolvedValue(PROVIDER_ENTRIES);
+      const input = createMockInput();
+      const d = new SlashCommandDropdown(containerEl, input, callbacks, {
+        providerConfig: CLAUDE_CONFIG, getProviderEntries: getEntries,
+      });
+      input.value = '/rev';
+      input.selectionStart = 4;
+      const onInput = input.addEventListener.mock.calls.find((call: unknown[]) => call[0] === 'input')[1];
+      const onEnd = input.addEventListener.mock.calls.find((call: unknown[]) => call[0] === 'compositionend')[1];
+      onInput({ isComposing: true });
+      await Promise.resolve();
+      expect(getEntries).not.toHaveBeenCalled();
+      onEnd();
+      await new Promise(resolve => window.setTimeout(resolve, 10));
+      expect(getEntries).toHaveBeenCalledTimes(1);
+      const preventDefault = jest.fn();
+      expect(d.handleKeydown({ key: 'Enter', isComposing: true, preventDefault } as unknown as KeyboardEvent)).toBe(false);
+      expect(preventDefault).not.toHaveBeenCalled();
+      d.destroy();
+    });
+  });
+
+  describe('composition lifecycle', () => {
+    it('hides the menu and ignores unflagged input until compositionend', async () => {
+      inputEl.value = '/';
+      inputEl.selectionStart = 1;
+      dropdown.handleInputChange();
+      await new Promise(resolve => window.setTimeout(resolve, 0));
+      expect(dropdown.isVisible()).toBe(true);
+      const onStart = inputEl.addEventListener.mock.calls.find((call: unknown[]) => call[0] === 'compositionstart')[1];
+      const onEnd = inputEl.addEventListener.mock.calls.find((call: unknown[]) => call[0] === 'compositionend')[1];
+      const onInput = inputEl.addEventListener.mock.calls.find((call: unknown[]) => call[0] === 'input')[1];
+      onStart();
+      onInput({ isComposing: false });
+      await new Promise(resolve => window.setTimeout(resolve, 0));
+      expect(dropdown.isVisible()).toBe(false);
+      onEnd();
+      await new Promise(resolve => window.setTimeout(resolve, 0));
+      expect(dropdown.isVisible()).toBe(true);
+    });
+
+    it.each(['ArrowDown', 'ArrowUp', 'Enter', 'Tab', 'Escape'])('does not consume legacy IME %s', async (key) => {
+      inputEl.value = '/';
+      inputEl.selectionStart = 1;
+      dropdown.handleInputChange();
+      await new Promise(resolve => window.setTimeout(resolve, 0));
+      const preventDefault = jest.fn();
+      expect(dropdown.handleKeydown({ key, keyCode: 229, isComposing: false, preventDefault } as unknown as KeyboardEvent)).toBe(false);
+      expect(preventDefault).not.toHaveBeenCalled();
+    });
+
+    it('removes all composition listeners on destroy', () => {
+      dropdown.destroy();
+      for (const event of ['input', 'compositionstart', 'compositionend']) {
+        expect(inputEl.removeEventListener).toHaveBeenCalledWith(event, expect.any(Function));
+      }
     });
   });
 

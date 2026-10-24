@@ -2,6 +2,26 @@ export const TEXTAREA_BASE_MIN_HEIGHT = 60;
 export const TEXTAREA_MIN_MAX_HEIGHT = 150;
 export const TEXTAREA_MAX_HEIGHT_PERCENT = 0.55;
 
+const scheduledResizes = new WeakMap<HTMLTextAreaElement, { frame: number; win: Window }>();
+
+/** Keep layout measurement out of the input dispatch and coalesce paste/IME bursts. */
+export function scheduleTextareaResize(textarea: HTMLTextAreaElement): void {
+  if (scheduledResizes.has(textarea)) return;
+  const win = textarea.ownerDocument.defaultView ?? window;
+  const frame = win.requestAnimationFrame(() => {
+    scheduledResizes.delete(textarea);
+    if (textarea.isConnected) autoResizeTextarea(textarea);
+  });
+  scheduledResizes.set(textarea, { frame, win });
+}
+
+export function cancelScheduledTextareaResize(textarea: HTMLTextAreaElement): void {
+  const pending = scheduledResizes.get(textarea);
+  if (!pending) return;
+  pending.win.cancelAnimationFrame(pending.frame);
+  scheduledResizes.delete(textarea);
+}
+
 interface TextareaMinHeightInput {
   contentHeight: number;
   flexAllocatedHeight: number;

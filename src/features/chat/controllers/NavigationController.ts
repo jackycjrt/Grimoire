@@ -135,7 +135,8 @@ export class NavigationController {
     if (e.key !== 'Escape') return;
 
     // Ignore if composing (IME support for Chinese, Japanese, Korean, etc.)
-    if (e.isComposing) return;
+    // Legacy 229 is required for macOS IME candidate confirmation.
+    if (e.isComposing || (e as { readonly keyCode: number }).keyCode === 229) return;
 
     // If streaming, let existing handler interrupt (don't interfere)
     if (this.deps.isStreaming()) {

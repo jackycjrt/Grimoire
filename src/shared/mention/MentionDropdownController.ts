@@ -115,6 +115,12 @@ export class MentionDropdownController {
   }
 
   hide(): void {
+    if (this.debounceTimer !== null) {
+      window.clearTimeout(this.debounceTimer);
+      this.debounceTimer = null;
+      // Only dismiss the menu; keep the pending MCP selector update.
+      this.updateMcpMentionsFromText(this.inputEl.value);
+    }
     this.dropdown.hide();
     this.mentionStartIndex = -1;
   }
@@ -151,6 +157,7 @@ export class MentionDropdownController {
     }
 
     this.debounceTimer = window.setTimeout(() => {
+      this.debounceTimer = null;
       const text = this.inputEl.value;
       this.updateMcpMentionsFromText(text);
 

@@ -507,6 +507,16 @@ describe('NavigationController', () => {
       expect(focusSpy).toHaveBeenCalled();
     });
 
+    it('does not blur the composer for legacy IME Escape events', () => {
+      const blurSpy = jest.spyOn(inputEl, 'blur');
+      const event = new KeyboardEvent('keydown', { key: 'Escape', cancelable: true });
+      Object.defineProperty(event, 'keyCode', { value: 229 });
+      const preventDefault = jest.spyOn(event, 'preventDefault');
+      inputEl.dispatchEvent(event);
+      expect(blurSpy).not.toHaveBeenCalled();
+      expect(preventDefault).not.toHaveBeenCalled();
+    });
+
     it('prevents default and stops propagation when Escape handled', () => {
       isStreaming = false;
 

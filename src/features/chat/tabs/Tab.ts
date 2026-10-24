@@ -59,7 +59,7 @@ import { InstructionModeManager as InstructionModeManagerClass } from '../ui/Ins
 import { NavigationSidebar } from '../ui/NavigationSidebar';
 import { RelevantNotesView } from '../ui/RelevantNotesView';
 import { StatusPanel } from '../ui/StatusPanel';
-import { autoResizeTextarea } from '../ui/textareaResize';
+import { autoResizeTextarea, cancelScheduledTextareaResize, scheduleTextareaResize } from '../ui/textareaResize';
 import { buildAssistantResponseMetadata } from '../utils/assistantResponseMetadata';
 import { resolveContextUsage } from '../utils/usageInfo';
 import { getTabProviderId } from './providerResolution';
@@ -1569,6 +1569,7 @@ export function initializeTabControllers(
  */
 export function wireTabInputEvents(tab: TabData, plugin: GrimoirePlugin): void {
   const { dom, ui, state, controllers } = tab;
+  let isComposing = false;
 
   let wasBangBashActive = ui.bangBashModeManager?.isActive() ?? false;
   const syncBangBashSuppression = (): void => {
@@ -1583,6 +1584,10 @@ export function wireTabInputEvents(tab: TabData, plugin: GrimoirePlugin): void {
   };
 
   const keydownHandler = (e: KeyboardEvent) => {
+    // Some macOS IMEs clear isComposing before the candidate-confirming keydown.
+    // Legacy 229 is required for macOS IME candidate confirmation.
+    if (isComposing || e.isComposing || (e as { readonly keyCode: number }).keyCode === 229) return;
+
     if (ui.bangBashModeManager?.isActive()) {
       ui.bangBashModeManager.handleKeydown(e);
       syncBangBashSuppression();
@@ -1656,17 +1661,34 @@ export function wireTabInputEvents(tab: TabData, plugin: GrimoirePlugin): void {
     dom.eventCleanups.push(() => dom.stopButtonEl?.removeEventListener('click', stopClickHandler));
   }
 
-  const inputHandler = () => {
+  const inputHandler = (event?: Event) => {
+    if (isComposing || (event as InputEvent | undefined)?.isComposing) return;
     if (!ui.bangBashModeManager?.isActive()) {
       ui.fileContextManager?.handleInputChange();
     }
     ui.instructionModeManager?.handleInputChange();
     ui.bangBashModeManager?.handleInputChange();
     syncBangBashSuppression();
-    autoResizeTextarea(dom.inputEl);
+    scheduleTextareaResize(dom.inputEl);
+  };
+  const compositionStartHandler = () => {
+    isComposing = true;
+    cancelScheduledTextareaResize(dom.inputEl);
+    ui.fileContextManager?.hideMentionDropdown();
+  };
+  const compositionEndHandler = () => {
+    isComposing = false;
+    inputHandler();
   };
   dom.inputEl.addEventListener('input', inputHandler);
-  dom.eventCleanups.push(() => dom.inputEl.removeEventListener('input', inputHandler));
+  dom.inputEl.addEventListener('compositionstart', compositionStartHandler);
+  dom.inputEl.addEventListener('compositionend', compositionEndHandler);
+  dom.eventCleanups.push(() => {
+    dom.inputEl.removeEventListener('input', inputHandler);
+    dom.inputEl.removeEventListener('compositionstart', compositionStartHandler);
+    dom.inputEl.removeEventListener('compositionend', compositionEndHandler);
+    cancelScheduledTextareaResize(dom.inputEl);
+  });
 
   // Sidebar focus handler — show selection highlight when focus enters the tab from outside
   const focusHandler = (e: FocusEvent) => {
