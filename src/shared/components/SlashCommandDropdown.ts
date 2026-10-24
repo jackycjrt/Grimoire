@@ -44,7 +44,10 @@ export class SlashCommandDropdown {
   private inputEl: HTMLTextAreaElement | HTMLInputElement;
   private callbacks: SlashCommandDropdownCallbacks;
   private enabled = true;
-  private onInput: () => void;
+  private onInput: (event: Event) => void;
+  private onCompositionStart: () => void;
+  private onCompositionEnd: () => void;
+  private isComposing = false;
   private triggerStartIndex = -1;
   private activeTriggerChar = '/';
   private selectedIndex = 0;
@@ -56,6 +59,8 @@ export class SlashCommandDropdown {
   private getProviderEntries: (() => Promise<readonly ProviderCommandEntry[]>) | null;
   private cachedProviderEntries: ProviderCommandEntry[] = [];
   private providerEntriesFetched = false;
+  private providerEntriesPromise: Promise<void> | null = null;
+  private catalogGeneration = 0;
 
   private requestId = 0;
 
@@ -73,8 +78,20 @@ export class SlashCommandDropdown {
     this.providerConfig = options.providerConfig ?? null;
     this.getProviderEntries = options.getProviderEntries ?? null;
 
-    this.onInput = () => this.handleInputChange();
+    this.onInput = (event) => {
+      if (!this.isComposing && !(event as InputEvent).isComposing) this.handleInputChange();
+    };
+    this.onCompositionStart = () => {
+      this.isComposing = true;
+      this.hide();
+    };
+    this.onCompositionEnd = () => {
+      this.isComposing = false;
+      this.handleInputChange();
+    };
     this.inputEl.addEventListener('input', this.onInput);
+    this.inputEl.addEventListener('compositionstart', this.onCompositionStart);
+    this.inputEl.addEventListener('compositionend', this.onCompositionEnd);
   }
 
   setEnabled(enabled: boolean): void {
@@ -94,13 +111,11 @@ export class SlashCommandDropdown {
   ): void {
     this.providerConfig = config;
     this.getProviderEntries = getEntries;
-    this.cachedProviderEntries = [];
-    this.providerEntriesFetched = false;
-    this.requestId = 0;
+    this.resetSdkSkillsCache();
   }
 
   handleInputChange(): void {
-    if (!this.enabled) return;
+    if (!this.enabled || this.isComposing) return;
 
     const text = this.getInputValue();
     const cursorPos = this.getCursorPosition();
@@ -143,7 +158,8 @@ export class SlashCommandDropdown {
   }
 
   handleKeydown(e: KeyboardEvent): boolean {
-    if (!this.enabled || !this.isVisible()) return false;
+    // Legacy 229 is required for macOS IME candidate confirmation.
+    if (this.isComposing || e.isComposing || (e as { readonly keyCode: number }).keyCode === 229 || !this.enabled || !this.isVisible()) return false;
 
     switch (e.key) {
       case 'ArrowDown':
@@ -175,6 +191,7 @@ export class SlashCommandDropdown {
   }
 
   hide(): void {
+    this.requestId++;
     if (this.dropdownEl) {
       this.dropdownEl.removeClass('visible');
     }
@@ -183,7 +200,11 @@ export class SlashCommandDropdown {
   }
 
   destroy(): void {
+    this.hide();
+    this.catalogGeneration++;
     this.inputEl.removeEventListener('input', this.onInput);
+    this.inputEl.removeEventListener('compositionstart', this.onCompositionStart);
+    this.inputEl.removeEventListener('compositionend', this.onCompositionEnd);
     if (this.dropdownEl) {
       this.dropdownEl.remove();
       this.dropdownEl = null;
@@ -193,7 +214,9 @@ export class SlashCommandDropdown {
   resetSdkSkillsCache(): void {
     this.cachedProviderEntries = [];
     this.providerEntriesFetched = false;
-    this.requestId = 0;
+    this.providerEntriesPromise = null;
+    this.catalogGeneration++;
+    this.requestId++;
   }
 
   private getInputValue(): string {
@@ -217,7 +240,15 @@ export class SlashCommandDropdown {
     const currentRequest = ++this.requestId;
     const searchLower = searchText.toLowerCase();
 
-    await this.fetchProviderEntries(currentRequest);
+    // Local commands are usable while the provider discovers its skill catalog.
+    if (!this.providerEntriesFetched && searchText === '' && isAtPosition0 && this.activeTriggerChar === '/') {
+      this.filteredItems = this.buildItemList(true);
+      if (this.filteredItems.length > 0) {
+        this.selectedIndex = 0;
+        this.render();
+      }
+    }
+    await this.fetchProviderEntries();
 
     if (currentRequest !== this.requestId) return;
 
@@ -242,18 +273,28 @@ export class SlashCommandDropdown {
     this.render();
   }
 
-  private async fetchProviderEntries(currentRequest: number): Promise<void> {
+  private async fetchProviderEntries(): Promise<void> {
     if (this.providerEntriesFetched || !this.getProviderEntries) return;
-
-    try {
-      const entries = await this.getProviderEntries();
-      if (currentRequest !== this.requestId) return;
+    if (this.providerEntriesPromise) return this.providerEntriesPromise;
+    const generation = this.catalogGeneration;
+    const getEntries = this.getProviderEntries;
+    const pending = Promise.resolve().then(async () => {
+      const entries = await getEntries();
+      if (generation !== this.catalogGeneration) return;
       if (entries.length > 0) {
         this.cachedProviderEntries = [...entries];
         this.providerEntriesFetched = true;
       }
-    } catch {
-      if (currentRequest !== this.requestId) return;
+    }).catch(() => {
+      // A failed discovery can be retried on the next menu request.
+    });
+    this.providerEntriesPromise = pending;
+    try {
+      await pending;
+    } finally {
+      if (this.providerEntriesPromise === pending) {
+        this.providerEntriesPromise = null;
+      }
     }
   }
 
@@ -323,15 +364,16 @@ export class SlashCommandDropdown {
       this.dropdownEl = this.createDropdownElement();
     }
 
-    this.dropdownEl.empty();
+    // Assemble rows off-document so input does not repeatedly mutate the live list.
+    const contentEl = this.inputEl.ownerDocument.win.createFragment();
 
     if (this.filteredItems.length === 0) {
-      const emptyEl = this.dropdownEl.createDiv({ cls: 'grimoire-slash-empty' });
+      const emptyEl = contentEl.createDiv({ cls: 'grimoire-slash-empty' });
       emptyEl.setText(t('shared.slashCommands.noMatches'));
     } else {
       for (let i = 0; i < this.filteredItems.length; i++) {
         const item = this.filteredItems[i];
-        const itemEl = this.dropdownEl.createDiv({ cls: 'grimoire-slash-item' });
+        const itemEl = contentEl.createDiv({ cls: 'grimoire-slash-item' });
 
         if (i === this.selectedIndex) {
           itemEl.addClass('selected');
@@ -371,6 +413,7 @@ export class SlashCommandDropdown {
       }
     }
 
+    this.dropdownEl.replaceChildren(...Array.from(contentEl.childNodes));
     this.dropdownEl.addClass('visible');
 
     if (this.isFixed) {

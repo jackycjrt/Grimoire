@@ -2739,6 +2739,70 @@ describe('Tab - Event Handler Behavior', () => {
     });
   });
 
+  describe('IME composition isolation', () => {
+    it.each(['Enter', 'ArrowDown', 'ArrowUp', 'Escape', 'Tab'])('leaves %s to the IME even when the key flag is false', (key) => {
+      const { listeners, fireKeydown } = setupKeydownTab();
+      listeners.get('compositionstart')[0]();
+      const event = { key, isComposing: false, preventDefault: jest.fn() };
+      fireKeydown(event);
+      expect(event.preventDefault).not.toHaveBeenCalled();
+      expect(mockBangBashModeManager.handleKeydown).not.toHaveBeenCalled();
+      expect(mockInstructionModeManager.handleTriggerKey).not.toHaveBeenCalled();
+      expect(mockSlashCommandDropdown.handleKeydown).not.toHaveBeenCalled();
+      expect(mockFileContextManager.handleMentionKeydown).not.toHaveBeenCalled();
+      expect(mockInputController.sendMessage).not.toHaveBeenCalled();
+    });
+
+    it('ignores the legacy candidate-confirmation Enter after composition ends', () => {
+      const { listeners, fireKeydown } = setupKeydownTab();
+      listeners.get('compositionstart')[0]();
+      listeners.get('compositionend')[0]();
+      const event = { key: 'Enter', keyCode: 229, isComposing: false, preventDefault: jest.fn() };
+      fireKeydown(event);
+      expect(event.preventDefault).not.toHaveBeenCalled();
+      expect(mockInputController.sendMessage).not.toHaveBeenCalled();
+      expect(mockSlashCommandDropdown.handleKeydown).not.toHaveBeenCalled();
+    });
+
+    it('defers context and mode updates until composition ends', () => {
+      const { listeners } = setupKeydownTab();
+      listeners.get('compositionstart')[0]();
+      for (let i = 0; i < 10; i++) listeners.get('input')[0]({ isComposing: false });
+      expect(mockFileContextManager.hideMentionDropdown).toHaveBeenCalledTimes(1);
+      expect(mockFileContextManager.handleInputChange).not.toHaveBeenCalled();
+      expect(mockInstructionModeManager.handleInputChange).not.toHaveBeenCalled();
+      expect(mockBangBashModeManager.handleInputChange).not.toHaveBeenCalled();
+      listeners.get('compositionend')[0]();
+      expect(mockFileContextManager.handleInputChange).toHaveBeenCalledTimes(1);
+      expect(mockInstructionModeManager.handleInputChange).toHaveBeenCalledTimes(1);
+      expect(mockBangBashModeManager.handleInputChange).toHaveBeenCalledTimes(1);
+    });
+
+    it('cancels a queued layout measurement when composition starts', () => {
+      const { tab, listeners } = setupKeydownTab();
+      const win = tab.dom.inputEl.ownerDocument.defaultView!;
+      const raf = jest.spyOn(win, 'requestAnimationFrame').mockReturnValue(91);
+      const cancel = jest.spyOn(win, 'cancelAnimationFrame').mockImplementation(() => {});
+      try {
+        listeners.get('input')[0]();
+        expect(raf).toHaveBeenCalledTimes(1);
+        listeners.get('compositionstart')[0]();
+        expect(cancel).toHaveBeenCalledWith(91);
+        listeners.get('input')[0]({ isComposing: true });
+        expect(raf).toHaveBeenCalledTimes(1);
+      } finally {
+        raf.mockRestore();
+        cancel.mockRestore();
+      }
+    });
+
+    it('ignores composing input events even without compositionstart', () => {
+      const { listeners } = setupKeydownTab();
+      listeners.get('input')[0]({ isComposing: true });
+      expect(mockFileContextManager.handleInputChange).not.toHaveBeenCalled();
+    });
+  });
+
   describe('wireTabInputEvents - input handler', () => {
     it('should trigger file context input change', () => {
       const options = createMockOptions();

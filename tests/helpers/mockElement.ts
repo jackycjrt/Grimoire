@@ -212,6 +212,7 @@ export function createMockEl(tag = 'div'): any {
   const documentEventListeners = new Map<string, Array<(...args: any[]) => void>>();
   const ownerDocument = {
     defaultView,
+    win: { createFragment: () => createMockEl('fragment') },
     get activeElement() {
       return currentDocument()?.activeElement ?? null;
     },
@@ -360,6 +361,11 @@ export function createMockEl(tag = 'div'): any {
     /** Internal: keeps the parent link in sync so remove() can detach. */
     __setParent(next: MockElement | null) { parentEl = next; },
     appendChild(child: any) { adopt(child); return child; },
+    get childNodes() { return children; },
+    replaceChildren(...nodes: MockElement[]) {
+      element.empty();
+      for (const node of nodes) adopt(node);
+    },
     insertBefore(el: MockElement, _ref: MockElement | null) { adopt(el, 0); },
     get firstChild() { return children[0] || null; },
     remove() {

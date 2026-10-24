@@ -115,6 +115,10 @@ export class MentionDropdownController {
   }
 
   hide(): void {
+    if (this.debounceTimer !== null) {
+      window.clearTimeout(this.debounceTimer);
+      this.debounceTimer = null;
+    }
     this.dropdown.hide();
     this.mentionStartIndex = -1;
   }

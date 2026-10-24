@@ -379,6 +379,19 @@ describe('MentionDropdownController', () => {
     });
   });
 
+  describe('pending input cancellation', () => {
+    it('does not reopen a dismissed menu when its debounce expires', () => {
+      inputEl.value = '@';
+      inputEl.selectionStart = 1;
+      controller.handleInputChange();
+      controller.hide();
+      jest.advanceTimersByTime(200);
+      expect(mockDropdownVisible).toBe(false);
+      const { SelectableDropdown } = jest.requireMock('@/shared/components/SelectableDropdown');
+      expect(SelectableDropdown.mock.results[0].value.render).not.toHaveBeenCalled();
+    });
+  });
+
   describe('hide', () => {
     it('can be called without error', () => {
       expect(() => controller.hide()).not.toThrow();

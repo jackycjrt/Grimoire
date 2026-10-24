@@ -6,6 +6,8 @@ import {
   autoResizeTextarea,
   calculateTextareaMaxHeight,
   calculateTextareaMinHeight,
+  cancelScheduledTextareaResize,
+  scheduleTextareaResize,
   TEXTAREA_BASE_MIN_HEIGHT,
   TEXTAREA_MAX_HEIGHT_PERCENT,
   TEXTAREA_MIN_MAX_HEIGHT,
@@ -66,6 +68,38 @@ describe('textareaResize', () => {
   it('caps max height by viewport percentage with a minimum usable cap', () => {
     expect(calculateTextareaMaxHeight(100)).toBe(TEXTAREA_MIN_MAX_HEIGHT);
     expect(calculateTextareaMaxHeight(1000)).toBe(1000 * TEXTAREA_MAX_HEIGHT_PERCENT);
+  });
+
+  it('coalesces an input burst into one measurement after input dispatch', () => {
+    const textarea = createResizeTextarea({
+      baseOffsetHeight: 102, grownOffsetHeight: 116,
+      baseScrollHeight: 116, grownScrollHeight: 116,
+    });
+    document.body.append(textarea);
+    let runFrame!: FrameRequestCallback;
+    const raf = jest.spyOn(window, 'requestAnimationFrame').mockImplementation(callback => {
+      runFrame = callback;
+      return 17;
+    });
+    const measure = jest.spyOn(textarea, 'setCssProps');
+    for (let i = 0; i < 30; i++) scheduleTextareaResize(textarea);
+    expect(measure).not.toHaveBeenCalled();
+    expect(raf).toHaveBeenCalledTimes(1);
+    runFrame(0);
+    expect(textarea.style.getPropertyValue('--grimoire-textarea-min-height')).toBe('116px');
+    textarea.remove();
+    raf.mockRestore();
+  });
+
+  it('cancels deferred layout when the input is disposed', () => {
+    const textarea = document.createElement('textarea');
+    const raf = jest.spyOn(window, 'requestAnimationFrame').mockReturnValue(18);
+    const cancel = jest.spyOn(window, 'cancelAnimationFrame').mockImplementation(() => {});
+    scheduleTextareaResize(textarea);
+    cancelScheduledTextareaResize(textarea);
+    expect(cancel).toHaveBeenCalledWith(18);
+    cancel.mockRestore();
+    raf.mockRestore();
   });
 });
 
