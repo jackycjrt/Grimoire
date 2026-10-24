@@ -2,6 +2,19 @@
 
 User-facing changes by release.
 
+## 2.0.11 - 2026-10-24
+
+### Fixed
+
+- Prevent IME candidate keys from triggering composer actions, and defer context updates and resize measurements until composition ends (#260, #261).
+- Keep slash-command filtering and selection consistent while provider commands load, and prevent dismissed menus from reopening (#260, #261).
+- Preserve MCP server selection updates when the mention menu is dismissed (#261).
+- Update vulnerable transitive dependencies (#261).
+
+### Improved
+
+- Update the Claude Agent SDK to 0.3.300 and the OpenCode client to 2.0.29 (#257, #258).
+
 ## 2.0.10 - 2026-10-18
 
 ### Fixed
